@@ -3,6 +3,7 @@ from sqlalchemy import (
     String,
     Integer,
     Boolean,
+    BigInteger,
 )
 from sqlalchemy.sql import expression
 from sqlalchemy.orm import relationship
@@ -12,7 +13,7 @@ from models import Base, Advertisement
 class Client(Base):
     __tablename__ = 'client'
     id = Column(Integer, primary_key=True)
-    telegram_id = Column(Integer, nullable=False)
+    telegram_id = Column(BigInteger, nullable=False)
     phone_number = Column(String, nullable=False)
     username = Column(String, nullable=False)
     first_name = Column(String, nullable=False)

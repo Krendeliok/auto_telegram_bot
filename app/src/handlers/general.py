@@ -1,5 +1,6 @@
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters import Text
 from aiogram.types import MediaGroup, InputMediaPhoto
 from sqlalchemy.sql import expression
 
@@ -36,18 +37,18 @@ from ..queries import (
     get_advertisements_by_filter
 )
 
-from ..contexts import FSMContact, FSMFilter
+from ..contexts import FSMMenu, FSMFilter
 from ..commands import general, filters, special
 
 
-async def start_command(message: types.Message):
+async def start_command(message: types.Message, state: FSMContext, **kwargs):
     exists, model = exists_client(message.from_user.id)
     if exists:
         await message.answer("Вітаю!\nЩо хочете зробити?", reply_markup=commands_keyboard(message.from_user.id))
-        await message.delete()
+        await FSMMenu.start.set()
     else:
-        await FSMContact.contact.set()
         await message.answer("Для початку треба вас ідентифікувати.\nВідправте будь ласка ваш контакт.", reply_markup=contact_keyboard())
+        await FSMMenu.contact.set()
 
 
 async def get_contact(message: types.Message, state: FSMContext):
@@ -56,51 +57,57 @@ async def get_contact(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-async def start_filter(message: types.Message, state: FSMContext, *args):
+async def start_filter(message: types.Message, state: FSMContext, *args, **kwargs):
     await message.answer("Оберіть як треба фільтрувати.", reply_markup=filter_commands())
     await FSMFilter.start.set()
 
-async def filter_commands_handler(message: types.Message, state: FSMContext, *args):
-    if message.text == str(special["back"]):
-        await state.finish()
-        await start_command(message)
-    elif message.text == str(special["find"]):
-        await search_filter(message, state)
-    elif message.text == filters["producer"].get_command:
-        await FSMFilter.producer.set()
-        await message.answer("Оберіть яку марку хочете відстежувати.", reply_markup=producers_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
-    elif message.text == filters["gearbox"].get_command:
-        await FSMFilter.gearbox.set()
-        await message.answer("Оберіть модель яку треба відстежувати.", reply_markup=gearbox_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
-    elif message.text == filters["region"].get_command:
-        await FSMFilter.region.set()
-        await message.answer("Оберіть область для фільтру", reply_markup=country_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
-    elif message.text == filters["engine_type"].get_command:
-        await FSMFilter.engine_type.set()
-        await message.answer("Оберіть тип палива для фільтру", reply_markup=engine_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
-    elif message.text == filters["price"].get_command:
-        await FSMFilter.price.set()
-        await message.answer("Вкажіть ціну для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
-    elif message.text == filters["year"].get_command:
-        await FSMFilter.year.set()
-        await message.answer("Вкажіть рік для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
-    elif message.text == filters["engine_volume"].get_command:
-        await FSMFilter.engine_volume.set()
-        await message.answer("Вкажіть обїєм двигуна для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
-    elif message.text == filters["range"].get_command:
-        await FSMFilter.range.set()
-        await message.answer("Вкажіть пробіг для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
-
-def filter_handler(previous_func, text=None, add_filter=None, plural_model=""):
+def back_handler(previous_func, text=None):
     def wrapper(func):
-        async def inner(message: types.Message, state: FSMContext, user_filter):
-            message.text = message.text.split("✅")[0].split("🟠")[0]
+        async def inner(message, state, user_filter=None, *args, **kwargs):
             if message.text == str(special["back"]):
                 if text is not None:
                     message.text = text
-                await previous_func(message, state, user_filter)
+                await previous_func(message=message, state=state, user_filter=user_filter)
                 return
-            elif message.text == str(special["all"]):
+            await func(message=message, state=state, user_filter=user_filter, previous_func=previous_func, text=text, *args, **kwargs)
+        return inner
+    return wrapper
+
+@back_handler(previous_func=start_command)
+async def filter_commands_handler(message: types.Message, state: FSMContext, *args, **kwargs):
+    if message.text == str(special["find"]):
+        await search_filter(message, state)
+    elif message.text == str(filters["producer"]):
+        await FSMFilter.producer.set()
+        await message.answer("Оберіть яку марку хочете відстежувати.", reply_markup=producers_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
+    elif message.text == str(filters["gearbox"]):
+        await FSMFilter.gearbox.set()
+        await message.answer("Оберіть модель яку треба відстежувати.", reply_markup=gearbox_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
+    elif message.text == str(filters["region"]):
+        await FSMFilter.region.set()
+        await message.answer("Оберіть область для фільтру", reply_markup=country_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
+    elif message.text == str(filters["engine_type"]):
+        await FSMFilter.engine_type.set()
+        await message.answer("Оберіть тип палива для фільтру", reply_markup=engine_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
+    elif message.text == str(filters["price"]):
+        await FSMFilter.price.set()
+        await message.answer("Вкажіть ціну для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
+    elif message.text == str(filters["year"]):
+        await FSMFilter.year.set()
+        await message.answer("Вкажіть рік для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
+    elif message.text == str(filters["engine_volume"]):
+        await FSMFilter.engine_volume.set()
+        await message.answer("Вкажіть обїєм двигуна для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
+    elif message.text == str(filters["range"]):
+        await FSMFilter.range.set()
+        await message.answer("Вкажіть пробіг для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
+
+
+def filter_handler(add_filter=None, plural_model=""):
+    def wrapper(func):
+        async def inner(message: types.Message, state: FSMContext, user_filter, previous_func, text=None, *args, **kwargs):
+            message.text = message.text.split("✅")[0].split("🟠")[0]
+            if message.text == str(special["all"]) and add_filter:
                 await message.answer(f"Усі {plural_model} додані успішно.")
                 if text is not None:
                     async with state.proxy() as data:
@@ -140,7 +147,6 @@ async def add_number_value_to_filter(message: types.Message, state: FSMContext, 
         except ValueError:
             await message.answer("wrong format")
     
-
 async def send_adv(message: types.Message, adv):
     images = adv.images
     media_group = MediaGroup()
@@ -158,11 +164,10 @@ async def search_filter(message: types.Message, state: FSMContext, user_filter):
     await message.answer(f"По вашому фільтру було знайдено {len(advs)} оголошень.")
     for adv in advs:
         await send_adv(message, adv)
-    
-
 
 @add_user_filter
-@filter_handler(start_filter, add_filter=add_filter_producer, plural_model="марки")
+@back_handler(previous_func=start_filter)
+@filter_handler(add_filter=add_filter_producer, plural_model="марки")
 async def filter_producer(message: types.Message, state: FSMContext, user_filter):
     exists, obj = exists_producer(message.text)
     if exists:
@@ -176,7 +181,8 @@ async def filter_producer(message: types.Message, state: FSMContext, user_filter
         await message.reply("Це не схоже на марку. Спробуйте обрати з доступних.", reply_markup=producers_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
 
 @add_user_filter
-@filter_handler(filter_commands_handler, filters["producer"].get_command, add_filter=add_filter_model, plural_model="моделі")
+@back_handler(previous_func=filter_commands_handler, text=str(filters["producer"]))
+@filter_handler(add_filter=add_filter_model, plural_model="моделі")
 async def filter_model(message: types.Message, state: FSMContext, *args):
     async with state.proxy() as data:
         exists, obj = exists_model_from_producer(message.text, data["producer"])
@@ -193,7 +199,8 @@ async def filter_model(message: types.Message, state: FSMContext, *args):
             )
 
 @add_user_filter
-@filter_handler(start_filter, add_filter=add_filter_engine, plural_model="палива")
+@back_handler(previous_func=start_filter)
+@filter_handler(add_filter=add_filter_engine, plural_model="палива")
 async def filter_engine_types(message: types.Message, state: FSMContext, user_filter):
     exists, obj = exists_engine_type(message.text)
     if exists:
@@ -203,7 +210,8 @@ async def filter_engine_types(message: types.Message, state: FSMContext, user_fi
         await message.reply("Я не пам'ятаю щоб таке паливо використовував автомобіль. Спробуй обрати з доступних.", reply_markup=engine_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
 
 @add_user_filter
-@filter_handler(start_filter, add_filter=add_filter_gearbox, plural_model="коробки")
+@back_handler(previous_func=start_filter)
+@filter_handler(add_filter=add_filter_gearbox, plural_model="коробки")
 async def filter_gearbox(message: types.Message, state: FSMContext, user_filter):
     exists, obj = exists_gearbox(message.text)
     if exists:
@@ -213,7 +221,8 @@ async def filter_gearbox(message: types.Message, state: FSMContext, user_filter)
         await message.reply("Не знаю такого типу коробки. Спробуйте обрати з доступних.", reply_markup=gearbox_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
 
 @add_user_filter
-@filter_handler(start_filter, add_filter=add_filter_region, plural_model="області")
+@back_handler(previous_func=start_filter)
+@filter_handler(add_filter=add_filter_region, plural_model="області")
 async def filter_region(message: types.Message, state: FSMContext, user_filter):
     exists, obj = exists_city(message.text)
     if exists:
@@ -223,30 +232,34 @@ async def filter_region(message: types.Message, state: FSMContext, user_filter):
         await message.reply("Вперше чую про таку область. Спробуйте обрати найближчу до вас з доступних.", reply_markup=country_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
 
 @add_user_filter
-@filter_handler(start_filter)
+@back_handler(previous_func=start_filter)
+@filter_handler()
 async def filter_price(message: types.Message, state: FSMContext, *args):
     await add_number_value_to_filter(message, state, add_filter_price, res_type=int)
         
 @add_user_filter
-@filter_handler(start_filter)
+@back_handler(previous_func=start_filter)
+@filter_handler()
 async def filter_volume(message: types.Message, state: FSMContext, *args):
     await add_number_value_to_filter(message, state, add_filter_engine_volume, res_type=float)
 
 @add_user_filter
-@filter_handler(start_filter)
+@back_handler(previous_func=start_filter)
+@filter_handler()
 async def filter_year(message: types.Message, state: FSMContext, *args):
     await add_number_value_to_filter(message, state, add_filter_year, res_type=int)
 
 @add_user_filter
-@filter_handler(start_filter)
+@back_handler(previous_func=start_filter)
+@filter_handler()
 async def filter_range(message: types.Message, state: FSMContext, *args):
     await add_number_value_to_filter(message, state, add_filter_range, res_type=int)
 
 
 def register_hendlers_general(dp: Dispatcher):
-    dp.register_message_handler(start_command, commands=['start'])
-    dp.register_message_handler(get_contact, content_types=types.ContentType.CONTACT, state=FSMContact.contact)
-    dp.register_message_handler(start_filter, commands=[str(general["filter"])], state=None)
+    dp.register_message_handler(start_command, commands=['start'], state="*")
+    dp.register_message_handler(get_contact, content_types=types.ContentType.CONTACT, state=FSMMenu.contact)
+    dp.register_message_handler(start_filter, Text(equals=str(general["filter"]), ignore_case=True), state=FSMMenu.start)
     dp.register_message_handler(filter_commands_handler, state=FSMFilter.start)
     dp.register_message_handler(filter_producer, state=FSMFilter.producer)
     dp.register_message_handler(filter_model, state=FSMFilter.model)

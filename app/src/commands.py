@@ -5,10 +5,6 @@ class Command:
         self.value = value
 
     @property
-    def get_command(self):
-        return f"/{self.value}"
-
-    @property
     def get_value(self):
         return f"{self.value}"
 
@@ -20,8 +16,8 @@ class Command:
 
 
 special = {
-    "end": Command("скасувати"),
-    "complete": Command("готово"),
+    "end": Command("❌Скасувати"),
+    "complete": Command("✅Готово"),
     "back": Command("⬅️Назад"),
     "all": Command("Усі"),
     "remove_producer": Command("❌Прибрати цю марку"),
@@ -29,35 +25,31 @@ special = {
 }
 
 general = {
-    "start": Command("start"),
-    "help": Command("help"),
-    "new_adv": Command("Створити_оголошення"),
-    "filter": Command("Налаштувати_фільтр"),
+    "new_adv": Command("💵Продати машину"),
+    "filter": Command("🚗Знайти машину"),
 }
 
 filters = {
-    "producer": Command("Обрати_марку_та_модель"),
-    "gearbox": Command("Обрати_коробку"),
-    "region": Command("Обрати_область"),
-    "engine_type": Command("Обрати_тип_палива"),
-    "price": Command("Встановити_ціну"),
-    "year": Command("Встановити_рік"),
-    "engine_volume": Command("Встановити_об'єм_двигуна"),
-    "range": Command("Встановити_пробіг"),
+    "producer": Command("Обрати марку та модель"),
+    "gearbox": Command("Обрати коробку"),
+    "region": Command("Обрати область"),
+    "engine_type": Command("Обрати тип палива"),
+    "price": Command("Встановити ціну"),
+    "year": Command("Встановити рік"),
+    "engine_volume": Command("Встановити об'єм двигуна"),
+    "range": Command("Встановити пробіг"),
 }
 
 admin = {
-    "admin": Command("адмін"),
-    "create_producer": Command("створити_марку"),
-    "create_model": Command("створити_модель"),
-    "create_city": Command("створити_місто"),
-    "create_engine_type": Command("створити_тип_палива"),
-    "create_gearbox": Command("створити_коробку"),
+    "create_producer": Command("Створити марку"),
+    "create_model": Command("Створити модель"),
+    "create_city": Command("Створити місто"),
+    "create_engine_type": Command("Створити тип палива"),
+    "create_gearbox": Command("Створити коробку"),
 }
 
 owner = {
-    "owner": Command("власник"),
-    "create_admin": Command("створити_адміна"),
-    "remove_admin": Command("видалити_адміна"),
-    "show_admins": Command("показати_адмінів"),
+    "create_admin": Command("Створити адміна"),
+    "remove_admin": Command("Видалити адміна"),
+    "show_admins": Command("Показати адмінів"),
 }

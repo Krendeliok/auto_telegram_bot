@@ -55,8 +55,7 @@ def reply_keyboard(resize_keyboard=True, row_width=3):
 
 def add_user_filter():
     def wrapper(func):
-        def inner(keyboard, *args, **kwargs):
-            telegram_id = kwargs.pop("telegram_id", None)
+        def inner(keyboard, telegram_id=None, *args, **kwargs):
             object_filter = None
             if telegram_id is not None:
                 object_filter = (
@@ -66,16 +65,14 @@ def add_user_filter():
                         .filter(Client.telegram_id == telegram_id)
                         .first()
                     )
-            func(keyboard=keyboard, object_filter=object_filter, *args, **kwargs)
+            func(keyboard=keyboard, object_filter=object_filter, telegram_id=telegram_id, *args, **kwargs)
             return keyboard
         return inner
     return wrapper
 
 def add_producer_filter():
     def wrapper(func):
-        def inner(keyboard, *args, **kwargs):
-            telegram_id = kwargs.pop("telegram_id", None)
-            producer_name = kwargs.get("producer_name", None)
+        def inner(keyboard, telegram_id=None, producer_name=None, *args, **kwargs):
             object_filter = None
             if all((telegram_id, producer_name)):
                 object_filter = (
@@ -87,9 +84,16 @@ def add_producer_filter():
                         .filter(and_(Client.telegram_id == telegram_id, Producer.name == producer_name))
                         .first()
                     )
-            func(keyboard=keyboard, object_filter=object_filter, *args, **kwargs)
+            func(keyboard=keyboard, object_filter=object_filter, telegram_id=telegram_id, producer_name=producer_name, *args, **kwargs)
             return keyboard
         return inner
+    return wrapper
+
+def add_back_button(func):
+    def wrapper(keyboard: ReplyKeyboardMarkup, *args, **kwargs):
+        keyboard.add(custom_keyboard_button(str(special["back"])))
+        func(keyboard=keyboard, *args, **kwargs)
+        return keyboard
     return wrapper
 
 def filter_keyboard(col_name = ""):
@@ -98,14 +102,15 @@ def filter_keyboard(col_name = ""):
             is_filter = False
             if kwargs.pop("filter_buttons", False):
                 is_filter = True                
-                keyboard.row(
-                    custom_keyboard_button(str(special["back"])), 
+                keyboard.insert(                    
                     custom_keyboard_button(f"{special['all']}{'✅' if getattr(object_filter, col_name) else ''}")
                     )
                 if "producer_name" in kwargs:
                     keyboard.add(
                         custom_keyboard_button(str(special["remove_producer"]))
                     )
+            if not is_filter:
+                keyboard.insert(custom_keyboard_button(str(special["end"])))
             func(keyboard=keyboard, is_filter=is_filter, object_filter=object_filter, *args, **kwargs)
             return keyboard
         return inner
@@ -132,7 +137,6 @@ def add_objects_to_keyboard(keyboard: ReplyKeyboardMarkup, objects: list, is_fil
 def filter_buttons(keyboard):
     keyboard.row(custom_keyboard_button(str(special["back"])), custom_keyboard_button(str(special["all"])))
 
-
 @reply_keyboard()
 def contact_keyboard(keyboard):
     keyboard.add(contact_button("Поділитись контактом"))
@@ -148,23 +152,34 @@ def commands_keyboard(keyboard, telegram_id=None):
             commands += list(owner.values())
 
     for command in commands:
-        keyboard.insert(custom_keyboard_button(command.get_command))
+        keyboard.insert(custom_keyboard_button(str(command)))
 
 def hide_keyboard():
     return ReplyKeyboardRemove()
 
 @reply_keyboard(row_width=2)
+@add_back_button
 def filter_commands(keyboard):
-    keyboard.row(custom_keyboard_button(str(special["find"])), custom_keyboard_button(str(special["back"])))
+    keyboard.insert(custom_keyboard_button(str(special["find"])))
     for command in filters.values():
-        keyboard.insert(custom_keyboard_button(command.get_command))
+        keyboard.insert(custom_keyboard_button(str(command)))
+
+@reply_keyboard()
+def back_complete_keyboard(keyboard, complete=False, deny=False):
+    keyboard.add(custom_keyboard_button(str(special["back"])))
+    if complete:
+        keyboard.insert(custom_keyboard_button(str(special["complete"])))
+    if deny:
+        keyboard.insert(custom_keyboard_button(str(special["end"])))
+
 # endregion
 
 # region models_keyboards
 @reply_keyboard()
 @add_user_filter()
+@add_back_button
 @filter_keyboard(col_name="all_producers")
-def producers_keyboard(keyboard, is_filter, object_filter):
+def producers_keyboard(keyboard, is_filter, object_filter, **kwargs):
     if not is_filter:
         producers = (
             session
@@ -192,8 +207,9 @@ def producers_keyboard(keyboard, is_filter, object_filter):
 
 @reply_keyboard()
 @add_producer_filter()
+@add_back_button
 @filter_keyboard(col_name="all_models")
-def models_keyboard(keyboard, producer_name, is_filter, object_filter):
+def models_keyboard(keyboard, producer_name, is_filter, object_filter, **kwargs):
     if not is_filter:
         models = (
             session
@@ -227,8 +243,9 @@ def models_keyboard(keyboard, producer_name, is_filter, object_filter):
 
 @reply_keyboard()
 @add_user_filter()
+@add_back_button
 @filter_keyboard(col_name="all_engine_types")
-def engine_keyboard(keyboard, is_filter, object_filter):
+def engine_keyboard(keyboard, is_filter, object_filter, **kwargs):
     if not is_filter:
         engines = (
             session
@@ -253,8 +270,9 @@ def engine_keyboard(keyboard, is_filter, object_filter):
 
 @reply_keyboard()
 @add_user_filter()
+@add_back_button
 @filter_keyboard(col_name="all_gearboxes")
-def gearbox_keyboard(keyboard, is_filter, object_filter):
+def gearbox_keyboard(keyboard, is_filter, object_filter, **kwargs):
     if not is_filter:
         gearboxes = (
             session
@@ -279,8 +297,9 @@ def gearbox_keyboard(keyboard, is_filter, object_filter):
 
 @reply_keyboard()
 @add_user_filter()
+@add_back_button
 @filter_keyboard(col_name="all_regions")
-def country_keyboard(keyboard, is_filter, object_filter):
+def country_keyboard(keyboard, is_filter, object_filter, **kwargs):
     if not is_filter:
         countries = (
             session
@@ -306,6 +325,7 @@ def country_keyboard(keyboard, is_filter, object_filter):
 
 # region owner
 @reply_keyboard()
+@add_back_button
 def clients_keyboard(keyboard, ignore_admins=False):
     clients = select(Client)
     if ignore_admins:
@@ -315,6 +335,7 @@ def clients_keyboard(keyboard, ignore_admins=False):
         keyboard.insert(custom_keyboard_button(client.username))
 
 @reply_keyboard()
+@add_back_button
 def admins_keyboard(keyboard):
     admins = select(Client).where(Client.is_admin == expression.true()).execute().fetchall()
     for admin in admins:

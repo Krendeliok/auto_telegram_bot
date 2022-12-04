@@ -8,10 +8,11 @@ from ..queries import (
     is_admin,
     set_admin,
     remove_admin,
+    get_client_by_username,
 )
 from ..contexts import (
-    FSMCreateAdmin,
-    FSMDeleteAdmin
+    FSMMenu,
+    FSMOwner
 )
 from ..keyboards import (
     clients_keyboard,
@@ -19,53 +20,62 @@ from ..keyboards import (
     commands_keyboard,
 )
 
+from .general import start_command
+
 from ..commands import owner, special
 
 async def owner_start_commands(message: types.Message):
     if is_owner(message.from_user.id):
-        if message.text == owner["owner"].get_command:
-            await message.answer("Всі комманди", reply_markup=commands_keyboard(message.from_user.id))
-        elif message.text == owner["create_admin"].get_command:
-            await FSMCreateAdmin.username.set()
+        if message.text == str(owner["create_admin"]):
+            await FSMOwner.create_admin.set()
             await message.answer("Оберіть юзера якого треба зробити адміном.", reply_markup=clients_keyboard(ignore_admins=True))
-        elif message.text == owner["remove_admin"].get_command:
-            await FSMDeleteAdmin.username.set()
+        elif message.text == str(owner["remove_admin"]):
+            await FSMOwner.delete_admin.set()
             await message.answer("Оберіть юзера якого треба позбавити прав адміна", reply_markup=admins_keyboard())
-        elif message.text == owner["show_admins"].get_command:
+        elif message.text == str(owner["show_admins"]):
+            await FSMOwner.show_admins.set()
             await message.answer("Ось усі адміни", reply_markup=admins_keyboard())
 
-async def cancel_handler(message: types.Message, state: FSMContext):
-    if await state.get_state() is None:
-        return
-    await state.finish()
-    await message.reply("Скасовано!", reply_markup=commands_keyboard(message.from_user.id))
+def back_handler(previous_func, text=None):
+    def wrapper(func):
+        async def inner(message, state, *args, **kwargs):
+            if message.text == str(special["back"]):
+                if text is not None:
+                    message.text = text
+                await previous_func(message=message, state=state)
+                return
+            await func(message=message, state=state)
+        return inner
+    return wrapper
 
 
+@back_handler(previous_func=start_command)
 async def create_admin(message: types.Message, state: FSMContext):
-    exists, model = exists_client(message.from_user.id)
+    exists, model = get_client_by_username(message.text)
     if exists and not is_admin(model.telegram_id):
         set_admin(model.telegram_id)
-        state.finish()
-        await message.reply("Адмін успішно створений!")
+        await FSMMenu.start.set()
+        await message.reply("Адмін успішно створений!", reply_markup=commands_keyboard(message.from_user.id))
     else:
         await message.reply("Я не знаю такого користувача або він вже адмін!")
 
 
-async def remove_admin(message: types.Message, state: FSMContext):
-    exists, model = exists_client(message.from_user.id)
+@back_handler(previous_func=start_command)
+async def delete_admin(message: types.Message, state: FSMContext):
+    exists, model = get_client_by_username(message.text)
     if exists and is_admin(model.telegram_id):
         remove_admin(model.telegram_id)
-        state.finish()
-        await message.reply("Успішно позбавлено прав адміна")
+        await FSMMenu.start.set()
+        await message.reply("Успішно позбавлено прав адміна", reply_markup=commands_keyboard(message.from_user.id))
     else:
         await message.reply("Я не знаю такого користувача або він не адмін!")
 
-
-
+@back_handler(previous_func=start_command)
+async def show_admins(message: types.Message, state: FSMContext):
+    pass
 
 def register_handlers_owner(dp: Dispatcher):
-    dp.register_message_handler(owner_start_commands, commands=[str(i) for i in owner.values()])
-    dp.register_message_handler(cancel_handler, state="*", commands=[str(special["end"])])
-    dp.register_message_handler(cancel_handler, Text(equals=str(special["end"]), ignore_case=True), state="*")
-    dp.register_message_handler(create_admin, state=FSMCreateAdmin.username)
-    dp.register_message_handler(remove_admin, state=FSMDeleteAdmin.username)
+    dp.register_message_handler(owner_start_commands, Text(equals=[str(i) for i in owner.values()], ignore_case=True), state=FSMMenu.start)
+    dp.register_message_handler(create_admin, state=FSMOwner.create_admin)
+    dp.register_message_handler(delete_admin, state=FSMOwner.delete_admin)
+    dp.register_message_handler(show_admins, state=FSMOwner.show_admins)

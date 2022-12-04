@@ -207,7 +207,6 @@ def set_admin(telegram_id):
         .where(Client.telegram_id == telegram_id)
         .values(is_admin = expression.true())
         .execute()
-        .first()
     )
     return obj
 
@@ -217,7 +216,6 @@ def remove_admin(telegram_id):
         .where(Client.telegram_id == telegram_id)
         .values(is_admin = expression.false())
         .execute()
-        .first()
     )
     return obj
 
@@ -346,7 +344,34 @@ def get_advertisements_by_filter(user_filter: Filter):
 
     if user_filter.all_regions == expression.false() and len(user_filter.regions) > 0:
         statements.append(Advertisement.based_country_id.in_((region.region_id for region in user_filter.regions)))
+    
+    if user_filter.min_price != 0:
+        statements.append(Advertisement.price >= user_filter.min_price)
+
+    if user_filter.min_year != 0:
+        statements.append(Advertisement.year >= user_filter.min_year)
+
+    if user_filter.min_range != 0:
+        statements.append(Advertisement.range >= user_filter.min_range)
+
+    if user_filter.min_engine_volume != 0:
+        statements.append(Advertisement.engine_volume >= user_filter.min_engine_volume)
+    
+    if user_filter.max_price != 0:
+        statements.append(Advertisement.price <= user_filter.max_price)
+
+    if user_filter.max_year != 0:
+        statements.append(Advertisement.year <= user_filter.max_year)
+
+    if user_filter.max_range != 0:
+        statements.append(Advertisement.range <= user_filter.max_range)
+    
+    if user_filter.max_engine_volume != 0:
+        statements.append(Advertisement.engine_volume <= user_filter.max_engine_volume)
 
     advertisements = advertisements.where(Advertisement.status == AdvertisementStateEnum.approved.value, *statements).all()
     return advertisements
 
+def get_client_by_username(username):
+    model = select(Client).where(Client.username == username).execute().first()
+    return bool(model), model
