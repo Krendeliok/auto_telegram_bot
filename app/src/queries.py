@@ -101,14 +101,16 @@ def create_gearbox(name: str):
 
 
 def create_client(data: types.Message):
+    last_name = data.from_user.last_name if data.from_user.last_name else ""
+    username = data.from_user.username if data.from_user.username else f"{data.from_user.first_name} {last_name}"
     obj = (
         insert(Client)
         .values(
             telegram_id=data.from_user.id,
-            username=data.from_user.username,
+            username=username,
             phone_number=data.contact.phone_number,
             first_name=data.from_user.first_name,
-            last_name=data.from_user.last_name,
+            last_name=last_name,
             is_vip=expression.false(),
             is_admin=expression.false(),
             is_owner=expression.false()

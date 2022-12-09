@@ -17,7 +17,7 @@ class Client(Base):
     phone_number = Column(String, nullable=False)
     username = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
+    last_name = Column(String)
     is_vip = Column(Boolean, default=expression.false(), server_default=expression.false(), nullable=False)
     is_admin = Column(Boolean, default=expression.false(), server_default=expression.false(), nullable=False)
     is_owner = Column(Boolean, default=expression.false(), server_default=expression.false(), nullable=False)

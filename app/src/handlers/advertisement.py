@@ -24,7 +24,6 @@ from ..keyboards import (
     gearbox_keyboard,
     country_keyboard,
     adverisement_keyboard,
-    hide_keyboard,
     commands_keyboard,
     back_complete_keyboard
 )
@@ -71,7 +70,7 @@ async def set_producer(message: types.Message, state: FSMContext):
         await state.set_state(FSMAdvertisement.model)
         await message.answer("Оберіть модель машини.", reply_markup=models_keyboard(producer_name=message.text))
     else:
-        await message.reply("Це не схоже на марку. Спробуйте обрати з доступних.", reply_markup=producers_keyboard())
+        await message.reply("❌Це не схоже на марку. Спробуйте обрати з доступних.", reply_markup=producers_keyboard())
 
 @back_handler(previous_func=start_advertisement)
 async def set_model(message: types.Message, state: FSMContext):
@@ -84,7 +83,7 @@ async def set_model(message: types.Message, state: FSMContext):
             await message.answer("Напишіть ціну у долларах.", reply_markup=back_complete_keyboard(deny=True))
         else:
             await message.reply(
-                "Не знаю таку модель від вказаного виробника. Спробуйте обрати з доступних.", 
+                "❌Не знаю таку модель від вказаного виробника. Спробуйте обрати з доступних.", 
                 reply_markup=models_keyboard(producer_name=data["producer"])
                 )
 
@@ -92,12 +91,18 @@ async def set_model(message: types.Message, state: FSMContext):
 async def set_price(message: types.Message, state: FSMContext):
     try:
         price = int(message.text)
+        if price > 1_000_000:
+            await message.answer("❌Ціну більшу за 1 000 000 встановити не вийде.", reply_markup=back_complete_keyboard(deny=True))
+            return
+        if price <= 0:
+            await message.answer("❌Ціна повинна бути більше 0.", reply_markup=back_complete_keyboard(deny=True))
+            return
         async with state.proxy() as data:
             data["price"] = price
         await state.set_state(FSMAdvertisement.year)
         await message.answer("Якого року ваша машина?", reply_markup=back_complete_keyboard(deny=True))
     except ValueError:
-        await message.reply("Ціна має бути цілим числом та написана у долларах.")
+        await message.reply("❌Ціна має бути цілим числом та написана у долларах.", reply_markup=back_complete_keyboard(deny=True))
 
 @back_handler(previous_func=set_model, key="model")
 async def set_year(message: types.Message, state: FSMContext):
@@ -110,9 +115,9 @@ async def set_year(message: types.Message, state: FSMContext):
             await state.set_state(FSMAdvertisement.engine_type)
             await message.answer("Оберіть тип палива.", reply_markup=engine_keyboard())
         else:
-            await message.reply(f"Рік може бути у діапазоні від 1970 року до {current_year}.")
+            await message.reply(f"❌Рік може бути у діапазоні від 1970 року до {current_year}.")
     except ValueError:
-        await message.reply("Рік має бути цілим числом. Спробуйте ще раз.")
+        await message.reply("❌Рік має бути цілим числом. Спробуйте ще раз.", reply_markup=back_complete_keyboard(deny=True))
 
 
 @back_handler(previous_func=set_price, key="price")
@@ -125,19 +130,22 @@ async def set_engine_type(message: types.Message, state: FSMContext):
         await state.set_state(FSMAdvertisement.engine_volume)
         await message.answer("Напишіть об'єм двигуна. Наприклад: 2.2 або 3", reply_markup=back_complete_keyboard(deny=True))
     else:
-        await message.reply("Я не пам'ятаю щоб таке паливо використовував автомобіль. Спробуйте обрати з доступних.", reply_markup=engine_keyboard())
+        await message.reply("❌Я не пам'ятаю щоб таке паливо використовував автомобіль. Спробуйте обрати з доступних.", reply_markup=engine_keyboard())
 
 
 @back_handler(previous_func=set_year, key="year")
 async def set_engine_volume(message: types.Message, state: FSMContext):
     try:
-        volume = float(message.text)
+        volume = round(float(message.text), 1)
+        if volume <= 0.0 or volume > 12.0:
+            await message.answer("❌Об'єм повинен бути більше 0 та не більше 12.", reply_markup=back_complete_keyboard(deny=True))
+            return
         async with state.proxy() as data:
             data["engine_volume"] = volume
         await state.set_state(FSMAdvertisement.range)
         await message.answer("Напишіть пробіг авто (тис. км.) від 1 до 999", reply_markup=back_complete_keyboard(deny=True))
     except ValueError:
-        await message.reply("Сталася помилка. Спробуйте вказати об'єм ще раз як у прикладі.")
+        await message.reply("❌Сталася помилка. Спробуйте вказати об'єм ще раз як у прикладі.", reply_markup=back_complete_keyboard(deny=True))
 
 
 @back_handler(previous_func=set_engine_type, key="engine_type")
@@ -152,7 +160,7 @@ async def set_range(message: types.Message, state: FSMContext):
         else:
             raise ValueError()
     except ValueError:
-        await message.reply("Пробіг треба вказувати цілим числом від 1 до 999. Спробуйте ще раз.")
+        await message.reply("❌Пробіг треба вказувати цілим числом від 1 до 999. Спробуйте ще раз.")
 
 
 @back_handler(previous_func=set_engine_volume, key="engine_volume")
@@ -165,7 +173,7 @@ async def set_gearbox(message: types.Message, state: FSMContext):
         await state.set_state(FSMAdvertisement.city)
         await message.answer("Оберіть область знаходження.", reply_markup=country_keyboard())
     else:
-        await message.reply("Не знаю такого типу коробки. Спробуйте обрати з доступних.", reply_markup=gearbox_keyboard())
+        await message.reply("❌Не знаю такого типу коробки. Спробуйте обрати з доступних.", reply_markup=gearbox_keyboard())
 
 
 @back_handler(previous_func=set_range, key="range")
@@ -178,7 +186,7 @@ async def set_city(message: types.Message, state: FSMContext):
         await state.set_state(FSMAdvertisement.description)
         await message.answer("Зробіть опис для машини.", reply_markup=back_complete_keyboard(deny=True))
     else:
-        await message.reply("Вперше чую про таку область. Спробуйте обрати найближчу до вас з доступних.", reply_markup=country_keyboard())
+        await message.reply("❌Вперше чую про таку область. Спробуйте обрати найближчу до вас з доступних.", reply_markup=country_keyboard())
 
 
 @back_handler(previous_func=set_gearbox, key="gearbox_type")
@@ -205,18 +213,18 @@ async def more_images(message: types.Message, state: FSMContext):
             data["image_counter"] += 1
             data["images"].append(message.photo[0].file_id)
         else:
-            await message.answer(f"Фотографій вже забагато, я залишу тільки перші {MAX_IMAGES}", reply_markup=back_complete_keyboard(deny=True, complete=True))
+            await message.answer(f"🟠Фотографій вже забагато, я залишу тільки перші {MAX_IMAGES}", reply_markup=back_complete_keyboard(deny=True, complete=True))
 
 
 @back_handler(previous_func=set_city, key="based_country")
 async def submition_advertisement(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         adv_id = create_advertisement(data)
-    await message.answer("Пост відправлено адміну. Через деякий час вам надішлеться відповідь.", reply_markup=commands_keyboard(message.from_user.id))
+    await message.answer("✅Пост відправлено адміну. Через деякий час вам надішлеться відповідь.", reply_markup=commands_keyboard(message.from_user.id))
     adv = get_advertisement(adv_id)
     await submit_to_admin_for_approval(message, adv)
 
-    await FSMMenu.start.set()
+    await state.finish()
 
 async def submit_to_admin_for_approval(message: types.Message, adv):
     random_admin = get_random_admin()
@@ -238,7 +246,7 @@ async def submit_to_admin_for_approval(message: types.Message, adv):
 
 
 def register_handlers_advertisement(dp: Dispatcher):
-    dp.register_message_handler(start_advertisement, Text(equals=str(general["new_adv"]), ignore_case=True), state=FSMMenu.start)
+    dp.register_message_handler(start_advertisement, Text(equals=str(general["new_adv"]), ignore_case=True), state=None)
     dp.register_message_handler(cancel_handler, state="*", commands=str(special["end"]))
     dp.register_message_handler(cancel_handler, Text(equals=str(special["end"]), ignore_case=True), state="*")
     dp.register_message_handler(set_producer, state=FSMAdvertisement.producer)

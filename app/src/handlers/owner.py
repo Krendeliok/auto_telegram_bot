@@ -4,14 +4,12 @@ from aiogram.dispatcher import FSMContext
 
 from ..queries import (
     is_owner,
-    exists_client,
     is_admin,
     set_admin,
     remove_admin,
     get_client_by_username,
 )
 from ..contexts import (
-    FSMMenu,
     FSMOwner
 )
 from ..keyboards import (
@@ -54,10 +52,10 @@ async def create_admin(message: types.Message, state: FSMContext):
     exists, model = get_client_by_username(message.text)
     if exists and not is_admin(model.telegram_id):
         set_admin(model.telegram_id)
-        await FSMMenu.start.set()
+        await state.finish()
         await message.reply("Адмін успішно створений!", reply_markup=commands_keyboard(message.from_user.id))
     else:
-        await message.reply("Я не знаю такого користувача або він вже адмін!")
+        await message.reply("❌Я не знаю такого користувача або він вже адмін!")
 
 
 @back_handler(previous_func=start_command)
@@ -65,17 +63,18 @@ async def delete_admin(message: types.Message, state: FSMContext):
     exists, model = get_client_by_username(message.text)
     if exists and is_admin(model.telegram_id):
         remove_admin(model.telegram_id)
-        await FSMMenu.start.set()
+        await state.finish()
         await message.reply("Успішно позбавлено прав адміна", reply_markup=commands_keyboard(message.from_user.id))
     else:
-        await message.reply("Я не знаю такого користувача або він не адмін!")
+        await message.reply("❌Я не знаю такого користувача або він не адмін!")
 
 @back_handler(previous_func=start_command)
 async def show_admins(message: types.Message, state: FSMContext):
+    # TODO document why this method is empty
     pass
 
 def register_handlers_owner(dp: Dispatcher):
-    dp.register_message_handler(owner_start_commands, Text(equals=[str(i) for i in owner.values()], ignore_case=True), state=FSMMenu.start)
+    dp.register_message_handler(owner_start_commands, Text(equals=[str(i) for i in owner.values()], ignore_case=True), state=None)
     dp.register_message_handler(create_admin, state=FSMOwner.create_admin)
     dp.register_message_handler(delete_admin, state=FSMOwner.delete_admin)
     dp.register_message_handler(show_admins, state=FSMOwner.show_admins)

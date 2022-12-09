@@ -99,6 +99,7 @@ def add_back_button(func):
 def filter_keyboard(col_name = ""):
     def wrapper(func):
         def inner(keyboard, object_filter, *args, **kwargs):
+            no_end = kwargs.get("no_end")
             is_filter = False
             if kwargs.pop("filter_buttons", False):
                 is_filter = True                
@@ -109,7 +110,7 @@ def filter_keyboard(col_name = ""):
                     keyboard.add(
                         custom_keyboard_button(str(special["remove_producer"]))
                     )
-            if not is_filter:
+            if not is_filter and not no_end:
                 keyboard.insert(custom_keyboard_button(str(special["end"])))
             func(keyboard=keyboard, is_filter=is_filter, object_filter=object_filter, *args, **kwargs)
             return keyboard

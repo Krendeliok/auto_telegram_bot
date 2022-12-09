@@ -2,7 +2,6 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import MediaGroup, InputMediaPhoto
-from sqlalchemy.sql import expression
 
 from ..keyboards import (
     contact_keyboard, 
@@ -45,7 +44,7 @@ async def start_command(message: types.Message, state: FSMContext, **kwargs):
     exists, model = exists_client(message.from_user.id)
     if exists:
         await message.answer("Вітаю!\nЩо хочете зробити?", reply_markup=commands_keyboard(message.from_user.id))
-        await FSMMenu.start.set()
+        await state.finish()
     else:
         await message.answer("Для початку треба вас ідентифікувати.\nВідправте будь ласка ваш контакт.", reply_markup=contact_keyboard())
         await FSMMenu.contact.set()
@@ -259,7 +258,7 @@ async def filter_range(message: types.Message, state: FSMContext, *args):
 def register_hendlers_general(dp: Dispatcher):
     dp.register_message_handler(start_command, commands=['start'], state="*")
     dp.register_message_handler(get_contact, content_types=types.ContentType.CONTACT, state=FSMMenu.contact)
-    dp.register_message_handler(start_filter, Text(equals=str(general["filter"]), ignore_case=True), state=FSMMenu.start)
+    dp.register_message_handler(start_filter, Text(equals=str(general["filter"]), ignore_case=True), state=None)
     dp.register_message_handler(filter_commands_handler, state=FSMFilter.start)
     dp.register_message_handler(filter_producer, state=FSMFilter.producer)
     dp.register_message_handler(filter_model, state=FSMFilter.model)

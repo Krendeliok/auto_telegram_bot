@@ -43,7 +43,7 @@ filters = {
 admin = {
     "create_producer": Command("Створити марку"),
     "create_model": Command("Створити модель"),
-    "create_city": Command("Створити місто"),
+    "create_city": Command("Створити область"),
     "create_engine_type": Command("Створити тип палива"),
     "create_gearbox": Command("Створити коробку"),
 }

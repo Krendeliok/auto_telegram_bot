@@ -2,7 +2,6 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
 class FSMMenu(StatesGroup):
-    start = State()
     contact = State()
 
 class FSMFilter(StatesGroup):
