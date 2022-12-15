@@ -7,6 +7,7 @@ from .buttons import (
     approve,
     reject, 
     custom_keyboard_button,
+    custom_inline_button,
     contact_button,
 )
 
@@ -15,7 +16,7 @@ from sqlalchemy import (
 )
 
 from .commands import general, admin, owner, filters, special
-from .queries import exists_client
+from .queries import exists_client, client_advertisements
 from .session import session
 
 
@@ -35,10 +36,10 @@ from models import (
 )
 
 #region base
-def inline_keyboard():
+def inline_keyboard(row_width=3):
     def wrapper(func):
         def inner(*args, **kwargs):
-            keyboard = InlineKeyboardMarkup()
+            keyboard = InlineKeyboardMarkup(row_width=row_width)
             func(keyboard, *args, **kwargs)
             return keyboard
         return inner
@@ -92,7 +93,14 @@ def add_producer_filter():
 def add_back_button(func):
     def wrapper(keyboard: ReplyKeyboardMarkup, *args, **kwargs):
         keyboard.add(custom_keyboard_button(str(special["back"])))
-        func(keyboard=keyboard, *args, **kwargs)
+        func(keyboard, *args, **kwargs)
+        return keyboard
+    return wrapper
+
+def add_inline_back_button(func):
+    def wrapper(keyboard: InlineKeyboardMarkup, *args, **kwargs):
+        keyboard.add(custom_inline_button(str(special["back"]), "back"))
+        func(keyboard, *args, **kwargs)
         return keyboard
     return wrapper
 
@@ -322,6 +330,20 @@ def country_keyboard(keyboard, is_filter, object_filter, **kwargs):
         )
     countries = countries.all()
     add_objects_to_keyboard(keyboard, countries, is_filter)
+
+@inline_keyboard(row_width=2)
+@add_inline_back_button
+def client_advertisements_keyboard(keyboard, telegram_id):
+    advs = client_advertisements(telegram_id)
+    for (id, year, model, producer) in advs:
+        keyboard.insert(custom_inline_button(f"{producer} {model} {year}", f"adv_id:{id}"))
+
+@inline_keyboard()
+@add_inline_back_button
+def adv_action_keyboard(keyboard):
+    keyboard.insert(custom_inline_button(str(special["sold"]), "sold"))
+    keyboard.insert(custom_inline_button(str(special["remove"]), "remove"))
+
 # endregion
 
 # region owner

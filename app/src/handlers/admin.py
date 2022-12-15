@@ -120,12 +120,12 @@ async def admin_create_model_name(message: types.Message, state: FSMContext):
 async def admin_create_model(message: types.Message, state: FSMContext):
     exists, obj = exists_producer(message.text)
     if exists:
-        await state.finish()
         async with state.proxy() as data:
             create_model(data["name"], obj.id)
         await message.answer("Модель створена.", reply_markup=commands_keyboard(message.from_user.id))
+        await state.finish()
     else:
-        await message.reply("❌Це не схоже на марку. Спробуйте обрати з доступних.", reply_markup=producers_keyboard())
+        await message.reply("❌Це не схоже на марку. Спробуйте обрати з доступних.", reply_markup=producers_keyboard(no_end=True))
     
 
 def register_handlers_admin(dp: Dispatcher):

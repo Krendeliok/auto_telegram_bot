@@ -1,0 +1,29 @@
+1. create .env file
+2. fill alembic.ini 
+3. sudo docker-compose up --build
+4. sudo docker exec -it {bot_container} bash
+5. alembic revision --autogenerate -m "init"
+6. add enum to migration
+
+- 
+from sqlalchemy.dialects import postgresql
+import enum
+
+class AdvertisementStateEnum(enum.Enum):
+    approved = "approved"
+    rejected = "rejected"
+    draft = "draft"
+    sold = "sold"
+
+def upgrade():
+    advertisementstateenum = postgresql.ENUM(AdvertisementStateEnum, name='advertisementstateenum')
+    advertisementstateenum.create(op.get_bind(), checkfirst=True)
+    op.add_column('adv', sa.Column('status', advertisementstateenum, server_default='draft', nullable=False))
+
+def downgrade():
+    advertisementstateenum = postgresql.ENUM(AdvertisementStateEnum, name='advertisementstateenum')
+    advertisementstateenum.drop(op.get_bind())
+-
+
+7. alembic upgrade head
+8. python fill_db.py

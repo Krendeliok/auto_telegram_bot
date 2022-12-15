@@ -19,6 +19,7 @@ from sqlalchemy import (
     select,
     insert,
     update,
+    delete,
     and_
 )
 from sqlalchemy.sql import expression
@@ -54,6 +55,16 @@ def exists_city(sity_name: str) -> tuple:
 def exists_client(telegram_id: int) -> tuple:
     model = select(Client).where(Client.telegram_id == telegram_id).execute().first()
     return bool(model), model
+
+def exists_adv(adv_id: int, telegram_id: int):
+    adv = (
+        session
+        .query(Advertisement)
+        .join(Client, Advertisement.user_id == Client.id)
+        .filter(Client.telegram_id == telegram_id, Advertisement.id == adv_id)
+        .first()
+    )
+    return bool(adv), adv
 
 
 def create_producer(name: str):
@@ -165,6 +176,24 @@ def update_adv_status(adv_id, approved: bool):
         ).execute()
     )
     return adv
+
+def sell_adv(adv_id):
+    adv = (
+        update(Advertisement)
+        .where(Advertisement.id == adv_id)
+        .values(
+            status=AdvertisementStateEnum.sold
+        ).execute()
+    )
+    return adv
+
+def delete_adv(adv_id):
+    (
+        delete(Advertisement)
+        .where(Advertisement.id == adv_id)
+        .execute()
+    )
+    return
 
 def pin_admin(adv_id, admin_id):
     obj = (
@@ -377,3 +406,15 @@ def get_advertisements_by_filter(user_filter: Filter):
 def get_client_by_username(username):
     model = select(Client).where(Client.username == username).execute().first()
     return bool(model), model
+
+def client_advertisements(telegram_id):
+    advs = (
+        session
+        .query(Advertisement.id, Advertisement.year, CarModel.name, Producer.name)
+        .join(Client, Advertisement.user_id == Client.id)
+        .join(CarModel)
+        .join(Producer)
+        .filter(and_(Client.telegram_id == telegram_id, Advertisement.status == AdvertisementStateEnum.approved))
+        .all()
+        )
+    return advs 

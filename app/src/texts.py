@@ -5,12 +5,14 @@ ADV_TEXT = """
 📌Об'є̈м двигуна: {engine_volume} 
 ⛽️Вид палива:  {engine_type}
 ⚙️Коробка: {gearbox}
-📌Пробіг, тис км: {range}
+📌Пробіг: {range} тис. км.
 🏘Область знаходження авто: {city}
 👉Контактний номер ☎️: {phone_number}
 📄Опис авто: {description}
 
-📩 Надіслати оголошення безкоштовно: @AutoYarmarokUaSend_bot 📩"""
+⚡️<a href="https://t.me/AutoYarmarokUkraina">АвтоЯрмарок</a>
+📩<a href="https://t.me/AutoYarmarokUaSend_bot">Надіслати оголошення</a>
+"""
 
 RULES = """
 ‼️Правила 🫵 розміщення  🚗 об’яви – 🇺🇦

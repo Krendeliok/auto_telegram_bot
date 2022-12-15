@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 
 storage = MemoryStorage()
 
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=API_TOKEN, parse_mode='html')
 dp = create_dispatcher(bot, storage=storage)
 
 engine = create_engine(DATABASE_URI)

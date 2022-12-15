@@ -20,6 +20,7 @@ class AdvertisementStateEnum(enum.Enum):
     approved = "approved"
     rejected = "rejected"
     draft = "draft"
+    sold = "sold"
 
 
 class Advertisement(Base):

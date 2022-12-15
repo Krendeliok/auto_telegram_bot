@@ -22,11 +22,14 @@ special = {
     "all": Command("Усі"),
     "remove_producer": Command("❌Прибрати цю марку"),
     "find": Command("🔍Знайти"),
+    "sold": Command("💵Продано"),
+    "remove": Command("❌Видалити")
 }
 
 general = {
     "new_adv": Command("💵Продати машину"),
     "filter": Command("🚗Знайти машину"),
+    "my_advs": Command("🧾Мої оголошення")
 }
 
 filters = {

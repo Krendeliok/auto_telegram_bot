@@ -13,6 +13,8 @@ from ..keyboards import (
     gearbox_keyboard,
     models_keyboard,
     filter_buttons,
+    client_advertisements_keyboard,
+    adv_action_keyboard,
 )
 from ..queries import (
     exists_producer,
@@ -20,6 +22,7 @@ from ..queries import (
     exists_engine_type,
     exists_gearbox,
     exists_city,
+    exists_adv,
     create_client, 
     exists_client,
     get_user_filter,
@@ -33,7 +36,9 @@ from ..queries import (
     add_filter_range,
     add_filter_year,
     remove_producer_from_filter,
-    get_advertisements_by_filter
+    get_advertisements_by_filter,
+    sell_adv,
+    delete_adv,
 )
 
 from ..contexts import FSMMenu, FSMFilter
@@ -41,9 +46,9 @@ from ..commands import general, filters, special
 
 
 async def start_command(message: types.Message, state: FSMContext, **kwargs):
-    exists, model = exists_client(message.from_user.id)
+    exists, model = exists_client(message.chat.id)
     if exists:
-        await message.answer("Вітаю!\nЩо хочете зробити?", reply_markup=commands_keyboard(message.from_user.id))
+        await message.answer("Вітаю!\nЩо хочете зробити?", reply_markup=commands_keyboard(message.chat.id))
         await state.finish()
     else:
         await message.answer("Для початку треба вас ідентифікувати.\nВідправте будь ласка ваш контакт.", reply_markup=contact_keyboard())
@@ -55,10 +60,13 @@ async def get_contact(message: types.Message, state: FSMContext):
     await message.answer("Дякую, ваші дані занесені у базу даних.\nМожете продовжувати роботу.", reply_markup=commands_keyboard())
     await state.finish()
 
-
 async def start_filter(message: types.Message, state: FSMContext, *args, **kwargs):
     await message.answer("Оберіть як треба фільтрувати.", reply_markup=filter_commands())
     await FSMFilter.start.set()
+
+async def my_advertisements(message: types.Message, state: FSMContext, **kwargs):
+    await message.answer("Оберіть ваше оголошення.", reply_markup=client_advertisements_keyboard(message.chat.id))
+    await FSMMenu.choose_adv.set()
 
 def back_handler(previous_func, text=None):
     def wrapper(func):
@@ -71,6 +79,45 @@ def back_handler(previous_func, text=None):
             await func(message=message, state=state, user_filter=user_filter, previous_func=previous_func, text=text, *args, **kwargs)
         return inner
     return wrapper
+
+def inline_back_handler(previous_func, text=None):
+    def wrapper(func):
+        async def inner(callback_query: types.CallbackQuery, state, *args, **kwargs):
+            if callback_query.data == "back":
+                await previous_func(callback_query.message, state, *args, **kwargs)
+                await callback_query.message.delete()
+                return
+            await func(callback_query, state, *args, **kwargs)
+        return inner
+    return wrapper
+
+@inline_back_handler(previous_func=start_command)
+async def advertisements_choose_action(callback_query: types.CallbackQuery, state: FSMContext, **kwargs):
+    adv_id = int(callback_query.data.split(":")[1])
+    exists, _ = exists_adv(adv_id, callback_query.from_user.id)
+    if exists:
+        async with state.proxy() as data:
+            data["adv_id"] = adv_id
+        await callback_query.message.edit_text("Оберіть що хочете зробити.", reply_markup=adv_action_keyboard())
+        await FSMMenu.adv_action.set()
+    else:
+        await callback_query.message.answer("Такого оголошення ви не створювали.", reply_markup=client_advertisements_keyboard(callback_query.from_user.id))
+
+@inline_back_handler(previous_func=my_advertisements)
+async def advertisement_action_handler(callback_query: types.CallbackQuery, state: FSMContext, **kwargs):
+    async with state.proxy() as data:
+        adv_id = data["adv_id"]
+    if callback_query.data == "sold":
+        sell_adv(adv_id)
+        await callback_query.message.answer("Вітаю з продажем авто!")
+        await callback_query.message.edit_text("Оберіть оголошення.", reply_markup=client_advertisements_keyboard(callback_query.from_user.id))
+        await FSMMenu.choose_adv.set()
+    elif callback_query.data == "remove":
+        delete_adv(adv_id)
+        await callback_query.message.answer("Оголошення видалено успішно.")
+        await callback_query.message.edit_text("Оберіть оголошення.", reply_markup=client_advertisements_keyboard(callback_query.from_user.id))
+        await FSMMenu.choose_adv.set()
+
 
 @back_handler(previous_func=start_command)
 async def filter_commands_handler(message: types.Message, state: FSMContext, *args, **kwargs):
@@ -258,6 +305,9 @@ async def filter_range(message: types.Message, state: FSMContext, *args):
 def register_hendlers_general(dp: Dispatcher):
     dp.register_message_handler(start_command, commands=['start'], state="*")
     dp.register_message_handler(get_contact, content_types=types.ContentType.CONTACT, state=FSMMenu.contact)
+    dp.register_message_handler(my_advertisements, Text(equals=str(general["my_advs"])))
+    dp.register_callback_query_handler(advertisements_choose_action, state=FSMMenu.choose_adv)
+    dp.register_callback_query_handler(advertisement_action_handler, state=FSMMenu.adv_action)
     dp.register_message_handler(start_filter, Text(equals=str(general["filter"]), ignore_case=True), state=None)
     dp.register_message_handler(filter_commands_handler, state=FSMFilter.start)
     dp.register_message_handler(filter_producer, state=FSMFilter.producer)
