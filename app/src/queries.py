@@ -430,7 +430,7 @@ def is_spam(data, telegram_id):
             Advertisement.year == data["year"],
             Advertisement.engine_type_id == data["engine_type_id"],
             Advertisement.gearbox_type_id == data["gearbox_type_id"],
-            Advertisement.status == AdvertisementStateEnum.approved
+            or_(Advertisement.status == AdvertisementStateEnum.approved, Advertisement.status == AdvertisementStateEnum.draft)
         ).first()
     )
     return bool(adv)
