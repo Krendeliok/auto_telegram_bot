@@ -15,6 +15,7 @@ from ..queries import (
     get_random_admin,
     pin_admin,
     get_advertisement,
+    is_spam,
 )
 
 from ..keyboards import (
@@ -170,6 +171,11 @@ async def set_gearbox(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data["gearbox_type_id"] = obj.id
             data["gearbox_type"] = message.text
+
+            if is_spam(data, message.from_user.id):
+                await message.answer("⭕️Таке оголошення у вас вже є, ви не зможете повторно його відправити", reply_markup=back_complete_keyboard(deny=True))
+                return
+
         await state.set_state(FSMAdvertisement.city)
         await message.answer("Оберіть область знаходження.", reply_markup=country_keyboard())
     else:

@@ -418,3 +418,19 @@ def client_advertisements(telegram_id):
         .all()
         )
     return advs 
+
+def is_spam(data, telegram_id):
+    adv = (
+        session
+        .query(Advertisement)
+        .join(Client, Client.id == Advertisement.user_id)
+        .filter(
+            Client.telegram_id == telegram_id,
+            Advertisement.model_id == data["model_id"],
+            Advertisement.year == data["year"],
+            Advertisement.engine_type_id == data["engine_type_id"],
+            Advertisement.gearbox_type_id == data["gearbox_type_id"],
+            Advertisement.status == AdvertisementStateEnum.approved
+        ).first()
+    )
+    return bool(adv)
