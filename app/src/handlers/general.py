@@ -15,6 +15,7 @@ from ..keyboards import (
     filter_buttons,
     client_advertisements_keyboard,
     adv_action_keyboard,
+    hide_keyboard,
 )
 from ..queries import (
     exists_producer,
@@ -48,10 +49,10 @@ from ..commands import general, filters, special
 async def start_command(message: types.Message, state: FSMContext, **kwargs):
     exists, model = exists_client(message.chat.id)
     if exists:
-        await message.answer("Вітаю!\nЩо хочете зробити?", reply_markup=commands_keyboard(message.chat.id))
+        await message.answer("Що хочете зробити?", reply_markup=commands_keyboard(message.chat.id))
         await state.finish()
     else:
-        await message.answer("Для початку треба вас ідентифікувати.\nВідправте будь ласка ваш контакт.", reply_markup=contact_keyboard())
+        await message.answer("Вітаю!\nДля початку треба вас ідентифікувати.\nВідправте будь ласка ваш контакт.", reply_markup=contact_keyboard())
         await FSMMenu.contact.set()
 
 
@@ -65,6 +66,8 @@ async def start_filter(message: types.Message, state: FSMContext, *args, **kwarg
     await FSMFilter.start.set()
 
 async def my_advertisements(message: types.Message, state: FSMContext, **kwargs):
+    mes = await message.answer("Ось усі ваші оголошення", reply_markup=hide_keyboard())
+    await mes.delete()
     await message.answer("Оберіть ваше оголошення.", reply_markup=client_advertisements_keyboard(message.chat.id))
     await FSMMenu.choose_adv.set()
 

@@ -181,6 +181,11 @@ def back_complete_keyboard(keyboard, complete=False, deny=False):
     if deny:
         keyboard.insert(custom_keyboard_button(str(special["end"])))
 
+@reply_keyboard()
+@add_back_button
+def phone_numbers_keyboard(keyboard):
+    keyboard.row(custom_keyboard_button(special["private_phone"]), custom_keyboard_button(special["comercial_phone"]))
+
 # endregion
 
 # region models_keyboards

@@ -26,6 +26,7 @@ from sqlalchemy.sql import expression
 from sqlalchemy.sql.expression import or_, and_
 from aiogram import types
 from datetime import date
+from dateutil.relativedelta import relativedelta
 
 from .session import session
 
@@ -131,6 +132,7 @@ def create_client(data: types.Message):
 
 def create_advertisement(data: dict):
     user_id, *_ = select(Client.id).where(Client.telegram_id == data["user_id"]).execute().first()
+    data["phone"] = data["phone"] if str(data["phone"]).startswith("+") else f"+{data['phone']}"
     adv = (
         insert(Advertisement)
         .values(
@@ -143,6 +145,7 @@ def create_advertisement(data: dict):
             range=data["range"],
             gearbox_type_id=data["gearbox_type_id"],
             based_country_id=data["based_country_id"],
+            phone_number=data["phone"],
             description=data["description"],
             next_published_date=date.today()
         )
@@ -430,7 +433,29 @@ def is_spam(data, telegram_id):
             Advertisement.year == data["year"],
             Advertisement.engine_type_id == data["engine_type_id"],
             Advertisement.gearbox_type_id == data["gearbox_type_id"],
-            or_(Advertisement.status == AdvertisementStateEnum.approved, Advertisement.status == AdvertisementStateEnum.draft)
+            Advertisement.status.in_((AdvertisementStateEnum.approved, AdvertisementStateEnum.draft))
         ).first()
     )
     return bool(adv)
+
+def get_user_phone(telegram_id):
+    phone, *_ = (
+        session
+        .query(Client.phone_number)
+        .where(Client.telegram_id == telegram_id)
+        .first()
+    )
+    return phone
+
+def can_create_adv(telegram_id):
+    advs = (
+        session
+        .query(Advertisement)
+        .join(Client, Client.id == Advertisement.user_id)
+        .where(
+            Client.telegram_id == telegram_id,
+            Advertisement.status.in_([AdvertisementStateEnum.draft, AdvertisementStateEnum.approved]),
+            Advertisement.last_published_date >= date.today() + relativedelta(months=-1),
+        )
+    )
+    return not advs

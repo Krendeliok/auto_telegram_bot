@@ -16,6 +16,10 @@ from ..queries import (
     pin_admin,
     get_advertisement,
     is_spam,
+    is_admin,
+    is_owner,
+    get_user_phone,
+    can_create_adv,
 )
 
 from ..keyboards import (
@@ -26,7 +30,8 @@ from ..keyboards import (
     country_keyboard,
     adverisement_keyboard,
     commands_keyboard,
-    back_complete_keyboard
+    back_complete_keyboard,
+    phone_numbers_keyboard,
 )
 from datetime import date
 from ..texts import RULES
@@ -38,9 +43,16 @@ from .general import start_command
 
 
 async def start_advertisement(message: types.Message, state: FSMContext):
-    await FSMAdvertisement.producer.set()
-    await message.answer(RULES)
-    await message.answer("Оберіть марку машини", reply_markup=producers_keyboard())
+    if (
+        is_admin(telegram_id=message.from_user.id) 
+        or is_owner(telegram_id=message.from_user.id) 
+        or can_create_adv(telegram_id=message.from_user.id)
+    ):
+        await FSMAdvertisement.producer.set()
+        await message.answer(RULES)
+        await message.answer("Оберіть марку машини", reply_markup=producers_keyboard())
+    else:
+        await message.answer("Ліміт оголошень на місяць вичерпано.\nВи можети придбати більший.", reply_markup=commands_keyboard(message.chat.id))
 
 async def cancel_handler(message: types.Message, state: FSMContext):
     if await state.get_state() is None:
@@ -48,10 +60,15 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     await state.finish()
     await message.reply("Скасовано!", reply_markup=commands_keyboard(message.from_user.id))
 
-def back_handler(previous_func, key=None):
+def back_handler(previous_func, key=None, alt_func=None, alt_key=None):
     def wrapper(func):
         async def inner(message, state, *args, **kwargs):
             if message.text == str(special["back"]):
+                if alt_func and any([is_admin(message.from_user.id), is_owner(message.from_user.id)]):
+                    async with state.proxy() as data:
+                        message.text = data[alt_key]
+                    await alt_func(message, state=state)
+                    return
                 if key is not None:
                     async with state.proxy() as data:
                         message.text = data[key]
@@ -168,6 +185,7 @@ async def set_range(message: types.Message, state: FSMContext):
 async def set_gearbox(message: types.Message, state: FSMContext):
     exists, obj = exists_gearbox(message.text)
     if exists:
+        await state.set_state(FSMAdvertisement.city)
         async with state.proxy() as data:
             data["gearbox_type_id"] = obj.id
             data["gearbox_type"] = message.text
@@ -176,7 +194,6 @@ async def set_gearbox(message: types.Message, state: FSMContext):
                 await message.answer("⭕️Таке оголошення у вас вже є, ви не зможете повторно його відправити", reply_markup=back_complete_keyboard(deny=True))
                 return
 
-        await state.set_state(FSMAdvertisement.city)
         await message.answer("Оберіть область знаходження.", reply_markup=country_keyboard())
     else:
         await message.reply("❌Не знаю такого типу коробки. Спробуйте обрати з доступних.", reply_markup=gearbox_keyboard())
@@ -199,11 +216,29 @@ async def set_city(message: types.Message, state: FSMContext):
 async def set_description(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data["description"] = message.text
+    
+    if is_admin(message.from_user.id) or is_owner(message.from_user.id):
+        await state.set_state(FSMAdvertisement.phone_numbers)
+        await message.answer("Які номера телефону зазначити в оголошенні?", reply_markup=phone_numbers_keyboard())
+    else:
+        await state.set_state(FSMAdvertisement.images)
+        await message.answer(f"Відправте до {MAX_IMAGES} фото.\nПісля завершення натисніть {special['complete']}", reply_markup=back_complete_keyboard(deny=True, complete=True))
+
+@back_handler(previous_func=set_city, key="based_country")
+async def set_phone_numbers(message: types.Message, state: FSMContext):
+    if message.text == str(special["private_phone"]):
+        phone = get_user_phone(message.from_user.id)
+    elif message.text == str(special["comercial_phone"]):
+        phone = "+380506200777 / +380976200777"
+    
+    async with state.proxy() as data:
+        data["phone"] = phone
+    
     await state.set_state(FSMAdvertisement.images)
     await message.answer(f"Відправте до {MAX_IMAGES} фото.\nПісля завершення натисніть {special['complete']}", reply_markup=back_complete_keyboard(deny=True, complete=True))
 
 
-@back_handler(previous_func=set_city, key="based_country")
+@back_handler(previous_func=set_city, key="based_country", alt_func=set_description, alt_key="description")
 async def set_images(message: types.Message, state: FSMContext):
     if message.photo:
         async with state.proxy() as data:
@@ -212,7 +247,7 @@ async def set_images(message: types.Message, state: FSMContext):
         await state.set_state(FSMAdvertisement.more_images)
 
 
-@back_handler(previous_func=set_city, key="based_country")
+@back_handler(previous_func=set_city, key="based_country", alt_func=set_description, alt_key="description")
 async def more_images(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         if data["image_counter"] < int(MAX_IMAGES):
@@ -222,7 +257,7 @@ async def more_images(message: types.Message, state: FSMContext):
             await message.answer(f"🟠Фотографій вже забагато, я залишу тільки перші {MAX_IMAGES}", reply_markup=back_complete_keyboard(deny=True, complete=True))
 
 
-@back_handler(previous_func=set_city, key="based_country")
+@back_handler(previous_func=set_city, key="based_country", alt_func=set_description, alt_key="description")
 async def submition_advertisement(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         adv_id = create_advertisement(data)
@@ -265,6 +300,7 @@ def register_handlers_advertisement(dp: Dispatcher):
     dp.register_message_handler(set_gearbox, state=FSMAdvertisement.gearbox)
     dp.register_message_handler(set_city, state=FSMAdvertisement.city)
     dp.register_message_handler(set_description, state=FSMAdvertisement.description)
+    dp.register_message_handler(set_phone_numbers, state=FSMAdvertisement.phone_numbers)
     dp.register_message_handler(set_images, content_types=["photo", "text"], state=FSMAdvertisement.images)
     dp.register_message_handler(submition_advertisement, Text(equals=str(special["complete"]), ignore_case=True), state=FSMAdvertisement.more_images)
     dp.register_message_handler(more_images, content_types=["photo"], state=FSMAdvertisement.more_images)

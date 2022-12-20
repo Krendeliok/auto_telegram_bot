@@ -2,6 +2,7 @@ from sqlalchemy import (
     Column,
     Integer,
     ForeignKey,
+    String,
     Float,
     Text,
     Enum,
@@ -35,6 +36,7 @@ class Advertisement(Base):
     range = Column(Integer, nullable=False)
     gearbox_type_id = Column(Integer, ForeignKey("gearbox.id", ondelete="SET NULL"))
     based_country_id = Column(Integer, ForeignKey("country.id", ondelete="SET NULL"))
+    phone_number = Column(String)
     description = Column(Text, nullable=False)
     status = Column(
         Enum(AdvertisementStateEnum, values_callable=lambda obj: [e.value for e in obj]), 
@@ -57,7 +59,8 @@ class Advertisement(Base):
         return ADV_TEXT.format(
             producer=self.model.producer.name, model=self.model.name, price=self.price, year=self.year, engine_volume=self.engine_volume, 
             engine_type=self.engine.name, gearbox=self.gearbox.name,
-            range=self.range, city=self.country.name, phone_number=self.client.phone_number, description=self.description
+            range=self.range, city=self.country.name, 
+            phone_number=self.phone_number if self.phone_number else self.client.phone_number, description=self.description
         )
 
     @property

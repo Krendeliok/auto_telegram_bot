@@ -23,7 +23,9 @@ special = {
     "remove_producer": Command("❌Прибрати цю марку"),
     "find": Command("🔍Знайти"),
     "sold": Command("💵Продано"),
-    "remove": Command("❌Видалити")
+    "remove": Command("❌Видалити"),
+    "private_phone": Command("Особитий"),
+    "comercial_phone": Command("Комерційний"),
 }
 
 general = {

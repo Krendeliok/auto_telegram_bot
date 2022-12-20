@@ -29,6 +29,7 @@ class FSMAdvertisement(StatesGroup):
     gearbox = State()
     city = State()
     description = State()
+    phone_numbers = State()
     images = State()
     more_images = State()
 
