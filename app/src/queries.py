@@ -131,12 +131,13 @@ def create_client(data: types.Message):
     return obj
 
 def create_advertisement(data: dict):
-    user_id, *_ = select(Client.id).where(Client.telegram_id == data["user_id"]).execute().first()
+    user, *_ = select(Client).where(Client.telegram_id == data["user_id"]).execute().first()
+    data["phone"] = data.get("phone", user.phone_number)
     data["phone"] = data["phone"] if str(data["phone"]).startswith("+") else f"+{data['phone']}"
     adv = (
         insert(Advertisement)
         .values(
-            user_id=user_id,
+            user_id=user.id,
             model_id=data["model_id"],
             price=data["price"],
             year=data["year"],
@@ -456,6 +457,6 @@ def can_create_adv(telegram_id):
             Client.telegram_id == telegram_id,
             Advertisement.status.in_([AdvertisementStateEnum.draft, AdvertisementStateEnum.approved]),
             Advertisement.last_published_date >= date.today() + relativedelta(months=-1),
-        )
+        ).all()
     )
     return not advs

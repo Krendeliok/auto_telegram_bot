@@ -71,7 +71,8 @@ class Advertisement(Base):
     def __repr__(self):
         return f"Advertisement(id={self.id!r}, " \
                f"model={self.model.id!r}, " \
-               f"client={self.client.username!r}"
+               f"client={self.client.username!r}, "\
+               f"status={self.status})"
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
