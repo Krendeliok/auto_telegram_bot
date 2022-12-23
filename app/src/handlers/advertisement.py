@@ -269,21 +269,22 @@ async def submition_advertisement(message: types.Message, state: FSMContext):
 
 async def submit_to_admin_for_approval(message: types.Message, adv):
     random_admin = get_random_admin()
-    images = adv.images
-    media_group = MediaGroup()
-    media_group.attach(InputMediaPhoto(images[0].source, caption=adv.get_sending_text))
-    for image in images[1:]:
-        media_group.attach(InputMediaPhoto(image.source))
-    await message.bot.send_media_group(
-        random_admin.telegram_id,
-        media=media_group,
-    )
-    await message.bot.send_message(
-        random_admin.telegram_id,
-        "Що зробити з оголошенням?",
-        reply_markup=adverisement_keyboard(f"approve:{adv.id}", f"reject:{adv.id}")
-    )
-    pin_admin(adv.id, random_admin.id)
+    if random_admin:
+        images = adv.images
+        media_group = MediaGroup()
+        media_group.attach(InputMediaPhoto(images[0].source, caption=adv.get_sending_text))
+        for image in images[1:]:
+            media_group.attach(InputMediaPhoto(image.source))
+        await message.bot.send_media_group(
+            random_admin.telegram_id,
+            media=media_group,
+        )
+        await message.bot.send_message(
+            random_admin.telegram_id,
+            "Що зробити з оголошенням?",
+            reply_markup=adverisement_keyboard(f"approve:{adv.id}", f"reject:{adv.id}")
+        )
+        pin_admin(adv.id, random_admin.id)
 
 
 def register_handlers_advertisement(dp: Dispatcher):

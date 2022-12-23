@@ -131,7 +131,7 @@ def create_client(data: types.Message):
     return obj
 
 def create_advertisement(data: dict):
-    user, *_ = select(Client).where(Client.telegram_id == data["user_id"]).execute().first()
+    user = select(Client).where(Client.telegram_id == data["user_id"]).execute().first()
     data["phone"] = data.get("phone", user.phone_number)
     data["phone"] = data["phone"] if str(data["phone"]).startswith("+") else f"+{data['phone']}"
     adv = (
@@ -166,7 +166,7 @@ def create_advertisement(data: dict):
 
 def get_random_admin():
     admins = select(Client.telegram_id, Client.id).filter(Client.is_admin == expression.true()).execute().fetchall()
-    return choice(admins)
+    return choice(admins) if len(admins) > 0 else None
 
 def get_advertisement(id) -> Advertisement:
     return session.query(Advertisement).where(Advertisement.id == id).first()

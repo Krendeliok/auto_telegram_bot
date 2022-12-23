@@ -1,6 +1,6 @@
 1. create .env file
 2. fill alembic.ini 
-3. sudo docker-compose up --build
+3. sudo docker-compose up -d --build
 4. sudo docker exec -it {bot_container} bash
 5. alembic revision --autogenerate -m "init"
 6. add enum to migration
