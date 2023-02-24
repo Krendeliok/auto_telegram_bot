@@ -6,12 +6,13 @@ services:
     depends_on:
       - bot_db
     volumes:
-      - alembic_versions:/app/alembic/versions
+      - ${PWD}/app/alembic/versions/:/app/alembic/versions/
     environment:
       DATABASE_URI: ${DATABASE_URI}
       API_TOKEN: ${API_TOKEN}
       CHANNEL_NAME: ${CHANNEL_NAME}
       MAX_IMAGES: ${MAX_IMAGES}
+      PAYMENTS_TOKEN: ${PAYMENTS_TOKEN}
   bot_db:
     image: postgres:12
     volumes:
@@ -25,4 +26,3 @@ services:
 
 volumes:
   pg_data:
-  alembic_versions:

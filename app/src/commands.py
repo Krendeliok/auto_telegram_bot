@@ -31,7 +31,14 @@ special = {
 general = {
     "new_adv": Command("💵Продати машину"),
     "filter": Command("🚗Знайти машину"),
-    "my_advs": Command("🧾Мої оголошення")
+    "my_advs": Command("🧾Мої оголошення"),
+    "payment": Command("💳Платні послуги"),
+}
+
+payments = {
+    "vip": Command("⭐️Стати VIP"),
+    "additional_advertisements": Command("🧾Додаткові оголошення"),
+    "additional_subscriptions": Command("📬Додаткові підписки"),
 }
 
 filters = {

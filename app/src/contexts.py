@@ -51,3 +51,8 @@ class FSMOwner(StatesGroup):
     create_admin = State()
     delete_admin = State()
     show_admins = State()
+
+
+class FSMPayment(StatesGroup):
+    choose_product = State()
+    make_payment =State()
