@@ -2,7 +2,7 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
 
-from ..queries import (
+from ..queries.client import (
     is_owner,
     is_admin,
     set_admin,
@@ -49,8 +49,8 @@ def back_handler(previous_func, text=None):
 
 @back_handler(previous_func=start_command)
 async def create_admin(message: types.Message, state: FSMContext):
-    exists, model = get_client_by_username(message.text)
-    if exists and not is_admin(model.telegram_id):
+    model = get_client_by_username(message.text)
+    if model is not None and not is_admin(model.telegram_id):
         set_admin(model.telegram_id)
         await state.finish()
         await message.reply("Адмін успішно створений!", reply_markup=commands_keyboard(message.from_user.id))
@@ -60,8 +60,8 @@ async def create_admin(message: types.Message, state: FSMContext):
 
 @back_handler(previous_func=start_command)
 async def delete_admin(message: types.Message, state: FSMContext):
-    exists, model = get_client_by_username(message.text)
-    if exists and is_admin(model.telegram_id):
+    model = get_client_by_username(message.text)
+    if model is not None and is_admin(model.telegram_id):
         remove_admin(model.telegram_id)
         await state.finish()
         await message.reply("Успішно позбавлено прав адміна", reply_markup=commands_keyboard(message.from_user.id))

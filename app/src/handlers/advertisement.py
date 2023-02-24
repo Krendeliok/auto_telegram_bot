@@ -5,21 +5,27 @@ from aiogram.types import InputMediaPhoto, MediaGroup
 
 from ..contexts import FSMAdvertisement, FSMMenu
 
-from ..queries import (
+from ..queries.exists import (
     exists_producer,
     exists_model_from_producer,
     exists_engine_type,
     exists_gearbox,
     exists_city,
-    create_advertisement,
-    get_random_admin,
-    pin_admin,
-    get_advertisement,
-    is_spam,
+)
+from ..queries.client import (
     is_admin,
     is_owner,
     get_user_phone,
     can_create_adv,
+)
+from ..queries.advertisement import (
+    get_random_admin,
+    pin_admin,
+    get_advertisement,
+    is_spam,
+)
+from ..queries.create import (
+    create_advertisement,
 )
 
 from ..keyboards import (
@@ -40,6 +46,10 @@ from config import MAX_IMAGES
 
 from ..commands import general, special
 from .general import start_command
+
+
+def get_kind_of_advertisement(telegram_id):
+    ...
 
 
 async def start_advertisement(message: types.Message, state: FSMContext):

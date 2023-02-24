@@ -16,7 +16,8 @@ from sqlalchemy import (
 )
 
 from .commands import general, admin, owner, filters, special
-from .queries import exists_client, client_advertisements
+from .queries.client import client_advertisements
+from .queries.exists import exists_client
 from .session import session
 
 
@@ -34,6 +35,8 @@ from models import (
     RegionFilter, 
     GearboxFilter
 )
+
+from .tarifs import tarifs
 
 #region base
 def inline_keyboard(row_width=3):
@@ -377,3 +380,12 @@ def adverisement_keyboard(keyboard: InlineKeyboardMarkup, approve_text, reject_t
     keyboard.add(approve(approve_text), reject(reject_text))
 
 #endregion
+
+# region payments
+
+@inline_keyboard(row_width=2)
+@add_inline_back_button
+def tarifs_keyboard(keyboard: InlineKeyboardMarkup):
+    for id, tarif in tarifs.items():
+        keyboard.insert(custom_inline_button(f"{tarif.title}", f"tarif:{id}"))
+# endregion

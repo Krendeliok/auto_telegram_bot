@@ -6,9 +6,25 @@ from config import CHANNEL_NAME
 
 from ..contexts import (FSMAdmin, FSMSolution)
 from ..keyboards import producers_keyboard, commands_keyboard, hide_keyboard, back_complete_keyboard
-from ..queries import (create_city, create_engine_type, create_gearbox,
-                       create_model, create_producer, exists_producer,
-                       get_advertisement, is_admin, update_adv_status)
+
+from ..queries.create import (
+    create_city, 
+    create_engine_type, 
+    create_gearbox,
+    create_model, 
+    create_producer,
+)
+from ..queries.exists import (
+    exists_producer,
+)
+from ..queries.client import (
+    is_admin,
+)
+from ..queries.advertisement import (
+    get_advertisement,  
+    update_adv_status
+)
+
 from .general import start_command
 
 from ..commands import admin, special

@@ -17,15 +17,16 @@ from ..keyboards import (
     adv_action_keyboard,
     hide_keyboard,
 )
-from ..queries import (
+from ..queries.exists import (
     exists_producer,
     exists_model_from_producer,
     exists_engine_type,
     exists_gearbox,
     exists_city,
     exists_adv,
-    create_client, 
     exists_client,
+)
+from ..queries.filter import (
     get_user_filter,
     add_filter_producer,
     add_filter_model,
@@ -38,8 +39,13 @@ from ..queries import (
     add_filter_year,
     remove_producer_from_filter,
     get_advertisements_by_filter,
+)
+from ..queries.advertisement import (
     sell_adv,
     delete_adv,
+)
+from ..queries.create import (
+    create_client
 )
 
 from ..contexts import FSMMenu, FSMFilter
