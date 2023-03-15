@@ -38,7 +38,7 @@ general = {
 payments = {
     "vip": Command("⭐️Стати VIP"),
     "additional_advertisements": Command("🧾Додаткові оголошення"),
-    "additional_subscriptions": Command("📬Додаткові підписки"),
+    # "additional_subscriptions": Command("📬Додаткові підписки"),
 }
 
 filters = {

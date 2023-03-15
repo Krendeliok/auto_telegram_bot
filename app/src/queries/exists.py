@@ -5,11 +5,16 @@ from models import (
     Engine,
     Country,
     Gearbox,
-    Advertisement
+    Advertisement,
+    AdvertisementKindEnum,
+    AdvertisementStateEnum,
+    AditionalAdvertisements
 )
-from sqlalchemy.sql.expression import and_
+from sqlalchemy.sql.expression import and_, false
 
 from ..session import session
+
+from config import VIP_ADVERTISEMENTS
 
 
 def exists_producer(producer_name: str) -> tuple:
@@ -45,3 +50,42 @@ def exists_adv(adv_id: int, telegram_id: int):
         .first()
     )
     return bool(adv), adv
+
+
+def exists_basic_adv(client_id: int) -> bool:
+    q = (
+        session
+        .query(Advertisement)
+        .filter(
+            Advertisement.user_id == client_id,
+            Advertisement.kind == AdvertisementKindEnum.basic,
+            Advertisement.status.in_([AdvertisementStateEnum.draft, AdvertisementStateEnum.approved])
+        )
+    )
+    return session.query(q.exists()).scalar()
+
+
+def exists_vip_adv_space(client_id) -> bool:
+    vip_advs = (
+        session
+        .query(Advertisement.id)
+        .filter(
+            Advertisement.user_id == client_id,
+            Advertisement.kind == AdvertisementKindEnum.vip,
+            Advertisement.status.in_([AdvertisementStateEnum.draft, AdvertisementStateEnum.approved]),
+        )
+        .count()
+    )
+    return vip_advs < int(VIP_ADVERTISEMENTS)
+
+
+def exists_free_additional_adv(client_id) -> bool:
+    q = (
+        session
+        .query(AditionalAdvertisements.id)
+        .filter(
+            AditionalAdvertisements.client_id == client_id,
+            AditionalAdvertisements.reserved == false()
+        )
+    )
+    return session.query(q.exists()).scalar()

@@ -16,7 +16,7 @@ from ..queries.client import (
     is_admin,
     is_owner,
     get_user_phone,
-    can_create_adv,
+    can_create_and_kind_adv,
 )
 from ..queries.advertisement import (
     get_random_admin,
@@ -48,21 +48,15 @@ from ..commands import general, special
 from .general import start_command
 
 
-def get_kind_of_advertisement(telegram_id):
-    ...
-
-
 async def start_advertisement(message: types.Message, state: FSMContext):
-    if (
-        is_admin(telegram_id=message.from_user.id) 
-        or is_owner(telegram_id=message.from_user.id) 
-        or can_create_adv(telegram_id=message.from_user.id)
-    ):
+    can_create, kind = can_create_and_kind_adv(telegram_id=message.from_user.id)
+    if can_create:
         await FSMAdvertisement.producer.set()
+        await state.update_data({"kind": kind})
         await message.answer(RULES)
         await message.answer("Оберіть марку машини", reply_markup=producers_keyboard())
     else:
-        await message.answer("Ліміт оголошень на місяць вичерпано.\nВи можети придбати більший.", reply_markup=commands_keyboard(message.chat.id))
+        await message.answer("❌Ліміт оголошень вичерпано.\nВи можети придбати більший.", reply_markup=commands_keyboard(message.chat.id))
 
 async def cancel_handler(message: types.Message, state: FSMContext):
     if await state.get_state() is None:
