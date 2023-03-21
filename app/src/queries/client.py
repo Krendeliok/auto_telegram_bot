@@ -119,11 +119,7 @@ def can_create_and_kind_adv(telegram_id) -> tuple[bool, AdvertisementKindEnum | 
 
 
 def set_vip(telegram_id, **duration):
-    client: Client = (
-        session.query(Client)
-        .where(Client.telegram_id == telegram_id)
-        .first()
-    )
+    client: Client = get_client_by_telegram_id(telegram_id)
     if not client.is_vip:
         client.is_vip = true()
         client.vip_start = date.today()

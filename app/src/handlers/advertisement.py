@@ -21,7 +21,7 @@ from ..queries.client import (
 from ..queries.advertisement import (
     get_random_admin,
     pin_admin,
-    get_advertisement,
+    get_advertisement_by_id,
     is_spam,
 )
 from ..queries.create import (
@@ -67,7 +67,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 def back_handler(previous_func, key=None, alt_func=None, alt_key=None):
     def wrapper(func):
         async def inner(message, state, *args, **kwargs):
-            if message.text == str(special["back"]):
+            if message.text == special["back"]:
                 if alt_func and any([is_admin(message.from_user.id), is_owner(message.from_user.id)]):
                     async with state.proxy() as data:
                         message.text = data[alt_key]
@@ -230,9 +230,9 @@ async def set_description(message: types.Message, state: FSMContext):
 
 @back_handler(previous_func=set_city, key="based_country")
 async def set_phone_numbers(message: types.Message, state: FSMContext):
-    if message.text == str(special["private_phone"]):
+    if message.text == special["private_phone"]:
         phone = get_user_phone(message.from_user.id)
-    elif message.text == str(special["comercial_phone"]):
+    elif message.text == special["comercial_phone"]:
         phone = "+380506200777 / +380976200777"
     
     async with state.proxy() as data:
@@ -266,7 +266,7 @@ async def submition_advertisement(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         adv_id = create_advertisement(data)
     await message.answer("✅Пост відправлено адміну. Через деякий час вам надішлеться відповідь.", reply_markup=commands_keyboard(message.from_user.id))
-    adv = get_advertisement(adv_id)
+    adv = get_advertisement_by_id(adv_id)
     await submit_to_admin_for_approval(message, adv)
 
     await state.finish()
@@ -292,9 +292,9 @@ async def submit_to_admin_for_approval(message: types.Message, adv):
 
 
 def register_handlers_advertisement(dp: Dispatcher):
-    dp.register_message_handler(start_advertisement, Text(equals=str(general["new_adv"]), ignore_case=True), state=None)
-    dp.register_message_handler(cancel_handler, state="*", commands=str(special["end"]))
-    dp.register_message_handler(cancel_handler, Text(equals=str(special["end"]), ignore_case=True), state="*")
+    dp.register_message_handler(start_advertisement, Text(equals=general["new_adv"], ignore_case=True), state=None)
+    dp.register_message_handler(cancel_handler, state="*", commands=special["end"])
+    dp.register_message_handler(cancel_handler, Text(equals=special["end"], ignore_case=True), state="*")
     dp.register_message_handler(set_producer, state=FSMAdvertisement.producer)
     dp.register_message_handler(set_model, state=FSMAdvertisement.model)
     dp.register_message_handler(set_price, state=FSMAdvertisement.price)
@@ -307,5 +307,5 @@ def register_handlers_advertisement(dp: Dispatcher):
     dp.register_message_handler(set_description, state=FSMAdvertisement.description)
     dp.register_message_handler(set_phone_numbers, state=FSMAdvertisement.phone_numbers)
     dp.register_message_handler(set_images, content_types=["photo", "text"], state=FSMAdvertisement.images)
-    dp.register_message_handler(submition_advertisement, Text(equals=str(special["complete"]), ignore_case=True), state=FSMAdvertisement.more_images)
+    dp.register_message_handler(submition_advertisement, Text(equals=special["complete"], ignore_case=True), state=FSMAdvertisement.more_images)
     dp.register_message_handler(more_images, content_types=["photo"], state=FSMAdvertisement.more_images)

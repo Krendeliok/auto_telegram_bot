@@ -13,9 +13,10 @@ from ..tarifs import tarifs
 
 from ..commands import general, special
 
-from ..keyboards import tarifs_keyboard
+from ..keyboards import tarifs_keyboard, paymets_keyboard, goods_keyboard
 
-from ..queries.client import set_vip
+from ..queries.client import set_vip, is_vip, get_client_by_telegram_id
+from ..queries.advertisement import count_free_additional_adertisements
 from ..queries.create import create_adittional_advertisement
 
 from .general import start_command
@@ -45,6 +46,11 @@ def inline_back_handler(previous_func, text=None):
     return wrapper
 
 
+async def payments_handler(message: Message, state: FSMContext, **kwargs):
+    await message.answer("Що хочете зробити?", reply_markup=paymets_keyboard())
+    await state.set_state(FSMPayment.menu)
+
+
 async def buy_handler(message: Message, state: FSMContext, **kwargs):
     if kwargs.get("after_success", False):
         await message.answer("Хочете купити щось ще?", reply_markup=tarifs_keyboard())
@@ -53,7 +59,16 @@ async def buy_handler(message: Message, state: FSMContext, **kwargs):
     await state.set_state(FSMPayment.choose_product)
 
 
-@inline_back_handler(start_command)
+async def my_goods_handler(message: Message, state: FSMContext):
+    client = get_client_by_telegram_id(message.from_user.id)
+    text = f"""
+Віп - {client.vip_end if client.is_vip else "відсутній"}
+Вільні додаткові оголошення - {count_free_additional_adertisements(message.from_user.id)}
+    """
+    await message.answer(text, reply_markup=goods_keyboard(message.from_user.id, client.is_vip))
+
+
+@inline_back_handler(payments_handler)
 async def send_payment(callback_query: CallbackQuery, state: FSMContext, **kwargs):
     tarif_id = callback_query.data.split(":")[1]
     tarif = tarifs.get(tarif_id)
@@ -92,7 +107,8 @@ async def success_payment(message: Message, state: FSMContext):
 
 
 def register_hendlers_payment(dp: Dispatcher):
-    dp.register_message_handler(buy_handler, Text(equals=str(general["payment"])), state="*")
+    dp.register_message_handler(payments_handler, Text(equals=general["payment"]), state="*")
+    dp.register_message_handler(buy_handler, state=FSMPayment.menu)
     dp.register_callback_query_handler(send_payment, state=FSMPayment.choose_product)
     dp.register_pre_checkout_query_handler(checkout_handler, lambda q: True, state=FSMPayment.make_payment)
     dp.register_message_handler(success_payment, content_types=ContentType.SUCCESSFUL_PAYMENT, state="*")
