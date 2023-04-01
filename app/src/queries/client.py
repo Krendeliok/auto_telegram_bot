@@ -66,7 +66,12 @@ def remove_admin(telegram_id):
 
 def get_client_by_username(username) -> Client:
     model = session.query(Client).filter_by(username=username).first()
-    return model if model else None
+    return model
+
+
+def get_client_by_telegram_id(telegram_id) -> Client:
+    model = session.query(Client).filter_by(telegram_id=telegram_id).first()
+    return model
 
 
 def client_advertisements(telegram_id) -> list[Advertisement]:
