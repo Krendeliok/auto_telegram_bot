@@ -26,8 +26,6 @@ def add_tarif_to_user(telegram_id, tarif_id: str):
 
     if tarif.id.startswith("vip"):
         set_vip(telegram_id, **tarif.duration)
-    else:
-        pass
 
 
 async def buy_handler(message: Message, state: FSMContext):
