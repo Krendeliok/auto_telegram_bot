@@ -2,8 +2,8 @@ ADV_TEXT = """
 🚗Марка та модель: {producer} {model}
 💵Ціна: {price}
 📌Рік: {year}
-📌Об'є̈м двигуна: {engine_volume} 
 ⛽️Вид палива:  {engine_type}
+📌{engine_type_prompt} двигуна: {engine_volume}
 ⚙️Коробка: {gearbox}
 📌Пробіг: {range} тис. км.
 🏘Область знаходження авто: {city}
