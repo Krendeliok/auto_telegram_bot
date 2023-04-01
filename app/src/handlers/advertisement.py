@@ -156,7 +156,10 @@ async def set_engine_type(message: types.Message, state: FSMContext):
             data["engine_type_id"] = obj.id
             data["engine_type"] = message.text
         await state.set_state(FSMAdvertisement.engine_volume)
-        await message.answer("Напишіть об'єм двигуна. Наприклад: 2.2 або 3", reply_markup=back_complete_keyboard(deny=True))
+        if message.text == "Електро":
+            await message.answer("Напишіть потужність двигуна(кВт).", reply_markup=back_complete_keyboard(deny=True))
+        else:
+            await message.answer("Напишіть об'єм двигуна(л). Наприклад: 2.2 або 3", reply_markup=back_complete_keyboard(deny=True))
     else:
         await message.reply("❌Я не пам'ятаю щоб таке паливо використовував автомобіль. Спробуйте обрати з доступних.", reply_markup=engine_keyboard())
 
@@ -164,12 +167,21 @@ async def set_engine_type(message: types.Message, state: FSMContext):
 @back_handler(previous_func=set_year, key="year")
 async def set_engine_volume(message: types.Message, state: FSMContext):
     try:
-        volume = round(float(message.text), 1)
-        if volume <= 0.0 or volume > 12.0:
-            await message.answer("❌Об'єм повинен бути більше 0 та не більше 12.", reply_markup=back_complete_keyboard(deny=True))
-            return
-        async with state.proxy() as data:
-            data["engine_volume"] = volume
+        data = await state.get_data()
+        if data["engine_type"] == "Електро":
+            power = int(message.text)
+            if power <= 0.0 or power > 1500:
+                await message.answer("❌Потужність повинна бути більше 0 та не більше 1500 кВт.", reply_markup=back_complete_keyboard(deny=True))
+                return
+            async with state.proxy() as data:
+                data["engine_volume"] = power
+        else:
+            volume = round(float(message.text), 1)
+            if volume <= 0.0 or volume > 12.0:
+                await message.answer("❌Об'єм повинен бути більше 0 та не більше 12.", reply_markup=back_complete_keyboard(deny=True))
+                return
+            async with state.proxy() as data:
+                data["engine_volume"] = volume
         await state.set_state(FSMAdvertisement.range)
         await message.answer("Напишіть пробіг авто (тис. км.) від 1 до 999", reply_markup=back_complete_keyboard(deny=True))
     except ValueError:
