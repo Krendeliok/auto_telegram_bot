@@ -95,14 +95,14 @@ def add_producer_filter():
 
 def add_back_button(func):
     def wrapper(keyboard: ReplyKeyboardMarkup, *args, **kwargs):
-        keyboard.add(custom_keyboard_button(str(special["back"])))
+        keyboard.add(custom_keyboard_button(special["back"]))
         func(keyboard, *args, **kwargs)
         return keyboard
     return wrapper
 
 def add_inline_back_button(func):
     def wrapper(keyboard: InlineKeyboardMarkup, *args, **kwargs):
-        keyboard.add(custom_inline_button(str(special["back"]), "back"))
+        keyboard.add(custom_inline_button(special["back"], "back"))
         func(keyboard, *args, **kwargs)
         return keyboard
     return wrapper
@@ -119,10 +119,10 @@ def filter_keyboard(col_name = ""):
                     )
                 if "producer_name" in kwargs:
                     keyboard.add(
-                        custom_keyboard_button(str(special["remove_producer"]))
+                        custom_keyboard_button(special["remove_producer"])
                     )
             if not is_filter and not no_end:
-                keyboard.insert(custom_keyboard_button(str(special["end"])))
+                keyboard.insert(custom_keyboard_button(special["end"]))
             func(keyboard=keyboard, is_filter=is_filter, object_filter=object_filter, *args, **kwargs)
             return keyboard
         return inner
@@ -147,7 +147,7 @@ def add_objects_to_keyboard(keyboard: ReplyKeyboardMarkup, objects: list, is_fil
 
 @reply_keyboard()
 def filter_buttons(keyboard):
-    keyboard.row(custom_keyboard_button(str(special["back"])), custom_keyboard_button(str(special["all"])))
+    keyboard.row(custom_keyboard_button(special["back"]), custom_keyboard_button(special["all"]))
 
 @reply_keyboard()
 def contact_keyboard(keyboard):
@@ -164,7 +164,7 @@ def commands_keyboard(keyboard, telegram_id=None):
             commands += list(owner.values())
 
     for command in commands:
-        keyboard.insert(custom_keyboard_button(str(command)))
+        keyboard.insert(custom_keyboard_button(command))
 
 def hide_keyboard():
     return ReplyKeyboardRemove()
@@ -172,17 +172,17 @@ def hide_keyboard():
 @reply_keyboard(row_width=2)
 @add_back_button
 def filter_commands(keyboard):
-    keyboard.insert(custom_keyboard_button(str(special["find"])))
+    keyboard.insert(custom_keyboard_button(special["find"]))
     for command in filters.values():
-        keyboard.insert(custom_keyboard_button(str(command)))
+        keyboard.insert(custom_keyboard_button(command))
 
 @reply_keyboard()
 def back_complete_keyboard(keyboard, complete=False, deny=False):
-    keyboard.add(custom_keyboard_button(str(special["back"])))
+    keyboard.add(custom_keyboard_button(special["back"]))
     if complete:
-        keyboard.insert(custom_keyboard_button(str(special["complete"])))
+        keyboard.insert(custom_keyboard_button(special["complete"]))
     if deny:
-        keyboard.insert(custom_keyboard_button(str(special["end"])))
+        keyboard.insert(custom_keyboard_button(special["end"]))
 
 @reply_keyboard()
 @add_back_button
@@ -349,8 +349,8 @@ def client_advertisements_keyboard(keyboard, telegram_id):
 @inline_keyboard()
 @add_inline_back_button
 def adv_action_keyboard(keyboard):
-    keyboard.insert(custom_inline_button(str(special["sold"]), "sold"))
-    keyboard.insert(custom_inline_button(str(special["remove"]), "remove"))
+    keyboard.insert(custom_inline_button(special["sold"], "sold"))
+    keyboard.insert(custom_inline_button(special["remove"], "remove"))
 
 # endregion
 
