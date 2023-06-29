@@ -390,10 +390,15 @@ def tarifs_keyboard(keyboard: InlineKeyboardMarkup):
         keyboard.insert(custom_inline_button(f"{tarif.title}", f"tarif:{id}"))
 
 
+@inline_keyboard(row_width=2)
+def decline_invoice_keyboard(keyboard: InlineKeyboardMarkup) -> InlineKeyboardMarkup:
+    keyboard.add(custom_inline_button("Купити", None, pay_button=True))
+    keyboard.insert(custom_inline_button(special["back"], "cancel_payment"))
+
 @reply_keyboard(row_width=2)
 @add_back_button
 def paymets_keyboard(keyboard: ReplyKeyboardMarkup):
-    for command in payments:
+    for command in payments.values():
         keyboard.insert(custom_keyboard_button(command))
 
 

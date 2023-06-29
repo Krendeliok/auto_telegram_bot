@@ -14,4 +14,6 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
+RUN echo "0 8 * * * python3 /home/centos/app/auto_telegram_bot/app/send_advertisement.py" | crontab
+
 CMD ["python", "main.py"]

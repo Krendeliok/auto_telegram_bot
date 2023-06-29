@@ -11,15 +11,13 @@ from ..contexts import FSMPayment
 
 from ..tarifs import tarifs
 
-from ..commands import general, special
+from ..commands import general
 
-from ..keyboards import tarifs_keyboard, paymets_keyboard, goods_keyboard
+from ..keyboards import tarifs_keyboard, paymets_keyboard, goods_keyboard, decline_invoice_keyboard
 
-from ..queries.client import set_vip, is_vip, get_client_by_telegram_id
+from ..queries.client import set_vip, get_client_by_telegram_id
 from ..queries.advertisement import count_free_additional_adertisements
 from ..queries.create import create_adittional_advertisement
-
-from .general import start_command
 
 
 def add_tarif_to_user(telegram_id, tarif_id: str):
@@ -32,6 +30,7 @@ def add_tarif_to_user(telegram_id, tarif_id: str):
         set_vip(telegram_id, **tarif.duration)
     elif tarif.id.endswith("_advertisement"):
         create_adittional_advertisement(telegram_id, tarif.previleges[0].count)
+
 
 
 def inline_back_handler(previous_func, text=None):
@@ -85,9 +84,14 @@ async def send_payment(callback_query: CallbackQuery, state: FSMContext, **kwarg
         need_phone_number=True,
         need_shipping_address=False,
         start_parameter=tarif_id,
-        payload=tarif_id
+        payload=tarif_id,
+        reply_markup=decline_invoice_keyboard()
     )
     await state.set_state(FSMPayment.make_payment)
+
+
+async def cancel_payment_handler(callback_query: CallbackQuery, state: FSMContext, **kwargs):
+    await buy_handler(callback_query.message, state, **kwargs)
 
 
 async def checkout_handler(pre_checkout_query: PreCheckoutQuery):
@@ -107,8 +111,9 @@ async def success_payment(message: Message, state: FSMContext):
 
 
 def register_hendlers_payment(dp: Dispatcher):
-    dp.register_message_handler(payments_handler, Text(equals=general["payment"]), state="*")
+    # dp.register_message_handler(payments_handler, Text(equals=general["payment"]), state="*")
     dp.register_message_handler(buy_handler, state=FSMPayment.menu)
     dp.register_callback_query_handler(send_payment, state=FSMPayment.choose_product)
     dp.register_pre_checkout_query_handler(checkout_handler, lambda q: True, state=FSMPayment.make_payment)
+    dp.register_callback_query_handler(cancel_payment_handler, lambda callback_query: callback_query.data == "cancel_payment", state="*")
     dp.register_message_handler(success_payment, content_types=ContentType.SUCCESSFUL_PAYMENT, state="*")
