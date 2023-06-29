@@ -80,7 +80,7 @@ async def my_advertisements(message: types.Message, state: FSMContext, **kwargs)
 def back_handler(previous_func, text=None):
     def wrapper(func):
         async def inner(message, state, user_filter=None, *args, **kwargs):
-            if message.text == special["back"]:
+            if message.text == str(special["back"]):
                 if text is not None:
                     message.text = text
                 await previous_func(message=message, state=state, user_filter=user_filter)
@@ -130,30 +130,30 @@ async def advertisement_action_handler(callback_query: types.CallbackQuery, stat
 
 @back_handler(previous_func=start_command)
 async def filter_commands_handler(message: types.Message, state: FSMContext, *args, **kwargs):
-    if message.text == special["find"]:
+    if message.text == str(special["find"]):
         await search_filter(message, state)
-    elif message.text == filters["producer"]:
+    elif message.text == str(filters["producer"]):
         await FSMFilter.producer.set()
         await message.answer("Оберіть яку марку хочете відстежувати.", reply_markup=producers_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
-    elif message.text == filters["gearbox"]:
+    elif message.text == str(filters["gearbox"]):
         await FSMFilter.gearbox.set()
         await message.answer("Оберіть модель яку треба відстежувати.", reply_markup=gearbox_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
-    elif message.text == filters["region"]:
+    elif message.text == str(filters["region"]):
         await FSMFilter.region.set()
         await message.answer("Оберіть область для фільтру", reply_markup=country_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
-    elif message.text == filters["engine_type"]:
+    elif message.text == str(filters["engine_type"]):
         await FSMFilter.engine_type.set()
         await message.answer("Оберіть тип палива для фільтру", reply_markup=engine_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
-    elif message.text == filters["price"]:
+    elif message.text == str(filters["price"]):
         await FSMFilter.price.set()
         await message.answer("Вкажіть ціну для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
-    elif message.text == filters["year"]:
+    elif message.text == str(filters["year"]):
         await FSMFilter.year.set()
         await message.answer("Вкажіть рік для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
-    elif message.text == filters["engine_volume"]:
+    elif message.text == str(filters["engine_volume"]):
         await FSMFilter.engine_volume.set()
         await message.answer("Вкажіть обїєм двигуна для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
-    elif message.text == filters["range"]:
+    elif message.text == str(filters["range"]):
         await FSMFilter.range.set()
         await message.answer("Вкажіть пробіг для фільтру. Формат(мін-макс, -макс, мін-)", reply_markup=filter_buttons())
 
@@ -162,7 +162,7 @@ def filter_handler(add_filter=None, plural_model=""):
     def wrapper(func):
         async def inner(message: types.Message, state: FSMContext, user_filter, previous_func, text=None, *args, **kwargs):
             message.text = message.text.split("✅")[0].split("🟠")[0]
-            if message.text == special["all"] and add_filter:
+            if message.text == str(special["all"]) and add_filter:
                 await message.answer(f"Усі {plural_model} додані успішно.")
                 if text is not None:
                     async with state.proxy() as data:
@@ -173,7 +173,7 @@ def filter_handler(add_filter=None, plural_model=""):
 
                 await previous_func(message, state, user_filter)
                 return
-            elif message.text == special["remove_producer"]:
+            elif message.text == str(special["remove_producer"]):
                 async with state.proxy() as data:
                     remove_producer_from_filter(user_filter.id, data["producer"])
                 message.text = text
@@ -236,7 +236,7 @@ async def filter_producer(message: types.Message, state: FSMContext, user_filter
         await message.reply("Це не схоже на марку. Спробуйте обрати з доступних.", reply_markup=producers_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
 
 @add_user_filter
-@back_handler(previous_func=filter_commands_handler, text=filters["producer"])
+@back_handler(previous_func=filter_commands_handler, text=str(filters["producer"]))
 @filter_handler(add_filter=add_filter_model, plural_model="моделі")
 async def filter_model(message: types.Message, state: FSMContext, *args):
     async with state.proxy() as data:
@@ -314,10 +314,10 @@ async def filter_range(message: types.Message, state: FSMContext, *args):
 def register_hendlers_general(dp: Dispatcher):
     dp.register_message_handler(start_command, commands=['start'], state="*")
     dp.register_message_handler(get_contact, content_types=types.ContentType.CONTACT, state=FSMMenu.contact)
-    dp.register_message_handler(my_advertisements, Text(equals=general["my_advs"]))
+    dp.register_message_handler(my_advertisements, Text(equals=str(general["my_advs"])))
     dp.register_callback_query_handler(advertisements_choose_action, state=FSMMenu.choose_adv)
     dp.register_callback_query_handler(advertisement_action_handler, state=FSMMenu.adv_action)
-    dp.register_message_handler(start_filter, Text(equals=general["filter"], ignore_case=True), state=None)
+    dp.register_message_handler(start_filter, Text(equals=str(general["filter"]), ignore_case=True), state=None)
     dp.register_message_handler(filter_commands_handler, state=FSMFilter.start)
     dp.register_message_handler(filter_producer, state=FSMFilter.producer)
     dp.register_message_handler(filter_model, state=FSMFilter.model)

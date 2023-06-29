@@ -54,7 +54,5 @@ class FSMOwner(StatesGroup):
 
 
 class FSMPayment(StatesGroup):
-    menu = State()
-    my_goods = State()
     choose_product = State()
-    make_payment = State()
+    make_payment =State()

@@ -24,20 +24,20 @@ from ..commands import owner, special
 
 async def owner_start_commands(message: types.Message):
     if is_owner(message.from_user.id):
-        if message.text == owner["create_admin"]:
+        if message.text == str(owner["create_admin"]):
             await FSMOwner.create_admin.set()
             await message.answer("Оберіть юзера якого треба зробити адміном.", reply_markup=clients_keyboard(ignore_admins=True))
-        elif message.text == owner["remove_admin"]:
+        elif message.text == str(owner["remove_admin"]):
             await FSMOwner.delete_admin.set()
             await message.answer("Оберіть юзера якого треба позбавити прав адміна", reply_markup=admins_keyboard())
-        elif message.text == owner["show_admins"]:
+        elif message.text == str(owner["show_admins"]):
             await FSMOwner.show_admins.set()
             await message.answer("Ось усі адміни", reply_markup=admins_keyboard())
 
 def back_handler(previous_func, text=None):
     def wrapper(func):
         async def inner(message, state, *args, **kwargs):
-            if message.text == special["back"]:
+            if message.text == str(special["back"]):
                 if text is not None:
                     message.text = text
                 await previous_func(message=message, state=state)
@@ -74,7 +74,7 @@ async def show_admins(message: types.Message, state: FSMContext):
     pass
 
 def register_handlers_owner(dp: Dispatcher):
-    dp.register_message_handler(owner_start_commands, Text(equals=owner.values(), ignore_case=True), state=None)
+    dp.register_message_handler(owner_start_commands, Text(equals=[str(i) for i in owner.values()], ignore_case=True), state=None)
     dp.register_message_handler(create_admin, state=FSMOwner.create_admin)
     dp.register_message_handler(delete_admin, state=FSMOwner.delete_admin)
     dp.register_message_handler(show_admins, state=FSMOwner.show_admins)

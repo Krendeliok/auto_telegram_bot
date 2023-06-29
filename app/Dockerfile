@@ -14,6 +14,4 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-RUN echo "0 8 * * * python3 /app/send_advertisement.py" | crontab
-
 CMD ["python", "main.py"]

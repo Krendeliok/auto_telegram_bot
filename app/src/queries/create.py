@@ -7,15 +7,12 @@ from models import (
     Gearbox,
     Advertisement,
     Image,
-    AditionalAdvertisements,
-    AdvertisementKindEnum
+    AdvertisementKindEnum,
 )
 from sqlalchemy.sql import expression
 from aiogram import types
+from datetime import date
 from ..session import session
-
-from .client import get_client_by_telegram_id
-
 
 def create_producer(name: str):
     obj = Producer(name=name)
@@ -60,7 +57,7 @@ def create_client(data: types.Message):
     
 
 def create_advertisement(data: dict):
-    user, *_ = session.query(Client).filter_by(telegram_id=data["user_id"]).first()
+    user = session.query(Client).filter_by(telegram_id=data["user_id"]).first()
     data["phone"] = data.get("phone", user.phone_number)
     data["phone"] = data["phone"] if str(data["phone"]).startswith("+") else f"+{data['phone']}"
     adv = Advertisement(
@@ -75,25 +72,11 @@ def create_advertisement(data: dict):
         based_country_id=data["based_country_id"],
         phone_number=data["phone"],
         description=data["description"],
-        kind=data["kind"]
+        next_published_date=date.today(),
+        kind=AdvertisementKindEnum.admin.value
     )
-    if data["kind"] == AdvertisementKindEnum.additional.value:
-        additional_adv: AditionalAdvertisements = (
-            session
-            .query(AditionalAdvertisements)
-            .filter(
-                AditionalAdvertisements.client_id == user.id,
-                AditionalAdvertisements.reserved == expression.false()
-            ).first()
-        )
-
-        additional_adv.advertisement = adv
-        session.add(additional_adv)
-        additional_adv.update_expires_dates()
-        session.flush()
     session.add(adv)
     session.flush()
-    adv.update_publishing_dates()
     images = [
         Image(
             advertisement_id=adv.id,
@@ -103,12 +86,3 @@ def create_advertisement(data: dict):
     session.add_all(images)
     session.commit()
     return adv.id
-
-def create_adittional_advertisement(telegram_id, count: int = 1):
-    client = get_client_by_telegram_id(telegram_id)
-    advs = [AditionalAdvertisements(
-        client_id=client.id
-    ) for _ in range(count)]
-
-    session.add_all(advs)
-    session.commit()
