@@ -16,12 +16,12 @@ from ..queries.client import (
     is_admin,
     is_owner,
     get_user_phone,
-    can_create_adv,
+    can_create_and_kind_adv,
 )
 from ..queries.advertisement import (
     get_random_admin,
     pin_admin,
-    get_advertisement,
+    get_advertisement_by_id,
     is_spam,
 )
 from ..queries.create import (
@@ -48,21 +48,15 @@ from ..commands import general, special
 from .general import start_command
 
 
-def get_kind_of_advertisement(telegram_id):
-    ...
-
-
 async def start_advertisement(message: types.Message, state: FSMContext):
-    if (
-        is_admin(telegram_id=message.from_user.id) 
-        or is_owner(telegram_id=message.from_user.id) 
-        or can_create_adv(telegram_id=message.from_user.id)
-    ):
+    can_create, kind = can_create_and_kind_adv(telegram_id=message.from_user.id)
+    if can_create:
         await FSMAdvertisement.producer.set()
+        await state.update_data({"kind": kind})
         await message.answer(RULES)
         await message.answer("Оберіть марку машини", reply_markup=producers_keyboard())
     else:
-        await message.answer("Ліміт оголошень на місяць вичерпано.\nВи можети придбати більший.", reply_markup=commands_keyboard(message.chat.id))
+        await message.answer("❌Ліміт оголошень вичерпано.\nВи можети придбати більший.", reply_markup=commands_keyboard(message.chat.id))
 
 async def cancel_handler(message: types.Message, state: FSMContext):
     if await state.get_state() is None:
@@ -73,7 +67,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
 def back_handler(previous_func, key=None, alt_func=None, alt_key=None):
     def wrapper(func):
         async def inner(message, state, *args, **kwargs):
-            if message.text == str(special["back"]):
+            if message.text == special["back"]:
                 if alt_func and any([is_admin(message.from_user.id), is_owner(message.from_user.id)]):
                     async with state.proxy() as data:
                         message.text = data[alt_key]
@@ -156,7 +150,10 @@ async def set_engine_type(message: types.Message, state: FSMContext):
             data["engine_type_id"] = obj.id
             data["engine_type"] = message.text
         await state.set_state(FSMAdvertisement.engine_volume)
-        await message.answer("Напишіть об'єм двигуна. Наприклад: 2.2 або 3", reply_markup=back_complete_keyboard(deny=True))
+        if message.text == "Електро":
+            await message.answer("Напишіть потужність двигуна(кВт).", reply_markup=back_complete_keyboard(deny=True))
+        else:
+            await message.answer("Напишіть об'єм двигуна(л). Наприклад: 2.2 або 3", reply_markup=back_complete_keyboard(deny=True))
     else:
         await message.reply("❌Я не пам'ятаю щоб таке паливо використовував автомобіль. Спробуйте обрати з доступних.", reply_markup=engine_keyboard())
 
@@ -164,12 +161,21 @@ async def set_engine_type(message: types.Message, state: FSMContext):
 @back_handler(previous_func=set_year, key="year")
 async def set_engine_volume(message: types.Message, state: FSMContext):
     try:
-        volume = round(float(message.text), 1)
-        if volume <= 0.0 or volume > 12.0:
-            await message.answer("❌Об'єм повинен бути більше 0 та не більше 12.", reply_markup=back_complete_keyboard(deny=True))
-            return
-        async with state.proxy() as data:
-            data["engine_volume"] = volume
+        data = await state.get_data()
+        if data["engine_type"] == "Електро":
+            power = int(message.text)
+            if power <= 0.0 or power > 1500:
+                await message.answer("❌Потужність повинна бути більше 0 та не більше 1500 кВт.", reply_markup=back_complete_keyboard(deny=True))
+                return
+            async with state.proxy() as data:
+                data["engine_volume"] = power
+        else:
+            volume = round(float(message.text), 1)
+            if volume <= 0.0 or volume > 20.0:
+                await message.answer("❌Об'єм повинен бути більше 0 та не більше 20.", reply_markup=back_complete_keyboard(deny=True))
+                return
+            async with state.proxy() as data:
+                data["engine_volume"] = volume
         await state.set_state(FSMAdvertisement.range)
         await message.answer("Напишіть пробіг авто (тис. км.) від 1 до 999", reply_markup=back_complete_keyboard(deny=True))
     except ValueError:
@@ -236,9 +242,9 @@ async def set_description(message: types.Message, state: FSMContext):
 
 @back_handler(previous_func=set_city, key="based_country")
 async def set_phone_numbers(message: types.Message, state: FSMContext):
-    if message.text == str(special["private_phone"]):
+    if message.text == special["private_phone"]:
         phone = get_user_phone(message.from_user.id)
-    elif message.text == str(special["comercial_phone"]):
+    elif message.text == special["comercial_phone"]:
         phone = "+380506200777 / +380976200777"
     
     async with state.proxy() as data:
@@ -272,7 +278,7 @@ async def submition_advertisement(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         adv_id = create_advertisement(data)
     await message.answer("✅Пост відправлено адміну. Через деякий час вам надішлеться відповідь.", reply_markup=commands_keyboard(message.from_user.id))
-    adv = get_advertisement(adv_id)
+    adv = get_advertisement_by_id(adv_id)
     await submit_to_admin_for_approval(message, adv)
 
     await state.finish()
@@ -298,9 +304,9 @@ async def submit_to_admin_for_approval(message: types.Message, adv):
 
 
 def register_handlers_advertisement(dp: Dispatcher):
-    dp.register_message_handler(start_advertisement, Text(equals=str(general["new_adv"]), ignore_case=True), state=None)
-    dp.register_message_handler(cancel_handler, state="*", commands=str(special["end"]))
-    dp.register_message_handler(cancel_handler, Text(equals=str(special["end"]), ignore_case=True), state="*")
+    dp.register_message_handler(start_advertisement, Text(equals=general["new_adv"], ignore_case=True), state=None)
+    dp.register_message_handler(cancel_handler, state="*", commands=special["end"])
+    dp.register_message_handler(cancel_handler, Text(equals=special["end"], ignore_case=True), state="*")
     dp.register_message_handler(set_producer, state=FSMAdvertisement.producer)
     dp.register_message_handler(set_model, state=FSMAdvertisement.model)
     dp.register_message_handler(set_price, state=FSMAdvertisement.price)
@@ -313,5 +319,5 @@ def register_handlers_advertisement(dp: Dispatcher):
     dp.register_message_handler(set_description, state=FSMAdvertisement.description)
     dp.register_message_handler(set_phone_numbers, state=FSMAdvertisement.phone_numbers)
     dp.register_message_handler(set_images, content_types=["photo", "text"], state=FSMAdvertisement.images)
-    dp.register_message_handler(submition_advertisement, Text(equals=str(special["complete"]), ignore_case=True), state=FSMAdvertisement.more_images)
+    dp.register_message_handler(submition_advertisement, Text(equals=special["complete"], ignore_case=True), state=FSMAdvertisement.more_images)
     dp.register_message_handler(more_images, content_types=["photo"], state=FSMAdvertisement.more_images)
