@@ -78,10 +78,18 @@ class Advertisement(Base):
     @property
     def get_sending_text(self):
         return ADV_TEXT.format(
-            producer=self.model.producer.name, model=self.model.name, price=self.price, year=self.year, engine_volume=self.engine_volume, 
-            engine_type=self.engine.name, gearbox=self.gearbox.name,
-            range=self.range, city=self.country.name, 
-            phone_number=self.phone_number or self.client.phone_number, description=self.description
+            producer=self.model.producer.name,
+            model=self.model.name,
+            price=self.price,
+            year=self.year,
+            engine_type=self.engine.name,
+            engine_type_prompt='Об\'єм' if self.engine.name != 'Електро' else 'Потужність',
+            engine_volume=self.engine_volume,
+            gearbox=self.gearbox.name,
+            range=self.range,
+            city=self.country.name,
+            phone_number=self.phone_number if self.phone_number else self.client.phone_number,
+            description=self.description
         )
 
     def update_publishing_dates(self):
