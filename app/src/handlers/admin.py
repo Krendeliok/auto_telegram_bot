@@ -21,7 +21,7 @@ from ..queries.client import (
     is_admin,
 )
 from ..queries.advertisement import (
-    get_advertisement,  
+    get_advertisement_by_id,  
     update_adv_status
 )
 
@@ -46,7 +46,7 @@ async def submit_advertisement(callback_query: types.CallbackQuery, state: FSMCo
     await callback_query.bot.answer_callback_query(callback_query.id)
     status, adv_id = callback_query["data"].split(":")
     update_adv_status(int(adv_id), status == "approve")
-    adv = get_advertisement(int(adv_id))
+    adv = get_advertisement_by_id(int(adv_id))
     await callback_query.message.delete()
     if status == "approve":
         await send_to_channel(callback_query.message, adv)

@@ -1,7 +1,6 @@
 from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, InlineKeyboardMarkup
 from sqlalchemy.sql import expression
-from sqlalchemy.sql.expression import and_, alias
-from sqlalchemy.orm import joinedload
+from sqlalchemy.sql.expression import and_
 
 from .buttons import (
     approve,
@@ -15,8 +14,9 @@ from sqlalchemy import (
     select,
 )
 
-from .commands import general, admin, owner, filters, special
+from .commands import general, admin, owner, filters, special, payments
 from .queries.client import client_advertisements
+from .queries.advertisement import get_all_additional_advertisements
 from .queries.exists import exists_client
 from .session import session
 
@@ -369,8 +369,8 @@ def clients_keyboard(keyboard, ignore_admins=False):
 @add_back_button
 def admins_keyboard(keyboard):
     admins = select(Client).where(Client.is_admin == expression.true()).execute().fetchall()
-    for admin in admins:
-        keyboard.insert(custom_keyboard_button(admin.username))
+    for adm in admins:
+        keyboard.insert(custom_keyboard_button(adm.username))
 
 # endregion
 
@@ -388,4 +388,28 @@ def adverisement_keyboard(keyboard: InlineKeyboardMarkup, approve_text, reject_t
 def tarifs_keyboard(keyboard: InlineKeyboardMarkup):
     for id, tarif in tarifs.items():
         keyboard.insert(custom_inline_button(f"{tarif.title}", f"tarif:{id}"))
+
+
+@inline_keyboard(row_width=2)
+def decline_invoice_keyboard(keyboard: InlineKeyboardMarkup) -> InlineKeyboardMarkup:
+    keyboard.add(custom_inline_button("Купити", None, pay_button=True))
+    keyboard.insert(custom_inline_button(special["back"], "cancel_payment"))
+
+@reply_keyboard(row_width=2)
+@add_back_button
+def paymets_keyboard(keyboard: ReplyKeyboardMarkup):
+    for command in payments.values():
+        keyboard.insert(custom_keyboard_button(command))
+
+
+@inline_keyboard(row_width=2)
+@add_inline_back_button
+def goods_keyboard(keyboard: InlineKeyboardMarkup, telegram_id, vip: bool=False):
+    if vip:
+        keyboard.insert(custom_inline_button("Вип", "my_vip"))
+    advs = get_all_additional_advertisements(telegram_id)
+    for adv in advs:
+        keyboard.add(custom_inline_button(f"{adv.model.producer.name} {adv.model.name} {adv.year}", f"adv:{adv.id}"))
+    
+
 # endregion

@@ -27,9 +27,17 @@ class AdvertisementStateEnum(enum.Enum):
 
 class AdvertisementKindEnum(enum.Enum):
     vip = "vip"
-    additonal = "additonal"
+    additional = "additonal"
     basic = "basic"
     admin = "admin"
+
+
+dates_by_kind = {
+    AdvertisementKindEnum.admin.value: {"days": 10},
+    AdvertisementKindEnum.vip.value: {"days": 7},
+    AdvertisementKindEnum.basic.value: {"days": 10},
+    AdvertisementKindEnum.additional.value: {"days": 14},
+}
 
 
 class Advertisement(Base):
@@ -84,10 +92,9 @@ class Advertisement(Base):
             description=self.description
         )
 
-    @property
-    def update_next_date(self):
+    def update_publishing_dates(self):
         self.last_published_date = date.today()
-        self.next_published_date = date.today() + relativedelta(months=+1)
+        self.next_published_date = date.today() + relativedelta(**dates_by_kind[self.kind])
 
     def __repr__(self):
         return f"Advertisement(id={self.id!r}, " \

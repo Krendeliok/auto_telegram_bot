@@ -15,14 +15,12 @@ general = {
     "new_adv": "💵Продати машину",
     "filter": "🚗Знайти машину",
     "my_advs": "🧾Мої оголошення",
-    "payment": "💳Платні послуги",
+    # "payment": "💳Платні послуги",
 }
 
 payments = {
-    "vip": "⭐️Стати VIP",
-    "additional_advertisements": "🧾Додаткові оголошення",
-    "additional_subscriptions": "📬Додаткові підписки",
-}
+    "buy": "Придбати",
+    # "my_goods": "👜Мої покупки",
 
 filters = {
     "producer": "Обрати марку та модель",
