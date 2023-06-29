@@ -27,17 +27,9 @@ class AdvertisementStateEnum(enum.Enum):
 
 class AdvertisementKindEnum(enum.Enum):
     vip = "vip"
-    additional = "additonal"
+    additonal = "additonal"
     basic = "basic"
     admin = "admin"
-
-
-dates_by_kind = {
-    AdvertisementKindEnum.admin.value: {"days": 10},
-    AdvertisementKindEnum.vip.value: {"days": 7},
-    AdvertisementKindEnum.basic.value: {"days": 10},
-    AdvertisementKindEnum.additional.value: {"days": 14},
-}
 
 
 class Advertisement(Base):
@@ -78,23 +70,16 @@ class Advertisement(Base):
     @property
     def get_sending_text(self):
         return ADV_TEXT.format(
-            producer=self.model.producer.name,
-            model=self.model.name,
-            price=self.price,
-            year=self.year,
-            engine_type=self.engine.name,
-            engine_type_prompt='Об\'єм' if self.engine.name != 'Електро' else 'Потужність',
-            engine_volume=self.engine_volume,
-            gearbox=self.gearbox.name,
-            range=self.range,
-            city=self.country.name,
-            phone_number=self.phone_number if self.phone_number else self.client.phone_number,
-            description=self.description
+            producer=self.model.producer.name, model=self.model.name, price=self.price, year=self.year, engine_volume=self.engine_volume, 
+            engine_type=self.engine.name, gearbox=self.gearbox.name,
+            range=self.range, city=self.country.name, 
+            phone_number=self.phone_number if self.phone_number else self.client.phone_number, description=self.description
         )
 
-    def update_publishing_dates(self):
+    @property
+    def update_next_date(self):
         self.last_published_date = date.today()
-        self.next_published_date = date.today() + relativedelta(**dates_by_kind[self.kind])
+        self.next_published_date = date.today() + relativedelta(months=+1)
 
     def __repr__(self):
         return f"Advertisement(id={self.id!r}, " \

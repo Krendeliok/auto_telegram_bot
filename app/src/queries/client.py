@@ -4,14 +4,11 @@ from models import (
     Producer,
     Advertisement,
     AdvertisementStateEnum,
-    AdvertisementKindEnum,
 )
 
 from sqlalchemy.sql.expression import and_, true, false
 from datetime import date
 from dateutil.relativedelta import relativedelta
-
-from .exists import exists_basic_adv, exists_vip_adv_space, exists_free_additional_adv
 
 from ..session import session
 
@@ -69,12 +66,7 @@ def remove_admin(telegram_id):
 
 def get_client_by_username(username) -> Client:
     model = session.query(Client).filter_by(username=username).first()
-    return model
-
-
-def get_client_by_telegram_id(telegram_id) -> Client:
-    client = session.query(Client).filter_by(telegram_id=telegram_id).first()
-    return client
+    return model if model else None
 
 
 def client_advertisements(telegram_id) -> list[Advertisement]:
@@ -100,26 +92,26 @@ def get_user_phone(telegram_id) -> str:
     return phone
 
 
-def can_create_and_kind_adv(telegram_id) -> tuple[bool, AdvertisementKindEnum | None]:
-    client: Client = session.query(Client).filter_by(telegram_id=telegram_id).first()
-
-    if any((client.is_admin, client.is_owner)):
-        return (True, AdvertisementKindEnum.admin.value)
-    
-    if not exists_basic_adv(client.id):
-        return (True, AdvertisementKindEnum.basic.value)
-
-    if all((client.is_vip, exists_vip_adv_space(client.id))):
-        return (True, AdvertisementKindEnum.vip.value)
-    
-    if exists_free_additional_adv(client.id):
-        return (True, AdvertisementKindEnum.additional.value)
-
-    return (False, None)
+def can_create_adv(telegram_id) -> bool:
+    advs = (
+        session
+        .query(Advertisement)
+        .join(Client, Client.id == Advertisement.user_id)
+        .where(
+            Client.telegram_id == telegram_id,
+            Advertisement.status.in_([AdvertisementStateEnum.draft, AdvertisementStateEnum.approved]),
+            Advertisement.last_published_date >= date.today() + relativedelta(months=-1),
+        ).all()
+    )
+    return not advs
 
 
 def set_vip(telegram_id, **duration):
-    client: Client = get_client_by_telegram_id(telegram_id)
+    client: Client = (
+        session.query(Client)
+        .where(Client.telegram_id == telegram_id)
+        .first()
+    )
     if not client.is_vip:
         client.is_vip = true()
         client.vip_start = date.today()

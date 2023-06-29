@@ -12,9 +12,9 @@ class AdvertisementPrevilege(Previlege):
     name = "advertisement"
 
 
-# @dataclass
-# class SearchPrevilege(Previlege):
-#     name = "search"
+@dataclass
+class SearchPrevilege(Previlege):
+    name = "search"
 
 
 @dataclass
@@ -40,10 +40,7 @@ tarifs = {
         {
             "months": +1
         }, 
-        [
-            AdvertisementPrevilege(10), 
-            # SearchPrevilege(5)
-        ]
+        [AdvertisementPrevilege(10), SearchPrevilege(5)]
     ),
     "vip3": TarifDetail(
         "vip3", 
@@ -53,10 +50,7 @@ tarifs = {
         {
             "months": +3
         }, 
-        [
-            AdvertisementPrevilege(10), 
-            # SearchPrevilege(5)
-        ]
+        [AdvertisementPrevilege(10), SearchPrevilege(5)]
     ),
     "addition_advertisement": TarifDetail(
         "addition_advertisement", 
@@ -68,14 +62,14 @@ tarifs = {
         }, 
         [AdvertisementPrevilege(1)]
     ),
-    # "addition_search": TarifDetail(
-    #     "addition_search", 
-    #     "Підписка", 
-    #     "Додаткова підписка на нові оголошення", 
-    #     30, 
-    #     {
-    #         "months": +1
-    #     }, 
-    #     [SearchPrevilege(1)]
-    # )
+    "addition_search": TarifDetail(
+        "addition_search", 
+        "Підписка", 
+        "Додаткова підписка на нові оголошення", 
+        30, 
+        {
+            "months": +1
+        }, 
+        [SearchPrevilege(1)]
+    )
 }

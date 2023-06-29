@@ -1,14 +1,4 @@
-from aiogram.utils.exceptions import ValidationError
-from time import sleep
-
-while True:
-    try:
-        from main import bot, session
-        break
-    except ValidationError:
-        sleep(2) 
-        print("Can`t load bot")
-
+from main import bot, session
 from datetime import date
 from models import Advertisement, AdvertisementStateEnum
 from config import CHANNEL_NAME
@@ -20,37 +10,30 @@ import asyncio
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 
-def create_media_group(adv):
-    images = adv.images
-    media_group = MediaGroup()
-    media_group.attach(InputMediaPhoto(images[0].source, caption=adv.get_sending_text))
-    for image in images[1:]:
-        media_group.attach(InputMediaPhoto(image.source))
-    return media_group
 
 async def main():
-    advs = (
-        session.query(Advertisement)
-        .filter(
-            Advertisement.status == AdvertisementStateEnum.approved, 
-            Advertisement.next_published_date <= date.today()
-        )
-        .all()
+    adv = (
+    session.query(Advertisement)
+    .filter(
+        Advertisement.status == AdvertisementStateEnum.approved, 
+        Advertisement.next_published_date == date.today()
     )
-
-    for adv in advs:
+    .first()
+    )
+    if adv is not None:
         adv.update_next_date
         session.flush()
         session.commit()
 
-        media_group = create_media_group(adv)
-
+        images = adv.images
+        media_group = MediaGroup()
+        media_group.attach(InputMediaPhoto(images[0].source, caption=adv.get_sending_text))
+        for image in images[1:]:
+            media_group.attach(InputMediaPhoto(image.source))
         await bot.send_media_group(
                 CHANNEL_NAME,
                 media=media_group
             )
-        await asyncio.sleep(60)
-        
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()

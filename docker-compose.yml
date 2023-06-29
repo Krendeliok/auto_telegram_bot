@@ -12,7 +12,6 @@ services:
       API_TOKEN: ${API_TOKEN}
       CHANNEL_NAME: ${CHANNEL_NAME}
       MAX_IMAGES: ${MAX_IMAGES}
-      VIP_ADVERTISEMENTS: ${VIP_ADVERTISEMENTS}
       PAYMENTS_TOKEN: ${PAYMENTS_TOKEN}
   bot_db:
     image: postgres:12
