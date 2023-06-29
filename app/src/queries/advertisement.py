@@ -101,15 +101,20 @@ def pin_admin(adv_id, admin_id):
 
 
 def is_spam(data, telegram_id):
+    client = get_client_by_telegram_id(telegram_id)
+
+    if any([client.is_admin, client.is_owner]):
+        return False
+    
     adv = (
         session
         .query(Advertisement)
-        .join(Client, Client.id == Advertisement.user_id)
         .filter(
-            Client.telegram_id == telegram_id,
+            Advertisement.user_id == client.id,
             Advertisement.model_id == data["model_id"],
             Advertisement.year == data["year"],
             Advertisement.engine_type_id == data["engine_type_id"],
+            Advertisement.engine_volume == data["engine_volume"],
             Advertisement.gearbox_type_id == data["gearbox_type_id"],
             Advertisement.status.in_((AdvertisementStateEnum.approved, AdvertisementStateEnum.draft))
         ).first()
