@@ -10,7 +10,7 @@ ADV_TEXT = """
 👉Контактний номер ☎️: {phone_number}
 📄Опис авто: {description}
 
-🇺🇦 <a href="https://t.me/+43fSNJjpVrNiMGQy">АвтоЯрмарок</a> 🇺🇦
+⚡️<a href="https://t.me/AutoYarmarokUkraina">АвтоЯрмарок</a>
 📩<a href="https://t.me/AutoYarmarokUaSend_bot">Надіслати оголошення</a>
 """
 

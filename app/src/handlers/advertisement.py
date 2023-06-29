@@ -171,8 +171,8 @@ async def set_engine_volume(message: types.Message, state: FSMContext):
                 data["engine_volume"] = power
         else:
             volume = round(float(message.text), 1)
-            if volume <= 0.0 or volume > 12.0:
-                await message.answer("❌Об'єм повинен бути більше 0 та не більше 12.", reply_markup=back_complete_keyboard(deny=True))
+            if volume <= 0.0 or volume > 20.0:
+                await message.answer("❌Об'єм повинен бути більше 0 та не більше 20.", reply_markup=back_complete_keyboard(deny=True))
                 return
             async with state.proxy() as data:
                 data["engine_volume"] = volume
