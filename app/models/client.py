@@ -24,8 +24,8 @@ class Client(Base):
     is_vip = Column(Boolean, default=expression.false(), server_default=expression.false(), nullable=False)
     is_admin = Column(Boolean, default=expression.false(), server_default=expression.false(), nullable=False)
     is_owner = Column(Boolean, default=expression.false(), server_default=expression.false(), nullable=False)
-    vip_start = Column(Date, nullable=True)
-    vip_end = Column(Date, nullable=True)
+    # vip_start = Column(Date, nullable=True)
+    # vip_end = Column(Date, nullable=True)
 
     advertisements = relationship(
         "Advertisement",
