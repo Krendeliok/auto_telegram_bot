@@ -2,11 +2,14 @@ from models import (
     Client,
     Advertisement,
     AdvertisementStateEnum,
+    AdvertisementKindEnum,
+    AditionalAdvertisements,
 )
 from sqlalchemy.sql import expression
 from sqlalchemy import func
 from ..session import session
 
+from .client import get_client_by_telegram_id
 
 
 def get_random_admin():
@@ -19,8 +22,36 @@ def get_random_admin():
     return admin if admin else None
 
 
-def get_advertisement(id) -> Advertisement:
+def get_advertisement_by_id(id) -> Advertisement:
     return session.query(Advertisement).filter_by(id=id).first()
+
+
+def get_all_additional_advertisements(telegram_id) -> list[Advertisement]:
+    client = get_client_by_telegram_id(telegram_id)
+    return (
+        session
+        .query(Advertisement)
+        .filter(
+            Advertisement.user_id == client.id,
+            Advertisement.kind == AdvertisementKindEnum.additional,
+            Advertisement.status.in_([AdvertisementStateEnum.approved, AdvertisementStateEnum.draft])
+        )
+        .all()
+    )
+
+
+def count_free_additional_adertisements(telegram_id) -> int:
+    client = get_client_by_telegram_id(telegram_id)
+    return (
+        session
+        .query(AditionalAdvertisements)
+        .filter(
+            AditionalAdvertisements.client_id == client.id,
+            AditionalAdvertisements.reserved == expression.false()
+        )
+        .count()
+    )
+
 
 
 def update_adv_status(adv_id, approved: bool):
@@ -70,15 +101,20 @@ def pin_admin(adv_id, admin_id):
 
 
 def is_spam(data, telegram_id):
+    client = get_client_by_telegram_id(telegram_id)
+
+    if any([client.is_admin, client.is_owner]):
+        return False
+    
     adv = (
         session
         .query(Advertisement)
-        .join(Client, Client.id == Advertisement.user_id)
         .filter(
-            Client.telegram_id == telegram_id,
+            Advertisement.user_id == client.id,
             Advertisement.model_id == data["model_id"],
             Advertisement.year == data["year"],
             Advertisement.engine_type_id == data["engine_type_id"],
+            Advertisement.engine_volume == data["engine_volume"],
             Advertisement.gearbox_type_id == data["gearbox_type_id"],
             Advertisement.status.in_((AdvertisementStateEnum.approved, AdvertisementStateEnum.draft))
         ).first()

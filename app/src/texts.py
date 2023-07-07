@@ -2,15 +2,15 @@ ADV_TEXT = """
 🚗Марка та модель: {producer} {model}
 💵Ціна: {price}
 📌Рік: {year}
-📌Об'є̈м двигуна: {engine_volume} 
 ⛽️Вид палива:  {engine_type}
+📌{engine_type_prompt} двигуна: {engine_volume}
 ⚙️Коробка: {gearbox}
 📌Пробіг: {range} тис. км.
 🏘Область знаходження авто: {city}
 👉Контактний номер ☎️: {phone_number}
 📄Опис авто: {description}
 
-🇺🇦 <a href="https://t.me/+43fSNJjpVrNiMGQy">АвтоЯрмарок</a> 🇺🇦
+⚡️<a href="https://t.me/AutoYarmarokUkraina">АвтоЯрмарок</a>
 📩<a href="https://t.me/AutoYarmarokUaSend_bot">Надіслати оголошення</a>
 """
 
