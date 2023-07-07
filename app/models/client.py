@@ -38,10 +38,10 @@ class Client(Base):
         backref="client"
     )
 
-    aditional_advertisements = relationship(
-        "AditionalAdvertisements",
-        backref="client"
-    )
+    # aditional_advertisements = relationship(
+    #     "AditionalAdvertisements",
+    #     backref="client"
+    # )
 
     def __repr__(self):
         return f"Client(id={self.id!r}, " \

@@ -73,7 +73,7 @@ def create_advertisement(data: dict):
         phone_number=data["phone"],
         description=data["description"],
         next_published_date=date.today(),
-        kind=AdvertisementKindEnum.admin.value
+        # kind=AdvertisementKindEnum.admin.value
     )
     session.add(adv)
     session.flush()
