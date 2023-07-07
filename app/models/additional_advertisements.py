@@ -19,11 +19,11 @@ class AditionalAdvertisements(Base):
     end = Column(Date)
     reserved = Column(Boolean, default=expression.false(), server_default=expression.false(), nullable=False)
 
-    # advertisement = relationship(
-    #     "Advertisement",
-    #     backref="additional_adv",
-    #     uselist=False
-    # )
+    advertisement = relationship(
+        "Advertisement",
+        backref="additional_adv",
+        uselist=False
+    )
 
     def __repr__(self):
         return f"Country(id={self.id!r}, " \

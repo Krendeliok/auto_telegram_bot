@@ -70,7 +70,7 @@ async def success_payment(message: Message):
 
 
 def register_hendlers_payment(dp: Dispatcher):
-    # dp.register_message_handler(buy_handler, Text(equals=str(general["payment"])), state="*")
+    dp.register_message_handler(buy_handler, Text(equals=str(general["payment"])), state="*")
     dp.register_callback_query_handler(send_payment, state=FSMPayment.choose_product)
     dp.register_pre_checkout_query_handler(checkout_handler, lambda q: True, state=FSMPayment.make_payment)
     dp.register_message_handler(success_payment, content_types=ContentType.SUCCESSFUL_PAYMENT, state="*")

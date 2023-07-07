@@ -52,14 +52,14 @@ class Advertisement(Base):
         server_default=AdvertisementStateEnum.draft.value,
         nullable=False
         )
-    # kind = Column(
-    #     Enum(AdvertisementKindEnum, values_callable=lambda obj: [e.value for e in obj]),
-    #     nullable=False
-    # )
+    kind = Column(
+        Enum(AdvertisementKindEnum, values_callable=lambda obj: [e.value for e in obj]),
+        nullable=False
+    )
     pinned_admin_id = Column(Integer, ForeignKey("client.id", ondelete="SET NULL"))
     last_published_date = Column(Date, default=date.today())
     next_published_date = Column(Date)
-    # additional_advertisement_id = Column(Integer, ForeignKey("additional_advs.id", ondelete="SET NULL"), nullable=True)
+    additional_advertisement_id = Column(Integer, ForeignKey("additional_advs.id", ondelete="SET NULL"), nullable=True)
 
 
     images = relationship(
