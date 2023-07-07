@@ -3,6 +3,7 @@ version: '3'
 services:
   bot:
     build: ./app
+    restart: always
     depends_on:
       - bot_db
     volumes:
@@ -15,6 +16,7 @@ services:
       PAYMENTS_TOKEN: ${PAYMENTS_TOKEN}
   bot_db:
     image: postgres:12
+    restart: always
     volumes:
       - pg_data:/var/lib/postgresql/data
     environment:
