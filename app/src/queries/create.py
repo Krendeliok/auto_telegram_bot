@@ -60,7 +60,7 @@ def create_client(data: types.Message):
     
 
 def create_advertisement(data: dict):
-    user, *_ = session.query(Client).filter_by(telegram_id=data["user_id"]).first()
+    user = session.query(Client).filter_by(telegram_id=data["user_id"]).first()
     data["phone"] = data.get("phone", user.phone_number)
     data["phone"] = data["phone"] if str(data["phone"]).startswith("+") else f"+{data['phone']}"
     adv = Advertisement(
