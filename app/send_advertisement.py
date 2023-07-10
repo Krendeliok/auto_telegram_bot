@@ -39,7 +39,7 @@ async def main():
     )
 
     for adv in advs:
-        adv.update_next_date
+        adv.update_publishing_dates()
         session.flush()
         session.commit()
 
