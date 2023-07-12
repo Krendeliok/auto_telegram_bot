@@ -94,7 +94,7 @@ class Advertisement(Base):
 
     def update_publishing_dates(self):
         self.last_published_date = date.today()
-        self.next_published_date = date.today() + relativedelta(**dates_by_kind[self.kind.value])
+        self.next_published_date = date.today() + relativedelta(**dates_by_kind[self.kind])
 
     def __repr__(self):
         return f"Advertisement(id={self.id!r}, " \
