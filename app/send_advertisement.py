@@ -1,5 +1,6 @@
 from aiogram.utils.exceptions import ValidationError
 from time import sleep
+import os
 
 while True:
     try:
@@ -19,6 +20,8 @@ import asyncio
 
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
+file_name = "test.log"
+
 
 def create_media_group(adv):
     images = adv.images
@@ -29,6 +32,8 @@ def create_media_group(adv):
     return media_group
 
 async def main():
+    with open(file_name, "w") as f:
+        f.write("Start sending advs")
     advs = (
         session.query(Advertisement)
         .filter(
@@ -37,6 +42,9 @@ async def main():
         )
         .all()
     )
+
+    with open(file_name, "a") as f:
+        f.write(f"Find {len(advs)} advs")
 
     for adv in advs:
         adv.update_publishing_dates()
@@ -50,6 +58,9 @@ async def main():
                 media=media_group
             )
         await asyncio.sleep(60)
+
+    with open(file_name, "a") as f:
+        f.write("Finish sending advs")
         
 
 if __name__ == "__main__":
