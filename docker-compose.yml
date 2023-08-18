@@ -2,7 +2,7 @@ version: '3'
 
 services:
   bot:
-    build: ./app
+    build: ./app/bot
     restart: always
     depends_on:
       - bot_db
