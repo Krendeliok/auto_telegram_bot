@@ -15,7 +15,7 @@ from sqlalchemy import (
 )
 
 from .commands import general, admin, owner, filters, special, payments
-from .queries.client import client_advertisements
+from .queries.client import client_advertisements, is_admin, is_owner
 from .queries.advertisement import get_all_additional_advertisements
 from .queries.exists import exists_client
 from .session import session
@@ -165,6 +165,9 @@ def commands_keyboard(keyboard, telegram_id=None):
 
     for command in commands:
         keyboard.insert(custom_keyboard_button(command))
+    
+    if is_admin(telegram_id) or is_owner(telegram_id):
+        keyboard.insert(custom_keyboard_button(special["create_news"]))
 
 def hide_keyboard():
     return ReplyKeyboardRemove()

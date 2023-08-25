@@ -58,3 +58,9 @@ class FSMPayment(StatesGroup):
     my_goods = State()
     choose_product = State()
     make_payment = State()
+
+
+class FSMNews(StatesGroup):
+    text = State()
+    photo = State()
+    more_images = State()
