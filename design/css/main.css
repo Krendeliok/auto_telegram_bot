@@ -116,6 +116,10 @@ body {
     color: #FFFF05;
 }
 
+.contacts__phone {
+    color: #FFFF05;
+}
+
 .contacts__social {
     display: flex;
     align-items: center;
