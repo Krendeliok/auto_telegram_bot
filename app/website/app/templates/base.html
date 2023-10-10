@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="static/assets/logo.svg" />
+
+    <link rel="stylesheet" href="static/css/icons.css">
+    <link rel="stylesheet" href="static/css/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Rubik:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <title>Авто Ярмарок</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header class="header">
+            <div class="container">
+                <div class="promotion">
+                    <img src="static/assets/percent.svg" alt="">
+                    <div class="promotion__text">Розмісти безкоштовно автомобіль на майданчику! Поспішай! Акція діє до
+                        01.10.</div>
+                </div>
+                <div class="header__body">
+                    <a href="#" class="header__logo">
+                        <img src="static/assets/logo.svg" alt="logo">
+                    </a>
+                    <div class="header__burger"><span></span></div>
+                    <nav class="header__menu">
+                        <ul class="header__list">
+                            <li><a href="#" class="header__link">Головна</a></li>
+                            <li><a href="#about" class="header__link">Про компанію</a></li>
+                            <li><a href="#catalog" class="header__link">Каталог</a></li>
+                            <li><a href="#contacts" class="header__link">Контакти</a></li>
+                        </ul>
+                        <div class="menu__phone">+38 (097) 62 00 777</div>
+                        <div class="menu__social">
+                            <a class="social__link" target="_blank" href="https://www.instagram.com/autoyarmarok/"><img
+                                    src="static/assets/instagram.svg" alt=""></a>
+                            <a class="social__link" target="_blank" href="https://t.me/AutoYarmarokUkraina"><img
+                                    src="static/assets/telegram.svg" alt=""></a>
+                            <a class="social__link" target="_blank" href="http://"><img src="static/assets/viber.svg"
+                                    alt=""></a>
+                            <a class="social__link" target="_blank" href="http://"><img src="static/assets/facebook.svg"
+                                    alt=""></a>
+                            <a class="social__link" target="_blank" href="http://"><img src="static/assets/tiktok.svg"
+                                    alt=""></a>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </header>
+        <div class="content">
+            <div class="container">
+                <div class="content__body">
+                    <div class="content__info">
+                        <div class="info__title">
+                            <div class="title__head">АвтоЯрмарок</div>
+                            <div class="title__subtitle">ПРОДАЖ ТА ПІДБІР АВТО ШВИДКО ТА ВИГІДНО</div>
+                        </div>
+                        <div class="info__body block-subtitle">Ми - твій шлях до автомобільних мрій! Зустріньмося на
+                            нашому
+                            автомайданчику,
+                            де
+                            реалізуються автопобажання та здійснюються угоди з посмішкою!
+                        </div>
+                        <div class="info__image">
+                            <img src="static/assets/avto.svg" alt="">
+                            <div class="info__image-blur"></div>
+                        </div>
+                    </div>
+                    <div class="content__goods">
+                        <div class="goods__good">
+                            <div class="good__title">
+                                <div class="title__number">01</div>
+                                <div class="title__text">Купівля</div>
+                            </div>
+                            <div class="good__text">Підбір якісного авто без зайвих ризиків та трати Вашого часу</div>
+                        </div>
+                        <div class="goods__good">
+                            <div class="good__title">
+                                <div class="title__number">02</div>
+                                <div class="title__text">Продаж</div>
+                            </div>
+                            <div class="good__text">Миттєвий продаж або викуп авто за найкращою ціною</div>
+                        </div>
+                        <div class="goods__good">
+                            <div class="good__title">
+                                <div class="title__number">03</div>
+                                <div class="title__text">Оренда</div>
+                            </div>
+                            <div class="good__text">Відчуй свободу у пересуванні вже сьогодні</div>
+                        </div>
+                        <div class="goods__good">
+                            <div class="good__title">
+                                <div class="title__number">04</div>
+                                <div class="title__text">Кредит</div>
+                            </div>
+                            <div class="good__text">Все просто: купуй сьогодні – плати завтра</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="about" id="about">
+            <div class="container">
+                <div class="about__body">
+                    <div class="about__content">
+                        <div class="about__content-title block-title">Про нас</div>
+                        <div class="about__content-subtitle">
+                            <div class="content-subtitle__text block-subtitle">Ми – компанія з продажу та оренди авто.
+                                Наша команда
+                                професіоналів надасть Вам усю необхідну допомогу і підтримку в
+                                процесі продажу. Вам необхідно просто привезти свій автомобіль на майданчик за адресою
+                                вул.
+                                Фізкультурна, 2а
+                                (Закарпатська обл., с. Кінчеш) та скористатися нашими послугами:</div>
+                            <div class="content-subtitle__list">
+                                <ul>
+                                    {%
+                                        set list_items = [
+                                            "Продаж авто", "Підбір авто", "Оренда авто", "Кредит", "Лізінг", "Передпродажне ТО", 
+                                            "Регулярне ТО", "Оформлення договору куплі-продажу", "Перевірка ЛКП", 
+                                            "Малярно-рехтовочні роботи", "Підбір автозапчастин", "Доставка авто в будь-який регіон Ураїни", 
+                                            "Пригон авто під замовлення з Європи, США, Канади, Китаю"
+                                        ]
+                                    %}
+                                    {% for i in list_items %}
+                                        <li class="_icon-correct">{{i}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about__image"><img src="static/assets/image2.png" alt=""></div>
+                </div>
+            </div>
+        </div>
+        <div class="concern">
+            <div class="container">
+                <div class="concern__title block-title">До нас варто заїхати, якщо Вас цікавить:</div>
+                <div class="concern__content">
+                    <div class="concern__item">
+                        <div class="concern__item-title">Відмінне місце розташування</div>
+                        <div class="concern__item-text">Майданчик розташований на місці, де понад 30 років знаходився
+                            автобазар на
+                            окружній дорозі в с. Кінчеш.</div>
+                    </div>
+                    <div class="concern__item">
+                        <div class="concern__item-title">Швидкий продаж автомобіля</div>
+                        <div class="concern__item-text">Завдяки широкому потоку потенційних покупців, зацікавлених у
+                            придбанні
+                            автомобілей різних марок.</div>
+                    </div>
+                    <div class="concern__item">
+                        <div class="concern__item-title">Цілодобова охорона та відеонагляд</div>
+                        <div class="concern__item-text">Впевненість у безпеці Вашої автівки для нас є найвищим
+                            пріоритетом.</div>
+                    </div>
+                    <div class="concern__item">
+                        <div class="concern__item-title">Безкоштовна реклама для авто</div>
+                        <div class="concern__item-text">Публікація оголешення про продаж Вашого автомобіля у наших
+                            соціальніх мережах та
+                            на сайті.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="contacts" id="contacts">
+            <div class="container">
+                <div class="contacts__body">
+                    <div class="contacts__data">
+                        <div class="contacts__title block-title">Де нас знайти?</div>
+                        <div class="contacts__text">
+                            <div class="text__contact">
+                                <div class="contact__title _icon-addres">Адреса</div>
+                                <div class="contact__subtitle">Закарпаття, с. Кінчеш (околиця Ужгороду) Фізкультурна
+                                    вул., 2а – територія
+                                    авторинку</div>
+                            </div>
+                            <div class="text__contact">
+                                <div class="contact__title _icon-calendar">Графік роботи</div>
+                                <div class="contact__subtitle">Щодня 09:00 – 17:00</div>
+                            </div>
+                            <div class="text__contact">
+                                <div class="contact__title _icon-phone">Телефони</div>
+                                <div class="contact__subtitle">+38 (097) 62 00 777 <br>+38 (050) 62 00 777</div>
+                            </div>
+                            <div class="text__contact">
+                                <div class="contact__title _icon-mail">Пошта</div>
+                                <div class="contact__subtitle">autoyarmarok@gmail.com</div>
+                            </div>
+                            <div class="text__media">
+                                <div class="media__item"><a href="http://"><img src="static/assets/instagram.svg" alt=""></a>
+                                </div>
+                                <div class="media__item"><a href="http://"><img src="static/assets/telegram.svg" alt=""></a>
+                                </div>
+                                <div class="media__item"><a href="http://"><img src="static/assets/viber.svg" alt=""></a></div>
+                                <div class="media__item"><a href="http://"><img src="static/assets/facebook.svg" alt=""></a>
+                                </div>
+                                <div class="media__item"><a href="http://"><img src="static/assets/tiktok.svg" alt=""></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contacts__map"><img src="static/assets/map.png" alt="map"></div>
+                </div>
+
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <div class="footer__body">
+                    <a href="#" class="header__logo">
+                        <img src="static/assets/logo.svg" alt="logo">
+                    </a>
+                    <div class="footer__menu">
+                        <ul class="footer__list">
+                            <li><a href="#" class="header__link">Головна</a></li>
+                            <li><a href="#about" class="header__link">Про компанію</a></li>
+                            <li><a href="#catalog" class="header__link">Каталог</a></li>
+                            <li><a href="#contacts" class="header__link">Контакти</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__copyright">© ТМ «АвтоЯрмарок». Всі права захищено.</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="static/js/index.js"></script>
+</body>
+
+</html>

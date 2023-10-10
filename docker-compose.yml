@@ -1,11 +1,26 @@
 version: '3'
 
 services:
+  web:
+    build: ./app/website
+    restart: always
+    ports:
+      - "5000:5000"
+    command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5000 --reload
+  frontend:
+    build: 
+      context: ./app/frontend
+      dockerfile: Dockerfile.prod
+    container_name: frontend-prod
+    ports: 
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
   bot:
     build: ./app/bot
     restart: always
     depends_on:
-      - bot_db
+      - db
     volumes:
       - ${PWD}/app/alembic/versions/:/app/alembic/versions/
     environment:
@@ -15,7 +30,7 @@ services:
       MAX_IMAGES: ${MAX_IMAGES}
       VIP_ADVERTISEMENTS: ${VIP_ADVERTISEMENTS}
       PAYMENTS_TOKEN: ${PAYMENTS_TOKEN}
-  bot_db:
+  db:
     image: postgres:12
     restart: always
     volumes:
