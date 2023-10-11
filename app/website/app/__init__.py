@@ -1,14 +1,16 @@
 import os
 
 from flask import Flask
+from flask_restful import Api
 
 from app.routes import route
 from app.config import config, init_config
 
 def create_flask_app():
     app = Flask(__name__)
+    api = Api(app)
 
-    route(app)
+    route(api)
 
     path = os.environ.get('CONFIG_PATH') if os.environ.get(
         'CONFIG_PATH') else "./settings.ini"

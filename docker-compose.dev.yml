@@ -1,0 +1,31 @@
+version: "3"
+services:
+  web:
+    build: 
+      context: ./app/website
+      dockerfile: Dockerfile.dev
+    container_name: server-dev-c
+    restart: always
+    depends_on:
+      - db
+    volumes: 
+      - ./app/website:/app
+    ports:
+      - "5000:5000"
+    command: flask --app main:create_flask_app run --host=0.0.0.0 --debug
+  frontend:
+    build:
+      context: ./app/frontend
+      dockerfile: Dockerfile.dev
+    container_name: client-dev-c
+    depends_on:
+      - web
+    volumes:
+      - ./app/frontend:/frontend
+      - node_modules:/frontend/node_modules/
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+volumes:
+  node_modules:

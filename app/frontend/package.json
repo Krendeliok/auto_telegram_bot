@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "main": "index.js",
+  "proxy": "http://web:5000/api/v1",
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --open --hot --config webpack.dev.js",

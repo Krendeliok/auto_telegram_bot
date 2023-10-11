@@ -1,49 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from './Card/Card';
 
-import autoImage from '../../assets/avto.png';
-import secondCar from '../../assets/second_car.png';
 import AboutCarPopup from '../Popup/AboutCarPopup';
 
 function CardList({ lockBody }) {
-    const cards = [
-        {
-            id: 1,
-            producer: "BMW",
-            model: "M3",
-            year: 2003,
-            engine_type: "Дизель",
-            engine_volume: 1.9,
-            gearbox_type: "Механіка",
-            range: 100,
-            based_country: "Закарпатська",
-            description: "Авто із Чехії, приведене до ладу. Перебрана ходова, питань по мотору та коробці нема, масло не бере, повторний окрас капоту, є комплект шин, нюанс по лобовому склу.",
-            price: 200000,
-            images: [
-                { id: 3, source: secondCar },
-                { id: 4, source: autoImage },
-                { id: 5, source: autoImage },
-            ]
-        },
-        {
-            id: 2,
-            producer: "BMW",
-            model: "M3",
-            year: 2003,
-            engine_type: "Дизель",
-            engine_volume: 1.9,
-            gearbox_type: "Механіка",
-            range: 100,
-            based_country: "Закарпатська",
-            description: "Авто із Чехії, приведене до ладу. Перебрана ходова, питань по мотору та коробці нема, масло не бере, повторний окрас капоту, є комплект шин, нюанс по лобовому склу.",
-            price: 200000,
-            images: [
-                { id: 6, source: secondCar },
-                { id: 7, source: autoImage },
-                { id: 8, source: autoImage },
-            ]
-        }
-    ]
+    const [ cards, setCards ] = useState([])
+    
+    const url = "/advertisements"
+
+    useEffect(() => {
+        fetch(url).then(response => {
+            if (response.status == 200) {
+                return response.json()
+            }
+        }).then(data => setCards(data))
+    }, [])
     
     const [popupData, setAboutCarModal] = useState({
         visible: false,

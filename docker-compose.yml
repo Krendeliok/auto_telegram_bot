@@ -2,8 +2,13 @@ version: '3'
 
 services:
   web:
-    build: ./app/website
+    build: 
+      context: ./app/website
+      dockerfile: Dockerfile.prod
+    container_name: server-prod
     restart: always
+    depends_on:
+      - db
     ports:
       - "5000:5000"
     command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5000 --reload
@@ -12,6 +17,8 @@ services:
       context: ./app/frontend
       dockerfile: Dockerfile.prod
     container_name: frontend-prod
+    depends_on:
+      - web
     ports: 
       - "8080:80"
     environment:

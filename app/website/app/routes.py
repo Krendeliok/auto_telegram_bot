@@ -1,4 +1,4 @@
-from views.index import index_bp
+from api.advertisements import Advertisements
 
-def route(app):
-    app.register_blueprint(index_bp)
+def route(api):
+    api.add_resource(Advertisements, "/api/v1/advertisements")
