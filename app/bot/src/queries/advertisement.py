@@ -4,6 +4,7 @@ from models import (
     AdvertisementStateEnum,
     AdvertisementKindEnum,
     AditionalAdvertisements,
+    Image
 )
 from sqlalchemy.sql import expression
 from sqlalchemy import func
@@ -52,7 +53,19 @@ def count_free_additional_adertisements(telegram_id) -> int:
         .count()
     )
 
+def get_all_images():
+    return (
+        session
+        .query(Image)
+        .all()
+    )
 
+def set_new_image_source(image_id, new_source, new_cloudinary_source):
+    image = session.query(Image).filter(Image.id == image_id).first()
+    image.source = new_source
+    image.cloudinary_source = new_cloudinary_source
+    session.add(image)
+    session.commit()
 
 def update_adv_status(adv_id, approved: bool):
     (

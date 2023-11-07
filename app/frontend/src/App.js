@@ -7,24 +7,17 @@ import Catalog from './components/Catalog/Catalog';
 import Contacts from './components/Contacts/Contacts';
 import Footer from './components/Footer/Footer';
 
+import bodySetLock from './utils/lockBody'
+
 import './styles/App.css';
 import './styles/Icons.css';
 
 function App() {
-  const bodySetLock = (is_lock) => {
-    if (is_lock) {
-      document.querySelector("body").classList.add("lock");
-    }
-    else {
-      document.querySelector("body").classList.remove("lock");
-    }
-  }
-
   return (
     <div className="wrapper">
       <Header />
       <Content/>
-      <About lockBody={ bodySetLock } />
+      <About/>
       <Concern />
       <Catalog lockBody={ bodySetLock } />
       <Contacts />

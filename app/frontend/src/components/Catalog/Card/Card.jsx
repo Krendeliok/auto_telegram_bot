@@ -13,7 +13,6 @@ function Card({ card_data, openPopup }) {
                     <div className="info__item _icon-calendar">{card_data.year} рік</div>
                     <div className="info__item _icon-oil">{card_data.engine_type} {card_data.engine_volume}</div>
                     <div className="info__item _icon-transmission">{card_data.gearbox_type}</div>
-                    <div className="info__item _icon-fwd">Повний</div>
                     <div className="info__item _icon-road">{card_data.range} тис. км</div>
                 </div>
                 <div className="data__region">Область знаходження авто: {card_data.based_country}.</div>

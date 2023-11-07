@@ -3,20 +3,29 @@
     padding: 0;
 }
 
-/* width */
 ::-webkit-scrollbar {
-    display: none;
+    width: 2px;
+}
+::-webkit-scrollbar-track {
+    background: inherit;
+}
+::-webkit-scrollbar-thumb {
+    background: #FFFF05;
 }
 
 html,
-body {
-    height: 100%;
+body,
+button {
     font-family: 'Rubik', serif;
     font-style: normal;
     font-weight: 400;
     line-height: 160%;
     background-color: rgba(20, 20, 20, 1);
     color: #fff;
+}
+
+form {
+    position: relative;
 }
 
 body.lock {
@@ -114,6 +123,25 @@ select:focus-visible {
 
 .secondary__button:hover {
     background-color: rgba(138, 138, 4, 0.50);
+}
+
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    position: relative;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #F4F5F3;
+    background-color: inherit;
+    outline: none;
+    cursor: pointer;
+}
+input[type="checkbox"].checked::before {
+    content: "\2714";
+    position: absolute;
+    top: -3px;
+    left: 0;
+    color: #01B851;
 }
 
 /* ----------------------------------------- HEADER ------------------------------------------------*/
@@ -820,6 +848,9 @@ select:focus-visible {
     gap: 60px;
     min-width: 100%;
 }
+.content__cards h1 {
+    text-align: center;
+}
 
 .content__cards hr {
     background-color: rgba(255, 255, 255, 0.30);
@@ -842,6 +873,7 @@ select:focus-visible {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 100%;
 }
 
 .more-cars__button {
@@ -952,6 +984,31 @@ select:focus-visible {
     font-style: normal;
     font-weight: 500;
     line-height: 120%;
+}
+
+.choosen__items {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    max-width: 100%;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+}
+
+.remove__item {
+    color: #808080;
+    width: 12px;
+    height: 12px;
+    cursor: pointer;
+}
+
+.choosen__items-item {
+    display: flex;
+    gap: 4px;
 }
 
 
@@ -1125,6 +1182,7 @@ select:focus-visible {
     flex-direction: column;
     gap: 40px;
     align-items: center;
+    justify-content: center;
 }
 
 .popup__text {
@@ -1140,6 +1198,7 @@ select:focus-visible {
     font-style: normal;
     font-weight: 500;
     line-height: normal;
+    text-align: center;
 }
 
 .popup__subtitle {
@@ -1154,6 +1213,7 @@ select:focus-visible {
 .popup__form form {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
     gap: 40px;
 }
 
@@ -1162,23 +1222,211 @@ select:focus-visible {
     flex-direction: column;
     gap: 20px;
 }
+.inputs.row {
+    flex-direction: row;
+    gap: 80px;
+}
 
 .input__group {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     gap: 8px;
-    align-self: stretch;
+}
+
+.form__checkboxes {
+    display: flex;
+    gap: 80px;
+    height: 580px;
+}
+
+.form__ranged {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ranged__field {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-bottom: 9px;
+}
+
+.ranged__field input[type="number"] {
+    padding: 4px 12px;
+    border: 1px solid #F4F5F3;
+
+    width: 66px;
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+    color: #8E8E8E;
+
+    background-color: inherit;
+
+    text-align: center;
+
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.ranged__field-label {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.ranged__field-values {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 280px;
+}
+
+.ranged__field-values span {
+    content: "";
+    height: 2px;
+    width: 24px;
+
+    background-color: #F4F5F3;
+}
+
+.measuring__points {
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+}
+
+.save-and-choosen {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+/* ----------------------------------------- SLIDER ------------------------------------------------*/
+.slider {
+    position: relative;
+    width: 280px;
+}
+
+.slider__track,
+.slider__range {
+    position: absolute;
+    height: 4px;
+}
+
+.slider__track {
+    background-color: #F4F5F3;
+    width: 100%;
+    z-index: 1;
+}
+
+.slider__range {
+    background-color: #FFFF05;
+    z-index: 2;
+}
+
+.thumb,
+.thumb::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.thumb {
+    pointer-events: none;
+    position: absolute;
+    height: 0;
+    width: 280px;
+    outline: none;
+}
+
+.thumb--left {
+    z-index: 3;
+}
+
+.thumb--right {
+    z-index: 4;
+}
+
+.thumb::-webkit-slider-thumb {
+    background-color: #FFFF05;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+    margin-top: 4px;
+    pointer-events: all;
+    position: relative;
+}
+
+.thumb::-moz-range-thumb {
+    background-color: #FFFF05;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+    margin-top: 4px;
+    pointer-events: all;
+    position: relative;
+}
+/* ----------------------------------------- CHECKBOXES ------------------------------------------------*/
+.column {
+    display: flex;
+    flex-direction: column;
+
+    gap: 40px;
+    height: 580px;
+    overflow: auto;
+}
+
+.checkboxes__group {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.checkboxes__group>label {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.checkboxes__group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 536px;
+    overflow: auto;
+}
+
+.checkboxes__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+    cursor: pointer;
 }
 
 .input__group input {
     padding: 10px 16px;
     color: #8E8E8E;
     background-color: #F4F5F3;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    align-self: stretch;
 }
 
 .popup__button {

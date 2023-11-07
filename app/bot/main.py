@@ -4,12 +4,19 @@ from src.session import create_session
 from aiogram import Bot, executor
 
 from sqlalchemy import create_engine
-from config import DATABASE_URI, API_TOKEN
+from config import DATABASE_URI, API_TOKEN, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
 
 from models import Base
 
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
+import cloudinary
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET
+)
 
 logging.basicConfig(level=logging.INFO)
 

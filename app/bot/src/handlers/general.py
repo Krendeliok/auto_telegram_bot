@@ -3,6 +3,8 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import MediaGroup, InputMediaPhoto
 
+from cloudinary import uploader
+
 from ..keyboards import (
     contact_keyboard, 
     commands_keyboard, 
@@ -43,6 +45,8 @@ from ..queries.filter import (
 from ..queries.advertisement import (
     sell_adv,
     delete_adv,
+    get_all_images,
+    set_new_image_source,
 )
 from ..queries.create import (
     create_client
@@ -50,6 +54,24 @@ from ..queries.create import (
 
 from ..contexts import FSMMenu, FSMFilter
 from ..commands import general, filters, special
+
+async def update_images(message: types.Message):
+    images = get_all_images()
+    await message.answer("Start")
+
+    for image in images:
+        media_group = MediaGroup()
+        media_group.attach(InputMediaPhoto(image.source))
+        sended_image = await message.bot.send_media_group(message.chat.id, media_group)
+        source =  sended_image[0].photo[-1].file_id
+        
+        file = await message.bot.get_file(source)
+        file_url = message.bot.get_file_url(file.file_path)
+        cloudinary_source = uploader.upload(file_url, folder="autoyarmarok")["url"]
+
+        set_new_image_source(image.id, source, cloudinary_source)
+        await message.bot.delete_message(message.chat.id, sended_image[0].message_id)
+    await message.answer("Finish")
 
 
 async def start_command(message: types.Message, state: FSMContext, **kwargs):
@@ -312,6 +334,7 @@ async def filter_range(message: types.Message, state: FSMContext, *args):
 
 
 def register_hendlers_general(dp: Dispatcher):
+    dp.register_message_handler(update_images, commands=['update_images'], state="*")
     dp.register_message_handler(start_command, commands=['start'], state="*")
     dp.register_message_handler(get_contact, content_types=types.ContentType.CONTACT, state=FSMMenu.contact)
     dp.register_message_handler(my_advertisements, Text(equals=general["my_advs"]))

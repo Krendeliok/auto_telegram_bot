@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AboutImage from '../../assets/image2.png';
 import AboutList from './AboutList';
 import PrimaryButton from '../UI/PrimaryButton';
 import FeedbackPopup from '../Popup/FeedbackPopup';
 
-function About({ lockBody }) {
-    const [feedbackModal, setFeedbackModal] = useState(false);
-    const setFeedbackModalVisible = (v) => {
-        setFeedbackModal(v);
-        lockBody(v);
-    }
+import bodySetLock from '../../utils/lockBody'
+
+function About() {
+    const [feedbackModal, setFeedbackModalVisible] = useState(false);
+
+    useEffect(() => {
+        bodySetLock(feedbackModal)
+    }, [feedbackModal])
 
     return (
         <div className="about" id="about">

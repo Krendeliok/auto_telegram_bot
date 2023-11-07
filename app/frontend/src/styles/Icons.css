@@ -1,12 +1,11 @@
 @font-face {
-    font-family: 'icons';
-    src: url('../assets/fonts/icons.woff2') format('woff2'),
-        url('../assets/fonts/icons.woff') format('woff');
+    font-family: icons;
+        src: url('../assets/fonts/icons.ttf?gk5qyy') format('ttf');
 }
 
 [className^="_icon-"],
 [className*="_icon-"] {
-    font-family: 'icons', serif !important;
+    font-family: icons, serif !important;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
@@ -77,11 +76,6 @@
 ._icon-road:before {
     color: #01B851;
     content: "\e909";
-}
-
-._icon-sort:before {
-    color: #ffff05;
-    content: "\e90a";
 }
 
 ._icon-time:before {

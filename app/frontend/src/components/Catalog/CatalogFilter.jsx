@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
+import FilterPopup from '../Popup/FilterPopup'
 import SecondaryButton from '../UI/SecondaryButton';
 
-function CatalogFilter() {
+import bodySetLock from '../../utils/lockBody';
+
+function CatalogFilter({ countChecked, setFilter }) {
+    const count = countChecked();
+    const [filterVisible, setFilterVisible] = useState(false);
+    useEffect(() => {
+        bodySetLock(filterVisible);
+    }, [filterVisible])
+
+    const updateFilter = (filter) => {
+        setFilterVisible(false);
+        setFilter(filter);
+    }
+
     return (
         <div className="catalog__filter">
+            <FilterPopup visible={filterVisible} setVisible={setFilterVisible} countChecked={countChecked} updateFilter={updateFilter} />
             <div className="filter__order">
                 <button className="order__toogle-order _icon-sort"></button>
                 <div className="order__select">
@@ -16,7 +31,7 @@ function CatalogFilter() {
                     </select>
                 </div>
             </div>
-            <SecondaryButton additionalClasses={["filter__button", "_icon-filter"]}>Фільтр</SecondaryButton>
+            <SecondaryButton onClick={() => setFilterVisible(true)} additionalClasses={["filter__button", "_icon-filter"]}>{count > 0 ? `Фільтр (${count})` : "Фільтр" }</SecondaryButton>
         </div>
     );
 }

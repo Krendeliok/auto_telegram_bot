@@ -3,7 +3,9 @@ from aiogram import Dispatcher, types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InputMediaPhoto, MediaGroup
 
-from ..contexts import FSMAdvertisement, FSMMenu
+from ..contexts import FSMAdvertisement
+
+from cloudinary import uploader
 
 from ..queries.exists import (
     exists_producer,
@@ -259,7 +261,12 @@ async def set_images(message: types.Message, state: FSMContext):
     if message.photo:
         async with state.proxy() as data:
             data["image_counter"] = 1
-            data["images"] = [message.photo[0].file_id]
+            image = {"source": message.photo[-1].file_id}
+            file = await message.bot.get_file(message.photo[-1].file_id)
+            file_url = message.bot.get_file_url(file.file_path)
+            upload_response = uploader.upload(file_url, folder="autoyarmarok")
+            image["cloudinary_source"] = upload_response["url"]
+            data["images"] = [image]
         await state.set_state(FSMAdvertisement.more_images)
 
 
@@ -268,7 +275,12 @@ async def more_images(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         if data["image_counter"] < int(MAX_IMAGES):
             data["image_counter"] += 1
-            data["images"].append(message.photo[0].file_id)
+            image = {"source": message.photo[-1].file_id}
+            file = await message.bot.get_file(message.photo[-1].file_id)
+            file_url = message.bot.get_file_url(file.file_path)
+            upload_response = uploader.upload(file_url, folder="autoyarmarok")
+            image["cloudinary_source"] = upload_response["url"]
+            data["images"].append(image)
         else:
             await message.answer(f"🟠Фотографій вже забагато, я залишу тільки перші {MAX_IMAGES}", reply_markup=back_complete_keyboard(deny=True, complete=True))
 
@@ -276,7 +288,7 @@ async def more_images(message: types.Message, state: FSMContext):
 @back_handler(previous_func=set_city, key="based_country", alt_func=set_description, alt_key="description")
 async def submition_advertisement(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        adv_id = create_advertisement(data)
+        adv_id = await create_advertisement(data)
     await message.answer("✅Пост відправлено адміну. Через деякий час вам надішлеться відповідь.", reply_markup=commands_keyboard(message.from_user.id))
     adv = get_advertisement_by_id(adv_id)
     await submit_to_admin_for_approval(message, adv)
