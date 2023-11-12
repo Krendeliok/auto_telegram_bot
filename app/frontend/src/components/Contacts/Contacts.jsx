@@ -9,31 +9,36 @@ import FacebookLink from '../Links/FacebookLink';
 import mapImage from '../../assets/map.png';
 import Contact from './Contact';
 
+import LocationSVG from "../../assets/location.svg"
+import ClockSVG from "../../assets/time.svg"
+import PhoneSVG from "../../assets/phone.svg"
+import MailSVG from "../../assets/mail.svg"
+
 function Contacts() {
     const contacts = [
         {
             id: 1,
             title: "Адреса",
             body: "Закарпаття, с. Кінчеш (околиця Ужгороду) Фізкультурна вул., 2а – територія авторинку",
-            icon_class: "_icon-location"
+            image: LocationSVG
         },
         {
             id: 2,
             title: "Графік роботи",
             body: "Щодня 09:00 – 17:00",
-            icon_class: "_icon-calendar"
+            image: ClockSVG
         },
         {
             id: 3,
             title: "Телефони",
             body: "+38 (097) 62 00 777 <br/>+38(050) 62 00 777",
-            icon_class: "_icon-phone"
+            image: PhoneSVG
         },
         {
             id: 4,
             title: "Пошта",
             body: "autoyarmarok@gmail.com",
-            icon_class: "_icon-mail"
+            image: MailSVG
         },
     ]
 

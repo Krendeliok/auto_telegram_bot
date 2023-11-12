@@ -1,5 +1,7 @@
 import React from 'react';
 
+import DoneSVG from "../../assets/done.svg"
+
 function AboutList() {
     const items = [
         "Продаж авто",
@@ -21,7 +23,10 @@ function AboutList() {
         <div className="content-subtitle__list">
             <ul>
                 {items.map((item, index) =>  
-                    <li className="_icon-done" key={index}>{item}</li>
+                    <li key={index}>
+                        <img src={DoneSVG} alt="" />
+                        {item}
+                    </li>
                 )}
             </ul>
         </div>

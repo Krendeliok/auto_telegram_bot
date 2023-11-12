@@ -42,7 +42,7 @@ function FilterForm({ sendFilter }) {
         setGearboxes(addCheckedFieldToObject(response.data));
     })
 
-    const [getPrice, price] = useFormRangedField(0, 30000, 1);
+    const [getPrice, price] = useFormRangedField(0, 1000000, 1);
     const [fetchMaxPrice] = useFetching(async () => {
         const response = await AdvertisementService.getMaxPrice();
         console.log(response.data)

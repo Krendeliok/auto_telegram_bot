@@ -19,7 +19,7 @@ from models import (
 )
 
 from sqlalchemy.sql import expression
-from sqlalchemy import func
+from sqlalchemy import func, desc, asc
 
 import json
 
@@ -33,7 +33,16 @@ def range_from_args(args: dict, range_name: str, is_float: bool = False):
         "cleft": convert_type(args.get(f"{range_name}_min", 0)), 
         "cright": convert_type(args.get(f"{range_name}_max", 0))
     }
-        
+
+def parse_sort(sort):
+    if "cheapest" == sort:
+        return asc(Advertisement.price)
+    if "expensive" == sort:
+        return desc(Advertisement.price)
+    if "new" == sort:
+        return desc(Advertisement.year)
+
+    return asc(Advertisement.id)
 
 class AdvertisementsApi(Resource):
     def get(self):
@@ -42,6 +51,7 @@ class AdvertisementsApi(Resource):
         producers = list_from_args(request.args, "_producers")
         fuels = list_from_args(request.args, "_fuels")
         gearboxes = list_from_args(request.args, "_gearboxes")
+        sort = parse_sort(request.args.get("_sort_by"))
 
         filters = []
         joins = []
@@ -78,6 +88,8 @@ class AdvertisementsApi(Resource):
                 Advertisement.engine_volume.between(**engine_volume),
                 *filters
             )
+
+        advs = advs.order_by(sort)
 
         if any([limit, page]):
             headers.append(("x-total-count", advs.count()))

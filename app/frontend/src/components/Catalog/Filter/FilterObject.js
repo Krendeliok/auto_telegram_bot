@@ -49,8 +49,9 @@ class FilterObject {
     }
 
     asDict() {
-        const res = {};
+        let res = {};
         this.fields.forEach(val => Object.assign(res, val.asDict()));
+        res._sort_by = this.sort_by;
         return res;
     }
 }

@@ -5,8 +5,31 @@ import SecondaryButton from '../UI/SecondaryButton';
 
 import bodySetLock from '../../utils/lockBody';
 
-function CatalogFilter({ countChecked, setFilter }) {
+import FilterSVG from "../../assets/filter.svg"
+import SelectField from '../UI/Forms/Fields/SelectField';
+
+const sortOptions = [
+        {
+            value: "default",
+            title: "За замовчуванням"
+        },
+        {
+            value: "cheapest",
+            title: "Від дешевих до дорогих"
+        },
+        {
+            value: "expensive",
+            title: "Від дорогих до дешевих"
+        },
+        {
+            value: "new",
+            title: "Спочатку нові"
+        }
+    ]
+
+function CatalogFilter({ countChecked, setFilter, sort, setSort }) {
     const count = countChecked();
+    const selectedSort = sortOptions.find((item) => item.value === sort);
     const [filterVisible, setFilterVisible] = useState(false);
     useEffect(() => {
         bodySetLock(filterVisible);
@@ -17,21 +40,30 @@ function CatalogFilter({ countChecked, setFilter }) {
         setFilter(filter);
     }
 
+    const handleSortSelect = (value) => {
+        setSort(value);
+    };
+
     return (
         <div className="catalog__filter">
             <FilterPopup visible={filterVisible} setVisible={setFilterVisible} countChecked={countChecked} updateFilter={updateFilter} />
-            <div className="filter__order">
-                <button className="order__toogle-order _icon-sort"></button>
+            <div className="filter__order" >
                 <div className="order__select">
-                    <select>
-                        <option value="default">За замовчуванням</option>
-                        <option value="cheapest">Від дешевих до дорогих</option>
-                        <option value="expensive">Від дорогих до дешевих</option>
-                        <option value="new">Спочатку нові</option>
-                    </select>
+                    <SelectField
+                        options={sortOptions}
+                        placeholder={"За замовчуванням"}
+                        onChange={handleSortSelect}
+                        selected={selectedSort || null}
+                    />
                 </div>
             </div>
-            <SecondaryButton onClick={() => setFilterVisible(true)} additionalClasses={["filter__button", "_icon-filter"]}>{count > 0 ? `Фільтр (${count})` : "Фільтр" }</SecondaryButton>
+            <SecondaryButton
+                onClick={() => setFilterVisible(true)}
+                additionalClasses={["filter__button"]}
+            >
+                <img src={FilterSVG} alt="" />
+                {count > 0 ? `Фільтр (${count})` : "Фільтр"}
+            </SecondaryButton>
         </div>
     );
 }

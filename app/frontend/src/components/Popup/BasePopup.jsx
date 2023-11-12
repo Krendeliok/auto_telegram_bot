@@ -1,5 +1,7 @@
 import React from 'react';
 
+import CloseSVG from "../../assets/close.svg"
+
 function BasePopup({ children, visible, setVisible}) {
     const rootClasses = ["popup__wrapper"];
 
@@ -18,7 +20,7 @@ function BasePopup({ children, visible, setVisible}) {
                 <div className="popup__body">
                     { children }
                 </div>
-                <div className="popup__close _icon-close" onClick={closePopup}></div>
+                <div className="popup__close" onClick={closePopup}><img src={CloseSVG} alt="" /></div>
             </div>
         </div>
     );
