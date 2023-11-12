@@ -4,12 +4,12 @@ import Card from './Card/Card';
 import AboutCarPopup from '../Popup/AboutCarPopup';
 
 function CardList({ lockBody, cards, cardsLoading }) {
-    const [popupData, setAboutCarModal] = useState({
+    const [popupData, setPopupData] = useState({
         visible: false,
         advertisement_id:0
     });
     const setAboutCarModalVisible = (visible, advertisement_id) => {
-        setAboutCarModal({ visible: visible, advertisement_id: advertisement_id});
+        setPopupData({ visible: visible, advertisement_id: advertisement_id});
         lockBody(visible);
     }
 

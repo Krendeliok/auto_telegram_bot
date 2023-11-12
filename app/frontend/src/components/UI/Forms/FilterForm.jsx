@@ -45,7 +45,6 @@ function FilterForm({ sendFilter }) {
     const [getPrice, price] = useFormRangedField(0, 1000000, 1);
     const [fetchMaxPrice] = useFetching(async () => {
         const response = await AdvertisementService.getMaxPrice();
-        console.log(response.data)
     })
     const [getYear, year] = useFormRangedField(1975, 2023, 1);
     const [getRange, range] = useFormRangedField(0, 999, 1);

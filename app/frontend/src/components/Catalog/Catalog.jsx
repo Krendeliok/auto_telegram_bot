@@ -14,12 +14,22 @@ const limit = 3;
 function Catalog({ lockBody }) {
     const [cards, setCards] = useState([])
     const [page, setPage] = useState(1);
+
+    const [maxCards, setMaxCards] = useState(0)
+
     const [filter, setFilter] = useState(new FilterObject())
     const [sort, setSort] = useState('default');
     const [fetchCards, cardsLoading] = useFetching(async () => {
         const response = await AdvertisementService.getAll(filter, limit, page);
+        setMaxCards(response.headers["x-total-count"])
         setCards([...response.data]);
     })
+
+    const handleMoreCars = () => {
+        if (limit * page < maxCards) {
+            setPage((prev) => prev + 1)
+        }
+    }
 
     useEffect(() => {
         filter.sort_by = sort;
@@ -46,11 +56,17 @@ function Catalog({ lockBody }) {
                     </div>
                     <div className="catalog__content">
                         <CardList lockBody={lockBody} cards={cards} cardsLoading={cardsLoading} />
-                        <SecondaryButton onClick={() => setPage(page + 1)} additionalClasses={["more-cars__button"]}>Більше авто<span>{'>>'}</span></SecondaryButton>
-                        {page >= 2
-                            ? <div></div>
-                            : ""
-                        }
+                        <div className="catalog__buttons">
+                            <SecondaryButton onClick={handleMoreCars} additionalClasses={["more-cars__button"]}>Більше авто<span>{'>>'}</span></SecondaryButton>
+                            {page >= 2 &&
+                                <>
+                                    <div className='hide__last' onClick={() => setPage((prev) => prev - 1)}>Приховати</div>
+                                    <div className="hide__all" onClick={() => setPage(1)}>Приховати усі авто</div>
+                                </>
+                                
+                            }
+                        </div>
+                        
                     </div>
                 </div>
             </div>

@@ -3,7 +3,6 @@ import React, { useRef, useEffect } from 'react';
 function SelectedFieldOption({option, onClick}) {
     const optionRef = useRef(null);
     const { value, title } = option;
-    console.log(option);
     useEffect(() => {
         const option = optionRef.current;
         if (!option) return;
