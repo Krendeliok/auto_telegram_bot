@@ -26,6 +26,7 @@ from ..queries.advertisement import (
 )
 
 from .general import start_command
+from ..utils import make_advertisement
 
 from ..commands import admin, special
 
@@ -46,20 +47,20 @@ async def submit_advertisement(callback_query: types.CallbackQuery, state: FSMCo
     await callback_query.bot.answer_callback_query(callback_query.id)
     status, adv_id = callback_query["data"].split(":")
     update_adv_status(int(adv_id), status == "approve")
-    adv = get_advertisement_by_id(int(adv_id))
+    adv = await get_advertisement_by_id(int(adv_id))
     await callback_query.message.delete()
     if status == "approve":
         await send_to_channel(callback_query.message, adv)
         await callback_query.message.answer("Погоджено!")
         await callback_query.bot.send_message(
-            adv.client.telegram_id, 
+            adv["client_telegram_id"],
             "✅Ваша об'ява погоджена і буде виставлятися раз на місяць.", 
-            reply_markup=commands_keyboard(adv.client.telegram_id)
+            reply_markup=commands_keyboard(adv["client_telegram_id"])
         )
     elif status == "reject":
         await callback_query.message.answer("Відхилено!")
         await FSMSolution.message.set()
-        await state.update_data(user_id=adv.client.telegram_id)
+        await state.update_data(user_id=adv["client_telegram_id"])
         await callback_query.bot.send_message(callback_query.from_user.id, "Напишіть причину відмови.", reply_markup=hide_keyboard())
 
 async def send_reject_message(message: types.Message, state: FSMContext):
@@ -73,11 +74,7 @@ async def send_reject_message(message: types.Message, state: FSMContext):
     await state.finish()
 
 async def send_to_channel(message, adv):
-    images = adv.images
-    media_group = MediaGroup()
-    media_group.attach(InputMediaPhoto(images[0].source, caption=adv.get_sending_text))
-    for image in images[1:]:
-        media_group.attach(InputMediaPhoto(image.source))
+    media_group = make_advertisement(adv)
     await message.bot.send_media_group(
             CHANNEL_NAME,
             media=media_group

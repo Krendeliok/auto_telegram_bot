@@ -46,4 +46,5 @@ owner = {
     "create_admin": "Створити адміна",
     "remove_admin": "Видалити адміна",
     "show_admins": "Показати адмінів",
+    "show_feedbacks": "Показати фідбеки"
 }

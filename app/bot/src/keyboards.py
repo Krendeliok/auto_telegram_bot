@@ -372,6 +372,9 @@ def admins_keyboard(keyboard):
     for adm in admins:
         keyboard.insert(custom_keyboard_button(adm.username))
 
+@inline_keyboard()
+def show_advertisement(keyboard: InlineKeyboardMarkup, adv_id: int):
+    keyboard.add(custom_inline_button("Подивитись оголошення", f"show_adv:{adv_id}"))
 # endregion
 
 # region advertisement

@@ -17,5 +17,6 @@ from .model_filter import ModelFilter
 from .region_filter import RegionFilter
 from .gearbox_filter import GearboxFilter
 from .producer_filter import ProducerFilter
+from .feedback import Feedback
 
 configure_mappers()

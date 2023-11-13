@@ -63,7 +63,6 @@ function Catalog({ lockBody }) {
                                     <div className='hide__last' onClick={() => setPage((prev) => prev - 1)}>Приховати</div>
                                     <div className="hide__all" onClick={() => setPage(1)}>Приховати усі авто</div>
                                 </>
-                                
                             }
                         </div>
                         

@@ -1,3 +1,5 @@
+from ..Api.Request import Request
+
 from models import (
     Client,
     Advertisement,
@@ -23,8 +25,9 @@ def get_random_admin():
     return admin if admin else None
 
 
-def get_advertisement_by_id(id) -> Advertisement:
-    return session.query(Advertisement).filter_by(id=id).first()
+async def get_advertisement_by_id(id: int) -> Advertisement:
+    response = await Request.get(f"/advertisements/{id}")
+    return response[0]
 
 
 def get_all_additional_advertisements(telegram_id) -> list[Advertisement]:

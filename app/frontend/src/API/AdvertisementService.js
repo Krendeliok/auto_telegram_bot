@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default class AdvertisementService {
     static async getAll(filter, limit = 3, page = 1) {
-        const response = await axios.get("/advertisements", {
+        const response = await axios.get("/advertisements/only_admin", {
             params: {
                 _limit: limit,
                 _page: page,

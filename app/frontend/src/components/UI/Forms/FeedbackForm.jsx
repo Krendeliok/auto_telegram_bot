@@ -2,17 +2,23 @@ import React, { useState } from 'react';
 import PhoneInput from 'react-phone-number-input/input'
 import 'react-phone-number-input/style.css'
 
+import { useFetching } from '../../../hooks/useFetching';
+import FeedbackService from '../../../API/FeedbackService';
+
 function FeedbackForm({ setVisiblePopup }) {
-    const [formData, setformData] = useState({ name: "", phone: "" });
+    const [formData, setFormData] = useState({ name: "", phone: "" });
+    const [fetchFeedback] = useFetching(async () => {
+        await FeedbackService.create({...formData});
+    })
     const sendNeedFeedback = (e) => {
         e.preventDefault();
-        console.log(formData);
-        setformData({ name: "", phone: "" });
+        fetchFeedback();
+        setFormData({ name: "", phone: "" });
         setVisiblePopup(false);
     };
 
     return (  
-        <form action="">
+        <form>
             <div className="inputs">
                 <div className="input__group">
                     <label htmlFor="name">Ім’я</label>
@@ -22,7 +28,8 @@ function FeedbackForm({ setVisiblePopup }) {
                         type="text"
                         placeholder="Олексій"
                         value={formData.name}
-                        onChange={e => setformData({ ...formData, name: e.target.value })}
+                        required
+                        onChange={e => setFormData({ ...formData, name: e.target.value })}
                     />
                 </div>
                 <div className="input__group">
@@ -35,7 +42,8 @@ function FeedbackForm({ setVisiblePopup }) {
                         withCountryCallingCode={true}
                         defaultCountry="UA"
                         value={formData.phone}
-                        onChange={v => setformData({ ...formData, phone: v })}
+                        required
+                        onChange={v => setFormData({ ...formData, phone: v })}
                     />
                 </div>
             </div>

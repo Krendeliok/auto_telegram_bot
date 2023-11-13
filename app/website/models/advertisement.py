@@ -75,6 +75,11 @@ class Advertisement(Base):
         backref="advertisement"
     )
 
+    feedbacks = relationship(
+        "Feedback",
+        backref="advertisement"
+    )
+
     # @property
     # def get_sending_text(self):
     #     return ADV_TEXT.format(

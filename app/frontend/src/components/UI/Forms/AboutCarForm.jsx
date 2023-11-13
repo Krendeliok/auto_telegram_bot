@@ -2,17 +2,23 @@ import React, { useState } from 'react';
 import PhoneInput from 'react-phone-number-input/input'
 import 'react-phone-number-input/style.css'
 
+import {useFetching} from "../../../hooks/useFetching";
+import FeedbackService from '../../../API/FeedbackService';
+
 function AboutCarForm({ advertisement_id, setVisiblePopup }) {
     const [formData, setFormData] = useState({ name: "", phone: "" });
+    const [fetchFeedback] = useFetching(async () => {
+        await FeedbackService.create({...formData, advertisement_id: advertisement_id})
+    })
     const sendNeedFeedback = (e) => {
         e.preventDefault();
-        console.log(formData);
+        fetchFeedback();
         setFormData({ name: "", phone: "" });
         setVisiblePopup(false);
     };
 
     return (  
-        <form action="">
+        <form>
             <div className="inputs">
                 <div className="input__group">
                     <label htmlFor="name">Ім’я</label>
@@ -39,7 +45,6 @@ function AboutCarForm({ advertisement_id, setVisiblePopup }) {
                     />
                 </div>
             </div>
-            <input type="hidden" name='advertisement_id' value={advertisement_id}/>
             <button type="submit" className="popup__button secondary__button" onClick={sendNeedFeedback}>Надіслати</button>
         </form>
     );

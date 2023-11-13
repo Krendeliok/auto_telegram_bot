@@ -49,6 +49,8 @@ from config import MAX_IMAGES
 from ..commands import general, special
 from .general import start_command
 
+from ..utils import make_advertisement
+
 
 async def start_advertisement(message: types.Message, state: FSMContext):
     can_create, kind = can_create_and_kind_adv(telegram_id=message.from_user.id)
@@ -290,7 +292,7 @@ async def submition_advertisement(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         adv_id = await create_advertisement(data)
     await message.answer("✅Пост відправлено адміну. Через деякий час вам надішлеться відповідь.", reply_markup=commands_keyboard(message.from_user.id))
-    adv = get_advertisement_by_id(adv_id)
+    adv = await get_advertisement_by_id(adv_id)
     await submit_to_admin_for_approval(message, adv)
 
     await state.finish()
@@ -298,11 +300,7 @@ async def submition_advertisement(message: types.Message, state: FSMContext):
 async def submit_to_admin_for_approval(message: types.Message, adv):
     random_admin = get_random_admin()
     if random_admin:
-        images = adv.images
-        media_group = MediaGroup()
-        media_group.attach(InputMediaPhoto(images[0].source, caption=adv.get_sending_text))
-        for image in images[1:]:
-            media_group.attach(InputMediaPhoto(image.source))
+        media_group = make_advertisement(adv)
         await message.bot.send_media_group(
             random_admin.telegram_id,
             media=media_group,
@@ -310,9 +308,9 @@ async def submit_to_admin_for_approval(message: types.Message, adv):
         await message.bot.send_message(
             random_admin.telegram_id,
             "Що зробити з оголошенням?",
-            reply_markup=adverisement_keyboard(f"approve:{adv.id}", f"reject:{adv.id}")
+            reply_markup=adverisement_keyboard(f'approve:{adv["id"]}', f'reject:{adv["id"]}')
         )
-        pin_admin(adv.id, random_admin.id)
+        pin_admin(adv["id"], random_admin.id)
 
 
 def register_handlers_advertisement(dp: Dispatcher):
