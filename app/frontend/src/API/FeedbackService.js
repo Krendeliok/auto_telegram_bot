@@ -9,7 +9,7 @@ export default class FeedbackService {
         if (advertisement_id !== 0) {
             data.advertisement_id = advertisement_id
         }
-        const response = await axios.post("/feedbacks", data);
+        const response = await axios.post("/api/v1/feedbacks", data);
         return response
     }
 }

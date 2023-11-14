@@ -6,7 +6,7 @@ module.exports = merge(config, {
     entry: './src/index.js',
     devServer: {
         port: 3000,
-        proxy: { "/**": { target: 'http://web:5000/api/v1', secure: false } }
+        proxy: { "/api/v1/**": { target: 'http://web:5000', secure: false } }
     },
     // Need for docker container reloading
     watchOptions: {

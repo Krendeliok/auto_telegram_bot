@@ -20,13 +20,14 @@ services:
     depends_on:
       - web
     ports: 
-      - "8080:80"
+      - "80:80"
     environment:
       - NODE_ENV=production
   bot:
     build: ./app/bot
     restart: always
     depends_on:
+      - web
       - db
     volumes:
       - ${PWD}/app/alembic/versions/:/app/alembic/versions/
