@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default class AdvertisementService {
     static async getAll(filter, limit = 3, page = 1) {
-        const response = await axios.get("/advertisements/only_admin", {
+        const response = await axios.get("/api/v1/advertisements/only_admin", {
             params: {
                 _limit: limit,
                 _page: page,
@@ -13,7 +13,7 @@ export default class AdvertisementService {
     }
 
     static async getMaxPrice() {
-        const response = await axios.get("/advertisements/get_max_price");
+        const response = await axios.get("/api/v1/advertisements/get_max_price");
         return response;
     }
 }
