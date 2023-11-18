@@ -818,7 +818,7 @@ input[type="checkbox"].checked::before {
 .select__root ul {
     list-style: none;
     position: absolute;
-    top: 40px;
+    top: 100%;
     left: 0;
     width: calc(100% - 40px);
     background-color: #F4F5F3;
@@ -828,6 +828,7 @@ input[type="checkbox"].checked::before {
     font-size: 18px;
     padding: 4px 20px;
     gap: 12px;
+    z-index: 10;
 }
 
 .select__root ul li {
@@ -955,6 +956,12 @@ input[type="checkbox"].checked::before {
 
 .card__album:hover .fogging {
     background-color: rgba(1, 1, 1, .3);
+}
+
+.album__main-image {
+    width: 708px;
+    height: 414px;
+    flex-shrink: 0;
 }
 
 .album__main-image img {

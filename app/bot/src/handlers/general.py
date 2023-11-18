@@ -55,17 +55,23 @@ from ..queries.create import (
 from ..contexts import FSMMenu, FSMFilter
 from ..commands import general, filters, special
 
+from asyncio import sleep
+
 async def update_images(message: types.Message):
     images = get_all_images()
     await message.answer("Start")
 
-    for image in images:
+    for i, image in enumerate(images, 1):
         media_group = MediaGroup()
         media_group.attach(InputMediaPhoto(image.source))
         sended_image = await message.bot.send_media_group(message.chat.id, media_group)
         source =  sended_image[0].photo[-1].file_id
-        
-        file = await message.bot.get_file(source)
+        try:
+            file = await message.bot.get_file(source)
+        except Exception:
+            continue
+        if i % 100 == 0:
+            await sleep(60)
         file_url = message.bot.get_file_url(file.file_path)
         cloudinary_source = uploader.upload(file_url, folder="autoyarmarok")["url"]
 
