@@ -52,6 +52,15 @@ from .general import start_command
 from ..utils import make_advertisement
 
 
+async def add_cloudinary_source_to_images(message, images):
+    for image in images:
+        file = await message.bot.get_file(image["source"])
+        file_url = message.bot.get_file_url(file.file_path)
+        upload_response = uploader.upload(file_url, folder="autoyarmarok")
+        image["cloudinary_source"] = upload_response["url"]
+    return images
+
+
 async def start_advertisement(message: types.Message, state: FSMContext):
     can_create, kind = can_create_and_kind_adv(telegram_id=message.from_user.id)
     if can_create:
@@ -244,6 +253,7 @@ async def set_description(message: types.Message, state: FSMContext):
         await state.set_state(FSMAdvertisement.images)
         await message.answer(f"Відправте до {MAX_IMAGES} фото.\nПісля завершення натисніть {special['complete']}", reply_markup=back_complete_keyboard(deny=True, complete=True))
 
+
 @back_handler(previous_func=set_city, key="based_country")
 async def set_phone_numbers(message: types.Message, state: FSMContext):
     if message.text == special["private_phone"]:
@@ -263,12 +273,7 @@ async def set_images(message: types.Message, state: FSMContext):
     if message.photo:
         async with state.proxy() as data:
             data["image_counter"] = 1
-            image = {"source": message.photo[-1].file_id}
-            file = await message.bot.get_file(message.photo[-1].file_id)
-            file_url = message.bot.get_file_url(file.file_path)
-            upload_response = uploader.upload(file_url, folder="autoyarmarok")
-            image["cloudinary_source"] = upload_response["url"]
-            data["images"] = [image]
+            data["images"] = [{"source": message.photo[-1].file_id}]
         await state.set_state(FSMAdvertisement.more_images)
 
 
@@ -277,12 +282,7 @@ async def more_images(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         if data["image_counter"] < int(MAX_IMAGES):
             data["image_counter"] += 1
-            image = {"source": message.photo[-1].file_id}
-            file = await message.bot.get_file(message.photo[-1].file_id)
-            file_url = message.bot.get_file_url(file.file_path)
-            upload_response = uploader.upload(file_url, folder="autoyarmarok")
-            image["cloudinary_source"] = upload_response["url"]
-            data["images"].append(image)
+            data["images"].append({"source": message.photo[-1].file_id})
         else:
             await message.answer(f"🟠Фотографій вже забагато, я залишу тільки перші {MAX_IMAGES}", reply_markup=back_complete_keyboard(deny=True, complete=True))
 
@@ -290,12 +290,14 @@ async def more_images(message: types.Message, state: FSMContext):
 @back_handler(previous_func=set_city, key="based_country", alt_func=set_description, alt_key="description")
 async def submition_advertisement(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
+        data["images"] = await add_cloudinary_source_to_images(message, data["images"])
         adv_id = await create_advertisement(data)
     await message.answer("✅Пост відправлено адміну. Через деякий час вам надішлеться відповідь.", reply_markup=commands_keyboard(message.from_user.id))
     adv = await get_advertisement_by_id(adv_id)
     await submit_to_admin_for_approval(message, adv)
 
     await state.finish()
+
 
 async def submit_to_admin_for_approval(message: types.Message, adv):
     random_admin = get_random_admin()
