@@ -6,6 +6,7 @@ import SecondaryButton from '../UI/SecondaryButton';
 import bodySetLock from '../../utils/lockBody';
 
 import FilterSVG from "../../assets/filter.svg"
+import SortSVG from "../../assets/sort.svg"
 import SelectField from '../UI/Forms/Fields/SelectField';
 
 const sortOptions = [
