@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import ArrowSVG from "../../../../assets/arrow.svg"
 import SelectedFieldOption from './SelectedFieldOption';
-import SortSVG from "../../../../assets/sort.svg";
 
 function SelectField({ selected, options, placeholder, onChange, onClose }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -68,16 +67,6 @@ function SelectField({ selected, options, placeholder, onChange, onClose }) {
             >
                 {selected?.title || placeholder}
                 <div className="select__arrow active" ref={arrowRef}><img src={ArrowSVG} alt="" /></div>
-            </div>
-            <div
-                className="select__placeholder__icon"
-                data-selected={!!selected?.value}
-                onClick={handlePlaceHolderClick}
-                role='button'
-                tabIndex={0}
-                ref={placeholderRef}
-            >
-                <img src={SortSVG} alt="filter-icon"/>
             </div>
             
             {isOpen && (
