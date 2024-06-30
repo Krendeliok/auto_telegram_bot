@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile.prod
     container_name: server-prod
     restart: always
+    env_file:
+      - .env
     depends_on:
       - db
     ports:
