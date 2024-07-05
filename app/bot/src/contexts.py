@@ -14,6 +14,7 @@ class FSMFilter(StatesGroup):
     gearbox = State()
     region = State()
     engine_type = State()
+    drive_unit = State()
     price = State()
     year = State()
     engine_volume = State()
