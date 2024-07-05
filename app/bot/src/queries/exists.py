@@ -8,7 +8,8 @@ from models import (
     Advertisement,
     AdvertisementKindEnum,
     AdvertisementStateEnum,
-    AditionalAdvertisements
+    AditionalAdvertisements,
+    DriveUnit,
 )
 from sqlalchemy.sql.expression import and_, false
 
@@ -31,6 +32,10 @@ def exists_engine_type(engine_type: str) -> tuple:
 
 def exists_gearbox(gearbox: str) -> tuple:
     model = session.query(Gearbox.id).where(Gearbox.name == gearbox).first()
+    return bool(model), model
+
+def exists_drive_unit(drive_unit: str) -> tuple:
+    model = session.query(DriveUnit.id).where(DriveUnit.name == drive_unit).first()
     return bool(model), model
 
 def exists_city(sity_name: str) -> tuple:

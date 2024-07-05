@@ -18,5 +18,7 @@ from .region_filter import RegionFilter
 from .gearbox_filter import GearboxFilter
 from .producer_filter import ProducerFilter
 from .feedback import Feedback
+from .drive_unit import DriveUnit
+from .drive_unit_filter import DriveUnitFilter
 
 configure_mappers()

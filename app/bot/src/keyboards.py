@@ -28,12 +28,14 @@ from models import (
     Country, 
     Gearbox, 
     Client, 
-    Filter, 
+    Filter,
+    DriveUnit,
     ProducerFilter, 
     ModelFilter, 
     EngineFilter, 
     RegionFilter, 
-    GearboxFilter
+    GearboxFilter,
+    DriveUnitFilter
 )
 
 from .tarifs import tarifs
@@ -311,6 +313,33 @@ def gearbox_keyboard(keyboard, is_filter, object_filter, **kwargs):
         )
     gearboxes = gearboxes.all()
     add_objects_to_keyboard(keyboard, gearboxes, is_filter)
+
+@reply_keyboard()
+@add_user_filter()
+@add_back_button
+@filter_keyboard(col_name="all_drive_units")
+def drive_unit_keyboard(keyboard, is_filter, object_filter, **kwargs):
+    if not is_filter:
+        drive_units = (
+            session
+            .query(
+                DriveUnit.name
+            )
+        )
+    else:
+        drive_units = (
+            session
+            .query(DriveUnit.name, DriveUnitFilter.filter_id.label("all_object"))
+            .outerjoin(
+                DriveUnitFilter,
+                and_(
+                    DriveUnitFilter.gearbox_id == Gearbox.id,
+                    DriveUnitFilter.filter_id == object_filter.id
+                )
+            )
+        )
+    drive_units = drive_units.all()
+    add_objects_to_keyboard(keyboard, drive_units, is_filter)
 
 @reply_keyboard()
 @add_user_filter()

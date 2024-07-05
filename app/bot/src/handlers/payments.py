@@ -16,7 +16,7 @@ from ..commands import general
 from ..keyboards import tarifs_keyboard, paymets_keyboard, goods_keyboard, decline_invoice_keyboard
 
 from ..queries.client import set_vip, get_client_by_telegram_id
-from ..queries.advertisement import count_free_additional_adertisements
+from ..queries.advertisement import count_free_additional_advertisements
 from ..queries.create import create_adittional_advertisement
 
 
@@ -62,7 +62,7 @@ async def my_goods_handler(message: Message, state: FSMContext):
     client = get_client_by_telegram_id(message.from_user.id)
     text = f"""
 Віп - {client.vip_end if client.is_vip else "відсутній"}
-Вільні додаткові оголошення - {count_free_additional_adertisements(message.from_user.id)}
+Вільні додаткові оголошення - {count_free_additional_advertisements(message.from_user.id)}
     """
     await message.answer(text, reply_markup=goods_keyboard(message.from_user.id, client.is_vip))
 
