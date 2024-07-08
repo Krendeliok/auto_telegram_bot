@@ -99,6 +99,7 @@ class AdvertisementsApi(Resource):
                 based_country_id=data["based_country_id"],
                 phone_number=data["phone_number"],
                 description=data["description"],
+                vin=data["vin"],
                 kind=data["kind"]
             )
 

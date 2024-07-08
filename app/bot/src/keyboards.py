@@ -177,8 +177,10 @@ def filter_commands(keyboard):
         keyboard.insert(custom_keyboard_button(command))
 
 @reply_keyboard()
-def back_complete_keyboard(keyboard, complete=False, deny=False):
+def back_complete_keyboard(keyboard, complete=False, deny=False, skip=False):
     keyboard.add(custom_keyboard_button(special["back"]))
+    if skip:
+        keyboard.insert(custom_keyboard_button(special["skip"]))
     if complete:
         keyboard.insert(custom_keyboard_button(special["complete"]))
     if deny:

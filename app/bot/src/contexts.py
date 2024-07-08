@@ -21,6 +21,7 @@ class FSMFilter(StatesGroup):
 class FSMAdvertisement(StatesGroup):
     producer = State()
     model = State()
+    vin = State()
     price = State()
     year = State()
     engine_type = State()

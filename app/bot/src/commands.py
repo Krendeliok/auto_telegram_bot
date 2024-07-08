@@ -9,6 +9,7 @@ special = {
     "remove": "❌Видалити",
     "private_phone": "Особитий",
     "comercial_phone": "Комерційний",
+    "skip": "Пропустити",
 }
 
 general = {
