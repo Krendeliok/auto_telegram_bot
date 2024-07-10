@@ -16,6 +16,7 @@ class Filter(Base):
     max_engine_volume = Column(Float, default=0, server_default='0', nullable=False)
     min_range = Column(Integer, default=0, server_default='0', nullable=False)
     max_range = Column(Integer, default=0, server_default='0', nullable=False)
+    vin = Column(Boolean, default=expression.null(), server_default=expression.null())
     all_producers = Column(Boolean, default=expression.true(), server_default=expression.true())
     all_gearboxes = Column(Boolean, default=expression.true(), server_default=expression.true())
     all_regions = Column(Boolean, default=expression.true(), server_default=expression.true())
