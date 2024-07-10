@@ -13,6 +13,7 @@ from ..queries.exists import (
     exists_engine_type,
     exists_gearbox,
     exists_city,
+    exists_drive_unit,
 )
 from ..queries.client import (
     is_admin,
@@ -31,7 +32,7 @@ from ..queries.create import (
 )
 
 from ..keyboards import (
-    producers_keyboard, 
+    producers_keyboard,
     models_keyboard,
     engine_keyboard,
     gearbox_keyboard,
@@ -40,6 +41,7 @@ from ..keyboards import (
     commands_keyboard,
     back_complete_keyboard,
     phone_numbers_keyboard,
+    drive_unit_keyboard,
 )
 from datetime import date
 from ..texts import RULES
@@ -118,7 +120,7 @@ async def set_model(message: types.Message, state: FSMContext):
             await message.answer("Напишіть ціну у долларах.", reply_markup=back_complete_keyboard(deny=True))
         else:
             await message.reply(
-                "❌Не знаю таку модель від вказаного виробника. Спробуйте обрати з доступних.", 
+                "❌Не знаю таку модель від вказаного виробника. Спробуйте обрати з доступних.",
                 reply_markup=models_keyboard(producer_name=data["producer"])
                 )
 
@@ -214,10 +216,24 @@ async def set_range(message: types.Message, state: FSMContext):
 async def set_gearbox(message: types.Message, state: FSMContext):
     exists, obj = exists_gearbox(message.text)
     if exists:
-        await state.set_state(FSMAdvertisement.city)
+        await state.set_state(FSMAdvertisement.drive_unit)
         async with state.proxy() as data:
             data["gearbox_type_id"] = obj.id
             data["gearbox_type"] = message.text
+
+        await message.answer("Вкажіть привід.", reply_markup=drive_unit_keyboard())
+    else:
+        await message.reply("❌Не знаю такого типу коробки. Спробуйте обрати з доступних.", reply_markup=gearbox_keyboard())
+
+
+@back_handler(previous_func=set_range, key="range")
+async def set_drive_unit(message: types.Message, state: FSMContext):
+    exists, obj = exists_drive_unit(message.text)
+    if exists:
+        await state.set_state(FSMAdvertisement.city)
+        async with state.proxy() as data:
+            data["drive_unit_id"] = obj.id
+            data["drive_unit"] = message.text
 
             if is_spam(data, message.from_user.id):
                 await message.answer("⭕️Таке оголошення у вас вже є, ви не зможете повторно його відправити", reply_markup=back_complete_keyboard(deny=True))
@@ -225,10 +241,10 @@ async def set_gearbox(message: types.Message, state: FSMContext):
 
         await message.answer("Оберіть область знаходження.", reply_markup=country_keyboard())
     else:
-        await message.reply("❌Не знаю такого типу коробки. Спробуйте обрати з доступних.", reply_markup=gearbox_keyboard())
+        await message.reply("❌Не знаю такого приводу. Спробуйте обрати з доступних.", reply_markup=drive_unit_keyboard())
 
 
-@back_handler(previous_func=set_range, key="range")
+@back_handler(previous_func=set_gearbox, key="gearbox_type")
 async def set_city(message: types.Message, state: FSMContext):
     exists, obj = exists_city(message.text)
     if exists:
@@ -241,11 +257,11 @@ async def set_city(message: types.Message, state: FSMContext):
         await message.reply("❌Вперше чую про таку область. Спробуйте обрати найближчу до вас з доступних.", reply_markup=country_keyboard())
 
 
-@back_handler(previous_func=set_gearbox, key="gearbox_type")
+@back_handler(previous_func=set_drive_unit, key="drive_unit")
 async def set_description(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data["description"] = message.text
-    
+
     if is_admin(message.from_user.id) or is_owner(message.from_user.id):
         await state.set_state(FSMAdvertisement.phone_numbers)
         await message.answer("Які номера телефону зазначити в оголошенні?", reply_markup=phone_numbers_keyboard())
@@ -260,10 +276,10 @@ async def set_phone_numbers(message: types.Message, state: FSMContext):
         phone = get_user_phone(message.from_user.id)
     elif message.text == special["comercial_phone"]:
         phone = "+380506200777 / +380976200777"
-    
+
     async with state.proxy() as data:
         data["phone"] = phone
-    
+
     await state.set_state(FSMAdvertisement.images)
     await message.answer(f"Відправте до {MAX_IMAGES} фото.\nПісля завершення натисніть {special['complete']}", reply_markup=back_complete_keyboard(deny=True, complete=True))
 
@@ -327,6 +343,7 @@ def register_handlers_advertisement(dp: Dispatcher):
     dp.register_message_handler(set_engine_volume, state=FSMAdvertisement.engine_volume)
     dp.register_message_handler(set_range, state=FSMAdvertisement.range)
     dp.register_message_handler(set_gearbox, state=FSMAdvertisement.gearbox)
+    dp.register_message_handler(set_drive_unit, state=FSMAdvertisement.drive_unit)
     dp.register_message_handler(set_city, state=FSMAdvertisement.city)
     dp.register_message_handler(set_description, state=FSMAdvertisement.description)
     dp.register_message_handler(set_phone_numbers, state=FSMAdvertisement.phone_numbers)

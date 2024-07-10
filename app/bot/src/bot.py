@@ -5,5 +5,5 @@ from .handlers import advertisement, admin, owner, general, payments
 owner.register_handlers_owner(dp)
 admin.register_handlers_admin(dp)
 advertisement.register_handlers_advertisement(dp)
-general.register_hendlers_general(dp)
+general.register_handlers_general(dp)
 payments.register_hendlers_payment(dp)

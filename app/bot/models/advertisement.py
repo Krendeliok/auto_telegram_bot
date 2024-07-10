@@ -52,6 +52,7 @@ class Advertisement(Base):
     range = Column(Integer, nullable=False)
     gearbox_type_id = Column(Integer, ForeignKey("gearbox.id", ondelete="SET NULL"))
     based_country_id = Column(Integer, ForeignKey("country.id", ondelete="SET NULL"))
+    drive_unit_id = Column(Integer, ForeignKey("drive_unit.id", ondelete="SET NULL"))
     phone_number = Column(String)
     description = Column(Text, nullable=False)
     status = Column(
@@ -100,7 +101,7 @@ class Advertisement(Base):
         return f"Advertisement(id={self.id!r}, " \
                f"model={self.model.id!r}, " \
                f"client={self.client.username!r}, "\
-               f"status={self.status})"
+               f"status={self.status.value})"
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
