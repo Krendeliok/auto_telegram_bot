@@ -19,6 +19,7 @@ models_url = "https://auto.ria.com/api/categories/1/marks/{mark_id}/models/_acti
 gearboxes_url = "https://auto.ria.com/api/categories/1/gearboxes?langId=4"
 fuel_url = "https://auto.ria.com/api/fuels?langId=4"
 regions_url = "https://auto.ria.com/api/states?langId=4"
+drives_url = "https://auto.ria.com/api/categories/1/driverTypes?langId=4"
 
 
 def get_all_marks():

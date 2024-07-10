@@ -26,7 +26,7 @@ def get_random_admin():
 
 
 async def get_advertisement_by_id(id: int) -> Advertisement:
-    response = await Request.get(f"/advertisements/{id}")
+    response = await Request.get(f"advertisements/{id}")
     return response[0]
 
 
@@ -44,7 +44,7 @@ def get_all_additional_advertisements(telegram_id) -> list[Advertisement]:
     )
 
 
-def count_free_additional_adertisements(telegram_id) -> int:
+def count_free_additional_advertisements(telegram_id) -> int:
     client = get_client_by_telegram_id(telegram_id)
     return (
         session
@@ -56,12 +56,14 @@ def count_free_additional_adertisements(telegram_id) -> int:
         .count()
     )
 
+
 def get_all_images():
     return (
         session
         .query(Image)
         .all()
     )
+
 
 def set_new_image_source(image_id, new_source, new_cloudinary_source):
     image = session.query(Image).filter(Image.id == image_id).first()
@@ -70,13 +72,14 @@ def set_new_image_source(image_id, new_source, new_cloudinary_source):
     session.add(image)
     session.commit()
 
+
 def update_adv_status(adv_id, approved: bool):
     (
         session.query(Advertisement)
         .filter(Advertisement.id == adv_id)
         .update(
             {
-            'status': AdvertisementStateEnum.approved.value if approved else AdvertisementStateEnum.rejected.value
+                'status': AdvertisementStateEnum.approved.value if approved else AdvertisementStateEnum.rejected.value
             }
         )
     )
@@ -89,7 +92,7 @@ def sell_adv(adv_id):
         .filter(Advertisement.id == adv_id)
         .update(
             {
-            'status': AdvertisementStateEnum.sold.value
+                'status': AdvertisementStateEnum.sold.value
             }
         )
     )
@@ -109,7 +112,7 @@ def pin_admin(adv_id, admin_id):
         .filter(Advertisement.id == adv_id)
         .update(
             {
-            'pinned_admin_id': admin_id
+                'pinned_admin_id': admin_id
             }
         )
     )
@@ -121,7 +124,7 @@ def is_spam(data, telegram_id):
 
     if any([client.is_admin, client.is_owner]):
         return False
-    
+
     adv = (
         session
         .query(Advertisement)

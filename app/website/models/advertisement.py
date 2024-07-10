@@ -52,6 +52,7 @@ class Advertisement(Base):
     range = Column(Integer, nullable=False)
     gearbox_type_id = Column(Integer, ForeignKey("gearbox.id", ondelete="SET NULL"))
     based_country_id = Column(Integer, ForeignKey("country.id", ondelete="SET NULL"))
+    drive_unit_id = Column(Integer, ForeignKey("drive_unit.id", ondelete="SET NULL"))
     phone_number = Column(String)
     description = Column(Text, nullable=False)
     vin = Column(String)

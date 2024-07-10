@@ -21,6 +21,7 @@ class Filter(Base):
     all_gearboxes = Column(Boolean, default=expression.true(), server_default=expression.true())
     all_regions = Column(Boolean, default=expression.true(), server_default=expression.true())
     all_engine_types = Column(Boolean, default=expression.true(), server_default=expression.true())
+    all_drive_units = Column(Boolean, default=expression.true(), server_default=expression.true())
 
     producers = relationship(
         "ProducerFilter",
@@ -39,6 +40,11 @@ class Filter(Base):
 
     regions = relationship(
         "RegionFilter",
+        backref="filter"
+    )
+
+    drive_units = relationship(
+        "DriveUnitFilter",
         backref="filter"
     )
 

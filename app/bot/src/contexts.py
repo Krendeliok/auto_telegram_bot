@@ -6,6 +6,7 @@ class FSMMenu(StatesGroup):
     choose_adv = State()
     adv_action = State()
 
+
 class FSMFilter(StatesGroup):
     start = State()
     producer = State()
@@ -14,10 +15,12 @@ class FSMFilter(StatesGroup):
     region = State()
     engine_type = State()
     vin = State()
+    drive_unit = State()
     price = State()
     year = State()
     engine_volume = State()
     range = State()
+
 
 class FSMAdvertisement(StatesGroup):
     producer = State()
@@ -29,6 +32,7 @@ class FSMAdvertisement(StatesGroup):
     engine_volume = State()
     range = State()
     gearbox = State()
+    drive_unit = State()
     city = State()
     description = State()
     phone_numbers = State()
