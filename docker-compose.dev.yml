@@ -27,5 +27,18 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
+  bot:
+    build: ./app/bot
+    restart: always
+    depends_on:
+      - web
+      - db
+    volumes:
+      - ${PWD}/app/alembic/versions/:/app/alembic/versions/
+      - ./app/bot:/app
+    env_file:
+      - .env
+    environment:
+      - BASE_API_URL=http://web:5000/api/v1/
 volumes:
   node_modules:

@@ -14,6 +14,7 @@ class FSMFilter(StatesGroup):
     gearbox = State()
     region = State()
     engine_type = State()
+    vin = State()
     drive_unit = State()
     price = State()
     year = State()
@@ -24,6 +25,7 @@ class FSMFilter(StatesGroup):
 class FSMAdvertisement(StatesGroup):
     producer = State()
     model = State()
+    vin = State()
     price = State()
     year = State()
     engine_type = State()

@@ -19,6 +19,7 @@ from ..keyboards import (
     client_advertisements_keyboard,
     adv_action_keyboard,
     hide_keyboard,
+    vin_keyboard,
 )
 from ..queries.exists import (
     exists_producer,
@@ -41,6 +42,7 @@ from ..queries.filter import (
     add_filter_range,
     add_filter_year,
     remove_producer_from_filter,
+    add_filter_vin,
     get_advertisements_by_filter,
     add_filter_drive_unit,
 )
@@ -55,7 +57,7 @@ from ..queries.create import (
 )
 
 from ..contexts import FSMMenu, FSMFilter
-from ..commands import general, filters, special
+from ..commands import general, filters, special, vin
 
 from asyncio import sleep
 
@@ -193,8 +195,10 @@ async def filter_commands_handler(message: types.Message, state: FSMContext, *ar
                              reply_markup=country_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
     elif message.text == filters["engine_type"]:
         await FSMFilter.engine_type.set()
-        await message.answer("Оберіть тип палива для фільтру",
-                             reply_markup=engine_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
+        await message.answer("Оберіть тип палива для фільтру", reply_markup=engine_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
+    elif message.text == filters["vin"]:
+        await FSMFilter.vin.set()
+        await message.answer("Оберіть наявність VIN", reply_markup=vin_keyboard(telegram_id=message.from_user.id))
     elif message.text == filters["drive_unit"]:
         await FSMFilter.drive_unit.set()
         await message.answer("Оберіть привід для фільтру",
@@ -328,6 +332,16 @@ async def filter_model(message: types.Message, state: FSMContext, *args):
 
 @add_user_filter
 @back_handler(previous_func=start_filter)
+async def filter_vin(message: types.Message, state: FSMContext, user_filter, **kwargs):
+    if message.text in vin.values():
+        add_filter_vin(user_filter, {k: v for k, v in vin.items() if v == message.text}.popitem()[0])
+        await message.answer(f"Будуть показані авто {message.text}", reply_markup=vin_keyboard(telegram_id=message.from_user.id))
+        return
+    await message.answer("Не знаю такого варіанту. Спробуйте обрати з доступних.", reply_markup=vin_keyboard(telegram_id=message.from_user.id))
+
+
+@add_user_filter
+@back_handler(previous_func=start_filter)
 @filter_handler(add_filter=add_filter_engine, plural_model="палива")
 async def filter_engine_types(message: types.Message, state: FSMContext, user_filter):
     exists, obj = exists_engine_type(message.text)
@@ -420,6 +434,7 @@ def register_handlers_general(dp: Dispatcher):
     dp.register_message_handler(start_filter, Text(equals=general["filter"], ignore_case=True), state=None)
     dp.register_message_handler(filter_commands_handler, state=FSMFilter.start)
     dp.register_message_handler(filter_producer, state=FSMFilter.producer)
+    dp.register_message_handler(filter_vin, state=FSMFilter.vin)
     dp.register_message_handler(filter_model, state=FSMFilter.model)
     dp.register_message_handler(filter_engine_types, state=FSMFilter.engine_type)
     dp.register_message_handler(filter_drive_units, state=FSMFilter.drive_unit)

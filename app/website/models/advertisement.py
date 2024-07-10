@@ -55,6 +55,7 @@ class Advertisement(Base):
     drive_unit_id = Column(Integer, ForeignKey("drive_unit.id", ondelete="SET NULL"))
     phone_number = Column(String)
     description = Column(Text, nullable=False)
+    vin = Column(String)
     status = Column(
         Enum(AdvertisementStateEnum, values_callable=lambda obj: [e.value for e in obj]), 
         default=AdvertisementStateEnum.draft.value,

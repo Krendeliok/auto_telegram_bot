@@ -14,7 +14,7 @@ from sqlalchemy import (
     select,
 )
 
-from .commands import general, admin, owner, filters, special, payments
+from .commands import general, admin, owner, filters, special, payments, vin
 from .queries.client import client_advertisements
 from .queries.advertisement import get_all_additional_advertisements
 from .queries.exists import exists_client
@@ -213,8 +213,10 @@ def filter_commands(keyboard):
 
 
 @reply_keyboard()
-def back_complete_keyboard(keyboard, complete=False, deny=False):
+def back_complete_keyboard(keyboard, complete=False, deny=False, skip=False):
     keyboard.add(custom_keyboard_button(special["back"]))
+    if skip:
+        keyboard.insert(custom_keyboard_button(special["skip"]))
     if complete:
         keyboard.insert(custom_keyboard_button(special["complete"]))
     if deny:
@@ -324,6 +326,15 @@ def engine_keyboard(keyboard, is_filter, object_filter, **kwargs):
         )
     engines = engines.all()
     add_objects_to_keyboard(keyboard, engines, is_filter)
+
+
+@reply_keyboard()
+@add_user_filter()
+@add_back_button
+def vin_keyboard(keyboard, **kwargs):
+    keyboard.insert(custom_keyboard_button(vin["any"]))
+    keyboard.insert(custom_keyboard_button(vin["with_vin"]))
+    keyboard.insert(custom_keyboard_button(vin["without_vin"]))
 
 
 @reply_keyboard()

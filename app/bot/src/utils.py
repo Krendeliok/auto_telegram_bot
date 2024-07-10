@@ -1,6 +1,9 @@
 from .texts import ADV_TEXT
 
+import re
+
 from aiogram.types import MediaGroup, InputMediaPhoto
+
 
 def get_sending_text(data):
     return ADV_TEXT.format(
@@ -18,10 +21,15 @@ def get_sending_text(data):
         description=data["description"]
     )
 
+
 def make_advertisement(data):
     images = data["images"]
     media_group = MediaGroup()
     media_group.attach(InputMediaPhoto(images[0]["source"], caption=get_sending_text(data)))
     for image in images[1:]:
         media_group.attach(InputMediaPhoto(image["source"]))
-    return media_group    
+    return media_group
+
+
+def check_vin(vin):
+    return re.fullmatch(r'^[A-HJ-NPR-Z0-9]{17}$', vin.upper()) is not None
