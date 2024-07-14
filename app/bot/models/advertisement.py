@@ -71,7 +71,6 @@ class Advertisement(Base):
     next_published_date = Column(Date)
     additional_advertisement_id = Column(Integer, ForeignKey("additional_advs.id", ondelete="SET NULL"), nullable=True)
 
-
     images = relationship(
         "Image",
         backref="advertisement"
@@ -85,13 +84,15 @@ class Advertisement(Base):
             price=self.price,
             year=self.year,
             engine_type=self.engine.name,
-            engine_type_prompt='Об\'єм' if self.engine.name != 'Електро' else 'Потужність',
             engine_volume=self.engine_volume,
-            gearbox=self.gearbox.name,
             range=self.range,
+            gearbox=self.gearbox.name,
+            drive_unit=self.drive_unit.name,
             city=self.country.name,
             phone_number=self.phone_number if self.phone_number else self.client.phone_number,
-            description=self.description
+            description=self.description,
+            vin=(self.vin if self.vin is not None else '—'),
+            credit_price=14.5
         )
 
     def update_publishing_dates(self):

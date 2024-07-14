@@ -68,6 +68,8 @@ class AdvertisementsApi(Resource):
                 "based_country": adv.country.name,
                 "description": adv.description,
                 "price": adv.price,
+                "vin": adv.vin,
+                "credit_price": 14.5,
                 "phone_number": adv.phone_number if adv.phone_number else adv.client.phone_number,
                 "images": [
                     { 
