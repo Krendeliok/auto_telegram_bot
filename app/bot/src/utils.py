@@ -12,13 +12,15 @@ def get_sending_text(data):
         price=data["price"],
         year=data["year"],
         engine_type=data["engine_type"],
-        engine_type_prompt='Об\'єм' if data["engine_type"] != 'Електро' else 'Потужність',
         engine_volume=data["engine_volume"],
-        gearbox=data["gearbox_type"],
         range=data["range"],
+        gearbox=data["gearbox_type"],
+        drive_unit=data["drive_unit"],
         city=data["based_country"],
         phone_number=data["phone_number"],
-        description=data["description"]
+        description=data["description"],
+        vin=(data["vin"] if data["vin"] is not None else '—'),
+        credit_price=14.5
     )
 
 

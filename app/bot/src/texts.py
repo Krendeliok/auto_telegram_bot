@@ -1,17 +1,24 @@
 ADV_TEXT = """
-🚗Марка та модель: {producer} {model}
-💵Ціна: {price}
-📌Рік: {year}
-⛽️Вид палива:  {engine_type}
-📌{engine_type_prompt} двигуна: {engine_volume}
-⚙️Коробка: {gearbox}
-📌Пробіг: {range} тис. км.
-🏘Область знаходження авто: {city}
-👉Контактний номер ☎️: {phone_number}
-📄Опис авто: {description}
+👉 <a href="https://www.instagram.com/autoyarmarok?igsh=Nmgxa2JqMXlvZWhl&utm_source=qr">Автосалон «Автоярмарок»</a>
 
-⚡️<a href="https://t.me/AutoYarmarokUkraina">АвтоЯрмарок</a>
-📩<a href="https://t.me/AutoYarmarokUaSend_bot">Надіслати оголошення</a>
+🚗 {producer} {model}
+💵 {price} $ | {year} рік
+⛽️ {engine_type} {engine_volume} | {range} тис. км.
+⚙️ {gearbox} | {drive_unit}
+🏘 {city}
+📍 <a href="https://goo.gl/maps/v5tN7J3y8VPsHxQa9">Кінчеш, Фізкультурна, 2</a>
+
+📞 {phone_number}
+@Autoyarmarok_seller
+
+📄Опис авто: {description}
+👉 vin {vin} 👈
+
+🫰Придбати в <a href="https://t.me/AutoYarmarokUa">кредит / лізінг</a>
+платіж від {credit_price} тис.грн/міс
+
+🧲 <a href="https://t.me/AutoYarmarokUkraina">АвтоЯрмарок</a>
+📩 <a href="https://t.me/AutoYarmarokUaSend_bot">Розмістити оголошення</a>
 """
 
 RULES = """

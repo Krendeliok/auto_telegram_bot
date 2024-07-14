@@ -25,7 +25,7 @@ def get_random_admin():
     return admin if admin else None
 
 
-async def get_advertisement_by_id(id: int) -> Advertisement:
+async def get_advertisement_by_id(id: int) -> dict:
     response = await Request.get(f"advertisements/{id}")
     return response[0]
 
