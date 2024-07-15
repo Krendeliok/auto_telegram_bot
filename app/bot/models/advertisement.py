@@ -16,6 +16,8 @@ from dateutil.relativedelta import relativedelta
 
 from src.texts import ADV_TEXT
 
+from src.utils import count_credit_price
+
 
 class AdvertisementStateEnum(enum.Enum):
     approved = "approved"
@@ -92,7 +94,7 @@ class Advertisement(Base):
             phone_number=self.phone_number if self.phone_number else self.client.phone_number,
             description=self.description,
             vin=(self.vin if self.vin is not None else '—'),
-            credit_price=14.5
+            credit_price=count_credit_price(self.price)
         )
 
     def update_publishing_dates(self):
