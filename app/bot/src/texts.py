@@ -5,8 +5,7 @@ ADV_TEXT = """
 💵 {price} $ | {year} рік
 ⛽️ {engine_type} {engine_volume} | {range} тис. км.
 ⚙️ {gearbox} | {drive_unit}
-🏘 {city}
-📍 <a href="https://goo.gl/maps/v5tN7J3y8VPsHxQa9">Кінчеш, Фізкультурна, 2</a>
+🏘 {city}{address}
 
 📞 {phone_number}
 @Autoyarmarok_seller
@@ -20,6 +19,8 @@ ADV_TEXT = """
 🧲 <a href="https://t.me/AutoYarmarokUkraina">АвтоЯрмарок</a>
 📩 <a href="https://t.me/AutoYarmarokUaSend_bot">Розмістити оголошення</a>
 """
+
+address = '</br>📍 <a href="https://goo.gl/maps/v5tN7J3y8VPsHxQa9">Кінчеш, Фізкультурна, 2</a>'
 
 RULES = """
 ‼️Правила 🫵 розміщення  🚗 об’яви – 🇺🇦

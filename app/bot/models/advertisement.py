@@ -14,7 +14,7 @@ from models import Base
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-from src.texts import ADV_TEXT
+from src.texts import ADV_TEXT, address
 
 from src.utils import count_credit_price
 
@@ -94,7 +94,8 @@ class Advertisement(Base):
             phone_number=self.phone_number if self.phone_number else self.client.phone_number,
             description=self.description,
             vin=(self.vin if self.vin is not None else '—'),
-            credit_price=count_credit_price(self.price)
+            credit_price=count_credit_price(self.price),
+            address=address if self.client.is_admin else '',
         )
 
     def update_publishing_dates(self):

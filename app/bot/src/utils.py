@@ -1,4 +1,4 @@
-from .texts import ADV_TEXT
+from .texts import ADV_TEXT, address
 import requests
 import math
 
@@ -22,7 +22,8 @@ def get_sending_text(data):
         phone_number=data["phone_number"],
         description=data["description"],
         vin=(data["vin"] if data["vin"] is not None else '—'),
-        credit_price=count_credit_price(data["price"])
+        credit_price=count_credit_price(data["price"]),
+        address=address if data["is_admin"] else '',
     )
 
 

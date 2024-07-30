@@ -70,6 +70,7 @@ class AdvertisementsApi(Resource):
                 "price": adv.price,
                 "vin": adv.vin,
                 "credit_price": 14.5,
+                "is_admin": adv.client.is_admin,
                 "phone_number": adv.phone_number if adv.phone_number else adv.client.phone_number,
                 "images": [
                     { 
