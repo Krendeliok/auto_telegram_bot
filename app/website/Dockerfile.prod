@@ -1,6 +1,6 @@
 FROM python:3.10
 
-WORKDIR /app
+WORKDIR /website
 
 RUN apt-get update
 RUN echo "Y" | apt-get upgrade

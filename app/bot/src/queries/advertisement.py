@@ -10,7 +10,7 @@ from models import (
 )
 from sqlalchemy.sql import expression
 from sqlalchemy import func
-from ..session import session
+from session import session
 
 from .client import get_client_by_telegram_id
 

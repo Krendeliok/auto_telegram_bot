@@ -16,3 +16,7 @@ MAX_IMAGES = os.environ.get("MAX_IMAGES")
 VIP_ADVERTISEMENTS = os.environ.get("VIP_ADVERTISEMENTS")
 
 PAYMENTS_TOKEN = os.environ.get("PAYMENTS_TOKEN")
+
+REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD")
+REDIS_USER = os.environ.get("REDIS_USER")
+REDIS_USER_PASSWORD = os.environ.get("REDIS_USER_PASSWORD")

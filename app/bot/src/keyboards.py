@@ -18,7 +18,7 @@ from .commands import general, admin, owner, filters, special, payments, vin
 from .queries.client import client_advertisements
 from .queries.advertisement import get_all_additional_advertisements
 from .queries.exists import exists_client
-from .session import session
+from session import session
 
 from models import (
     Producer,
@@ -469,6 +469,12 @@ def show_advertisement(keyboard: InlineKeyboardMarkup, adv_id: int):
 @inline_keyboard()
 def adverisement_keyboard(keyboard: InlineKeyboardMarkup, approve_text, reject_text):
     keyboard.add(approve(approve_text), reject(reject_text))
+
+
+@inline_keyboard()
+def prolongation_keyboard(keyboard: InlineKeyboardMarkup, prolongate_text, delete_text):
+    keyboard.add(custom_inline_button("Продовжити", prolongate_text))
+    keyboard.add(custom_inline_button("Видалити", delete_text))
 
 
 # endregion

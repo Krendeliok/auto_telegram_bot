@@ -13,7 +13,7 @@ from models import (
 )
 from sqlalchemy.sql.expression import and_, false
 
-from ..session import session
+from session import session
 
 from config import VIP_ADVERTISEMENTS
 

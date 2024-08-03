@@ -89,7 +89,7 @@ class Advertisement(Base):
             engine_volume=self.engine_volume,
             range=self.range,
             gearbox=self.gearbox.name,
-            drive_unit=self.drive_unit.name,
+            drive_unit=self.drive_unit.name if self.drive_unit else '—',
             city=self.country.name,
             phone_number=self.phone_number if self.phone_number else self.client.phone_number,
             description=self.description,
@@ -99,7 +99,7 @@ class Advertisement(Base):
 
     def update_publishing_dates(self):
         self.last_published_date = date.today()
-        self.next_published_date = date.today() + relativedelta(**dates_by_kind[self.kind])
+        self.next_published_date = date.today() + relativedelta(**dates_by_kind[self.kind.value])
 
     def __repr__(self):
         return f"Advertisement(id={self.id!r}, " \

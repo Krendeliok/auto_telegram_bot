@@ -14,6 +14,8 @@ class AdvertisementStateEnum(enum.Enum):
     approved = "approved"
     rejected = "rejected"
     draft = "draft"
+    sold = "sold"
+    deleted = "deleted"
 
 
 # revision identifiers, used by Alembic.
