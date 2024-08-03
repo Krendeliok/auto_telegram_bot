@@ -80,7 +80,6 @@ services:
       - web
       - db
       - redis
-    volumes:
     env_file:
       - .env
     environment:
