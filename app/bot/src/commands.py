@@ -9,6 +9,13 @@ special = {
     "remove": "❌Видалити",
     "private_phone": "Особитий",
     "comercial_phone": "Комерційний",
+    "skip": "Пропустити",
+}
+
+vin = {
+    "with_vin": "З VIN",
+    "without_vin": "Без VIN",
+    "any": "Будь-який",
 }
 
 general = {
@@ -25,9 +32,11 @@ payments = {
 
 filters = {
     "producer": "Обрати марку та модель",
+    "vin": "Наявність VIN",
     "gearbox": "Обрати коробку",
     "region": "Обрати область",
     "engine_type": "Обрати тип палива",
+    "drive_unit": "Обрати привід",
     "price": "Встановити ціну",
     "year": "Встановити рік",
     "engine_volume": "Встановити об'єм двигуна",

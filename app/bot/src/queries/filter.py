@@ -9,12 +9,13 @@ from models import (
     EngineFilter,
     RegionFilter,
     GearboxFilter,
-    ProducerFilter
+    ProducerFilter,
+    DriveUnitFilter
 )
 from sqlalchemy.sql import expression
 from sqlalchemy.sql.expression import or_, and_
 
-from ..session import session
+from session import session
 
 
 def get_or_create(model, delete_if_exists=False, **kwargs):
@@ -93,6 +94,29 @@ def add_filter_engine(user_filter: Filter, engine_id=None, set_all=False, delete
         session.commit()
 
 
+vin_map = {
+    "with_vin": expression.true(),
+    "without_vin": expression.false(),
+    "any": None
+}
+
+
+def add_filter_vin(user_filter: Filter, vin):
+    user_filter.vin = vin_map.get(vin)
+    session.commit()
+    
+    
+def add_filter_drive_unit(user_filter: Filter, drive_unit_id=None, set_all=False, delete_if_exists=True):
+    user_filter.all_drive_units = expression.true() if set_all else expression.false()
+    session.commit()
+    if not set_all:
+        drive_unit_filter = get_or_create(DriveUnitFilter, delete_if_exists, drive_unit_id=drive_unit_id, filter_id=user_filter.id)
+        return drive_unit_filter
+    else:
+        session.query(DriveUnitFilter).where(DriveUnitFilter.filter_id == user_filter.id).delete()
+        session.commit()
+
+
 def add_filter_price(user_filter: Filter, min_value, max_value):
     user_filter.min_price = min_value or 0
     user_filter.max_price = max_value or 0
@@ -154,6 +178,9 @@ def get_advertisements_by_filter(user_filter: Filter):
 
     if user_filter.all_regions == expression.false() and len(user_filter.regions) > 0:
         statements.append(Advertisement.based_country_id.in_((region.region_id for region in user_filter.regions)))
+
+    if user_filter.all_drive_units == expression.false() and len(user_filter.drive_units) > 0:
+        statements.append(Advertisement.drive_unit_id.in_((drive_unit.drive_unit_id for drive_unit in user_filter.drive_units)))
     
     if user_filter.min_price != 0:
         statements.append(Advertisement.price >= user_filter.min_price)
@@ -166,6 +193,12 @@ def get_advertisements_by_filter(user_filter: Filter):
 
     if user_filter.min_engine_volume != 0:
         statements.append(Advertisement.engine_volume >= user_filter.min_engine_volume)
+
+    if user_filter.vin is not None:
+        if user_filter.vin == expression.true():
+            statements.append(Advertisement.vin.isnot(None))
+        elif user_filter.vin == expression.false():
+            statements.append(Advertisement.vin.is_(None))
     
     if user_filter.max_price != 0:
         statements.append(Advertisement.price <= user_filter.max_price)

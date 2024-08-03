@@ -1,3 +1,4 @@
+from telegram import dp
 from aiogram import Dispatcher, types
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
@@ -122,3 +123,6 @@ def register_handlers_owner(dp: Dispatcher):
     dp.register_message_handler(create_admin, state=FSMOwner.create_admin)
     dp.register_message_handler(delete_admin, state=FSMOwner.delete_admin)
     dp.register_message_handler(show_admins, state=FSMOwner.show_admins)
+
+
+register_handlers_owner(dp)

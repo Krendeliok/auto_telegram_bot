@@ -63,10 +63,13 @@ class AdvertisementsApi(Resource):
                 "engine_type": adv.engine.name,
                 "engine_volume": str(adv.engine_volume),
                 "gearbox_type": adv.gearbox.name,
+                "drive_unit": adv.drive_unit.name if adv.drive_unit else '—',
                 "range": adv.range,
                 "based_country": adv.country.name,
                 "description": adv.description,
                 "price": adv.price,
+                "vin": adv.vin,
+                "credit_price": 14.5,
                 "phone_number": adv.phone_number if adv.phone_number else adv.client.phone_number,
                 "images": [
                     { 
@@ -96,9 +99,11 @@ class AdvertisementsApi(Resource):
                 engine_volume=data["engine_volume"],
                 range=data["range"],
                 gearbox_type_id=data["gearbox_type_id"],
+                drive_unit_id=data["drive_unit_id"],
                 based_country_id=data["based_country_id"],
                 phone_number=data["phone_number"],
                 description=data["description"],
+                vin=data["vin"],
                 kind=data["kind"]
             )
 

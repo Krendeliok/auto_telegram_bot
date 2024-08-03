@@ -24,3 +24,4 @@ SQLAlchemy==1.4.43
 urllib3==1.26.12
 yarl==1.8.1
 cloudinary==1.36.0
+celery[redis]==5.4.0

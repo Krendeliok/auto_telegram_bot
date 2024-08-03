@@ -1,3 +1,4 @@
+from telegram import dp, bot
 from aiogram import Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -5,7 +6,6 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, CallbackQuery
 from aiogram.types.message import ContentType
 
 from config import PAYMENTS_TOKEN
-from main import bot
 
 from ..contexts import FSMPayment
 
@@ -16,7 +16,7 @@ from ..commands import general
 from ..keyboards import tarifs_keyboard, paymets_keyboard, goods_keyboard, decline_invoice_keyboard
 
 from ..queries.client import set_vip, get_client_by_telegram_id
-from ..queries.advertisement import count_free_additional_adertisements
+from ..queries.advertisement import count_free_additional_advertisements
 from ..queries.create import create_adittional_advertisement
 
 
@@ -62,7 +62,7 @@ async def my_goods_handler(message: Message, state: FSMContext):
     client = get_client_by_telegram_id(message.from_user.id)
     text = f"""
 Віп - {client.vip_end if client.is_vip else "відсутній"}
-Вільні додаткові оголошення - {count_free_additional_adertisements(message.from_user.id)}
+Вільні додаткові оголошення - {count_free_additional_advertisements(message.from_user.id)}
     """
     await message.answer(text, reply_markup=goods_keyboard(message.from_user.id, client.is_vip))
 
@@ -110,10 +110,13 @@ async def success_payment(message: Message, state: FSMContext):
     await buy_handler(message, state, after_success=True)
 
 
-def register_hendlers_payment(dp: Dispatcher):
+def register_handlers_payment(dp: Dispatcher):
     # dp.register_message_handler(payments_handler, Text(equals=general["payment"]), state="*")
     dp.register_message_handler(buy_handler, state=FSMPayment.menu)
     dp.register_callback_query_handler(send_payment, state=FSMPayment.choose_product)
     dp.register_pre_checkout_query_handler(checkout_handler, lambda q: True, state=FSMPayment.make_payment)
     dp.register_callback_query_handler(cancel_payment_handler, lambda callback_query: callback_query.data == "cancel_payment", state="*")
     dp.register_message_handler(success_payment, content_types=ContentType.SUCCESSFUL_PAYMENT, state="*")
+
+
+register_handlers_payment(dp)

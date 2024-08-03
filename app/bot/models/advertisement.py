@@ -16,6 +16,8 @@ from dateutil.relativedelta import relativedelta
 
 from src.texts import ADV_TEXT
 
+from src.utils import count_credit_price
+
 
 class AdvertisementStateEnum(enum.Enum):
     approved = "approved"
@@ -52,8 +54,10 @@ class Advertisement(Base):
     range = Column(Integer, nullable=False)
     gearbox_type_id = Column(Integer, ForeignKey("gearbox.id", ondelete="SET NULL"))
     based_country_id = Column(Integer, ForeignKey("country.id", ondelete="SET NULL"))
+    drive_unit_id = Column(Integer, ForeignKey("drive_unit.id", ondelete="SET NULL"))
     phone_number = Column(String)
     description = Column(Text, nullable=False)
+    vin = Column(String)
     status = Column(
         Enum(AdvertisementStateEnum, values_callable=lambda obj: [e.value for e in obj]), 
         default=AdvertisementStateEnum.draft.value,
@@ -69,7 +73,6 @@ class Advertisement(Base):
     next_published_date = Column(Date)
     additional_advertisement_id = Column(Integer, ForeignKey("additional_advs.id", ondelete="SET NULL"), nullable=True)
 
-
     images = relationship(
         "Image",
         backref="advertisement"
@@ -83,24 +86,26 @@ class Advertisement(Base):
             price=self.price,
             year=self.year,
             engine_type=self.engine.name,
-            engine_type_prompt='Об\'єм' if self.engine.name != 'Електро' else 'Потужність',
             engine_volume=self.engine_volume,
-            gearbox=self.gearbox.name,
             range=self.range,
+            gearbox=self.gearbox.name,
+            drive_unit=self.drive_unit.name if self.drive_unit else '—',
             city=self.country.name,
             phone_number=self.phone_number if self.phone_number else self.client.phone_number,
-            description=self.description
+            description=self.description,
+            vin=(self.vin if self.vin is not None else '—'),
+            credit_price=count_credit_price(self.price)
         )
 
     def update_publishing_dates(self):
         self.last_published_date = date.today()
-        self.next_published_date = date.today() + relativedelta(**dates_by_kind[self.kind])
+        self.next_published_date = date.today() + relativedelta(**dates_by_kind[self.kind.value])
 
     def __repr__(self):
         return f"Advertisement(id={self.id!r}, " \
                f"model={self.model.id!r}, " \
                f"client={self.client.username!r}, "\
-               f"status={self.status})"
+               f"status={self.status.value})"
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
