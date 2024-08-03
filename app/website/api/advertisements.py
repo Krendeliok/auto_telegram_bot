@@ -63,7 +63,7 @@ class AdvertisementsApi(Resource):
                 "engine_type": adv.engine.name,
                 "engine_volume": str(adv.engine_volume),
                 "gearbox_type": adv.gearbox.name,
-                "drive_unit": adv.drive_unit.name,
+                "drive_unit": adv.drive_unit.name if adv.drive_unit else '—',
                 "range": adv.range,
                 "based_country": adv.country.name,
                 "description": adv.description,
