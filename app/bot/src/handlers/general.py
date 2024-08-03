@@ -1,3 +1,4 @@
+from telegram import dp
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -51,6 +52,7 @@ from ..queries.advertisement import (
     delete_adv,
     get_all_images,
     set_new_image_source,
+    get_advertisement_by_id,
 )
 from ..queries.create import (
     create_client
@@ -60,6 +62,8 @@ from ..contexts import FSMMenu, FSMFilter
 from ..commands import general, filters, special, vin
 
 from asyncio import sleep
+
+from worker.tasks import prolongation_advertisement_question, prolong_advertisement, delete_advertisement
 
 
 async def update_images(message: types.Message):
@@ -85,9 +89,23 @@ async def update_images(message: types.Message):
     await message.answer("Finish")
 
 
+async def prolong_advertisement_callback(callback_query: types.CallbackQuery):
+    await callback_query.bot.answer_callback_query(callback_query.id)
+    status, adv_id = callback_query["data"].split(":")
+    adv = await get_advertisement_by_id(int(adv_id))
+    await callback_query.message.edit_reply_markup(reply_markup=None)
+    if status == "prolong":
+        prolong_advertisement.apply_async(args=(adv["id"],))
+        await callback_query.message.edit_text("Оголошення продовжено.")
+    elif status == "delete":
+        delete_advertisement.apply_async(args=(adv["id"],))
+        await callback_query.message.edit_text("Оголошення видалено.")
+
+
 async def start_command(message: types.Message, state: FSMContext, **kwargs):
     exists, model = exists_client(message.chat.id)
     if exists:
+        prolongation_advertisement_question.apply_async()
         await message.answer("Що хочете зробити?", reply_markup=commands_keyboard(message.chat.id))
         await state.finish()
     else:
@@ -364,7 +382,7 @@ async def filter_gearbox(message: types.Message, state: FSMContext, user_filter)
         await message.answer(f"Коробка {message.text} {'додана' if created else 'видалена'} успішно.",
                              reply_markup=gearbox_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
     else:
-        await message.reply("Не знаю такого типу коробки. Спробуйте обрати з доступних.",
+        await message.reply("Не знаю такого типу короprolong_advertisement_callbackбки. Спробуйте обрати з доступних.",
                             reply_markup=gearbox_keyboard(filter_buttons=True, telegram_id=message.from_user.id))
 
 
@@ -431,6 +449,11 @@ def register_handlers_general(dp: Dispatcher):
     dp.register_message_handler(my_advertisements, Text(equals=general["my_advs"]))
     dp.register_callback_query_handler(advertisements_choose_action, state=FSMMenu.choose_adv)
     dp.register_callback_query_handler(advertisement_action_handler, state=FSMMenu.adv_action)
+    dp.register_callback_query_handler(
+        prolong_advertisement_callback,
+        lambda c: c.data.startswith("prolong:") or c.data.startswith("delete:"),
+        state="*"
+    )
     dp.register_message_handler(start_filter, Text(equals=general["filter"], ignore_case=True), state=None)
     dp.register_message_handler(filter_commands_handler, state=FSMFilter.start)
     dp.register_message_handler(filter_producer, state=FSMFilter.producer)
@@ -444,3 +467,6 @@ def register_handlers_general(dp: Dispatcher):
     dp.register_message_handler(filter_volume, state=FSMFilter.engine_volume)
     dp.register_message_handler(filter_year, state=FSMFilter.year)
     dp.register_message_handler(filter_range, state=FSMFilter.range)
+
+
+register_handlers_general(dp)

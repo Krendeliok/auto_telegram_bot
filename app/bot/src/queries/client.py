@@ -13,7 +13,7 @@ from dateutil.relativedelta import relativedelta
 
 from .exists import exists_basic_adv, exists_vip_adv_space, exists_free_additional_adv
 
-from ..session import session
+from session import session
 
 
 def is_admin(telegram_id) -> bool:

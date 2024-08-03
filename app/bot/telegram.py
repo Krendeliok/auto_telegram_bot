@@ -1,9 +1,10 @@
-# from .disp import current_dispatcher as dp
-# from .handlers import advertisement, admin, owner, general, payments
-#
-#
-# owner.register_handlers_owner(dp)
-# admin.register_handlers_admin(dp)
-# advertisement.register_handlers_advertisement(dp)
-# general.register_handlers_general(dp)
-# payments.register_handlers_payment(dp)
+from aiogram import Bot, Dispatcher
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+
+from config import API_TOKEN
+
+
+storage = MemoryStorage()
+
+bot = Bot(token=API_TOKEN, parse_mode='html')
+dp = Dispatcher(bot, storage=storage)

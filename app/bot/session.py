@@ -1,8 +1,11 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
 
-session: Session = None
+from models import Base
+from config import DATABASE_URI
 
-def create_session(engine):
-    global session
-    session = Session(engine)
-    return session
+
+engine = create_engine(DATABASE_URI)
+Base.metadata.bind = engine
+
+session = Session(engine)

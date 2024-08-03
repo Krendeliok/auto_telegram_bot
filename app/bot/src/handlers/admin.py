@@ -1,7 +1,7 @@
+from telegram import dp
 from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram.types import MediaGroup, InputMediaPhoto
 from config import CHANNEL_NAME
 
 from ..contexts import (FSMAdmin, FSMSolution)
@@ -43,6 +43,7 @@ def back_handler(previous_func, text=None):
         return inner
     return wrapper
 
+
 async def submit_advertisement(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.bot.answer_callback_query(callback_query.id)
     status, adv_id = callback_query["data"].split(":")
@@ -54,7 +55,7 @@ async def submit_advertisement(callback_query: types.CallbackQuery, state: FSMCo
         await callback_query.message.answer("Погоджено!")
         await callback_query.bot.send_message(
             adv["client_telegram_id"],
-            "✅Ваша об'ява погоджена і буде виставлятися раз на місяць.", 
+            "✅Ваше оголошення погоджено і буде виставлятися раз на місяць.",
             reply_markup=commands_keyboard(adv["client_telegram_id"])
         )
     elif status == "reject":
@@ -68,7 +69,7 @@ async def send_reject_message(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         await message.bot.send_message(
             data["user_id"], 
-            f"⭕️Вашу об'яву відхилено. Причина: {reject_message}.", 
+            f"⭕️Ваше оголошення відхилено. Причина: {reject_message}.",
             reply_markup=commands_keyboard(data["user_id"])
         )
     await state.finish()
@@ -155,3 +156,6 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(admin_create_engine_type, state=FSMAdmin.create_engine)
     dp.register_message_handler(admin_create_gearbox, state=FSMAdmin.create_gearbox)
     dp.register_message_handler(admin_create_city, state=FSMAdmin.create_region)
+
+
+register_handlers_admin(dp)

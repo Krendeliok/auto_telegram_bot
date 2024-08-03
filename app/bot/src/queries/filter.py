@@ -15,7 +15,7 @@ from models import (
 from sqlalchemy.sql import expression
 from sqlalchemy.sql.expression import or_, and_
 
-from ..session import session
+from session import session
 
 
 def get_or_create(model, delete_if_exists=False, **kwargs):

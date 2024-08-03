@@ -1,3 +1,4 @@
+from telegram import dp
 from aiogram.dispatcher import FSMContext
 from aiogram import Dispatcher, types
 from aiogram.dispatcher.filters import Text
@@ -394,3 +395,6 @@ def register_handlers_advertisement(dp: Dispatcher):
     dp.register_message_handler(submition_advertisement, Text(equals=special["complete"], ignore_case=True),
                                 state=FSMAdvertisement.more_images)
     dp.register_message_handler(more_images, content_types=["photo"], state=FSMAdvertisement.more_images)
+
+
+register_handlers_advertisement(dp)
