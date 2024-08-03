@@ -63,7 +63,7 @@ from ..commands import general, filters, special, vin
 
 from asyncio import sleep
 
-from worker.tasks import prolongation_advertisement_question, prolong_advertisement, delete_advertisement
+from worker.tasks import prolong_advertisement, delete_advertisement
 
 
 async def update_images(message: types.Message):
@@ -105,7 +105,6 @@ async def prolong_advertisement_callback(callback_query: types.CallbackQuery):
 async def start_command(message: types.Message, state: FSMContext, **kwargs):
     exists, model = exists_client(message.chat.id)
     if exists:
-        prolongation_advertisement_question.apply_async()
         await message.answer("Що хочете зробити?", reply_markup=commands_keyboard(message.chat.id))
         await state.finish()
     else:
