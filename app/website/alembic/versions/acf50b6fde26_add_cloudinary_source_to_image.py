@@ -27,7 +27,7 @@ branch_labels = None
 depends_on = None
 
 
-init_config("/app/settings.ini")
+init_config("/website/settings.ini")
 
 cloudinary.config(
     cloud_name=config["CLOUDINARY"]["CLOUDINARY_CLOUD_NAME"],
