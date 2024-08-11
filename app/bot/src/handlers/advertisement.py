@@ -138,7 +138,7 @@ async def set_model(message: types.Message, state: FSMContext):
 @back_handler(previous_func=set_producer, key="producer")
 async def set_vin(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
-        if message.text == special["skip"]:
+        if message.text == special["skip"] or message.text is None:
             data["vin"] = None
         else:
             if not check_vin(message.text):

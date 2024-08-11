@@ -8,7 +8,7 @@ app = Celery(
     broker=f"redis://{REDIS_USER}:{REDIS_PASSWORD}@redis:6379/0",
     include=['worker.tasks']
 )
-app.conf.timezone = 'UTC+2'
+app.conf.timezone = 'Europe/Kyiv'
 app.conf.beat_schedule = {
     'prolongation_advertisement_question': {
         'task': 'worker.tasks.prolongation_advertisement_question',
