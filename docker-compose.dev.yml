@@ -53,5 +53,20 @@ services:
       - BASE_API_URL=http://web:5000/api/v1/
     command: celery -A worker.celery_app:app worker --loglevel=info
     restart: always
+  celery_beat:
+    build: ./app/bot
+    container_name: beat-bot
+    depends_on:
+      - web
+      - db
+      - redis
+    volumes:
+      - ./app/bot:/bot
+    env_file:
+      - .env
+    environment:
+      - BASE_API_URL=http://web:5000/api/v1/
+    command: celery -A worker.celery_app:app beat --loglevel=info
+    restart: always
 volumes:
   node_modules:

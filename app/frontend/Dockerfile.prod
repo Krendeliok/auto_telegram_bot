@@ -4,6 +4,7 @@ WORKDIR /frontend
 
 COPY package.json .
 
+RUN npm install npm@latest -g
 RUN npm i
 
 COPY  . .
