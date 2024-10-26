@@ -13,6 +13,8 @@ import asyncio
 
 from config import CHANNEL_NAME
 
+# from ..models import AdvertisementKindEnum
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
@@ -27,28 +29,36 @@ def create_media_group(adv):
 
 @app.task(ignore_result=True)
 def prolongation_advertisement_question():
-    advs = (
-        session.query(Advertisement)
-        .filter(
-            Advertisement.status == AdvertisementStateEnum.approved,
-            Advertisement.next_published_date <= date.today()
+    try:
+        advs = (
+            session.query(Advertisement)
+            .filter(
+                # Advertisement.kind == AdvertisementKindEnum.admin,
+                Advertisement.status == AdvertisementStateEnum.approved,
+                Advertisement.next_published_date <= date.today()
+            )
+            .all()
         )
-        .all()
-    )
+    except Exception as e:
+        print(e)
+        return
 
     for adv in advs:
-        media_group = create_media_group(adv)
-        # send to adv owner with two buttons "Prolongate" and "Delete"
-        asyncio.run(bot.send_media_group(
-            adv.client.telegram_id,
-            media=media_group
-        ))
-        asyncio.run(bot.send_message(
-            adv.client.telegram_id,
-            "Що зробити з оголошенням?",
-            reply_markup=prolongation_keyboard(f'prolong:{adv.id}', f'delete:{adv.id}')
-        ))
-        asyncio.run(asyncio.sleep(10))
+        try:
+            media_group = create_media_group(adv)
+            # send to adv owner with two buttons "Prolongate" and "Delete"
+            asyncio.run(bot.send_media_group(
+                adv.client.telegram_id,
+                media=media_group
+            ))
+            asyncio.run(bot.send_message(
+                adv.client.telegram_id,
+                "Що зробити з оголошенням?",
+                reply_markup=prolongation_keyboard(f'prolong:{adv.id}', f'delete:{adv.id}')
+            ))
+            asyncio.run(asyncio.sleep(10))
+        except Exception as e:
+            print(e)
 
 
 @app.task(ignore_result=True)
