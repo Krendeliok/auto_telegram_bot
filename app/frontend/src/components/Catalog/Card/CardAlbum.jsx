@@ -38,15 +38,16 @@ function CardAlbum({ images }) {
                         : ""
                     }
                     <div className="allcards__fogging"></div>
+                    <div className="carousel">
+                        <div className="carousel__arrow" onClick={onLeftArrowClick}></div>
+                        <div className="carousel__arrow right" onClick={onRightArrowClick}></div>
+                        <div className="breadcrumbs">
+                            {images.map((image, index) => <div key={image.id}
+                                                          className={index === currentImage ? "active" : ""}></div>)}
+                        </div>
+                    </div>
                 </div>
             }
-            <div className="carousel">
-                <div className="carousel__arrow" onClick={onLeftArrowClick}></div>
-                <div className="carousel__arrow right" onClick={onRightArrowClick}></div>
-                <div className="breadcrumbs">
-                    {images.map((image, index) => <div key={image.id} className={index === currentImage ? "active" : ""}></div>)}
-                </div>
-            </div>
             <div className="fogging"></div>
         </div>
     );
