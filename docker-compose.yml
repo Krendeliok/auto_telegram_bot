@@ -72,7 +72,7 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal -m '${EMAIL}' -d '${DOMAINS}' --agree-tos
+    command: certonly --webroot -w /var/www/certbot --force-renewal -m 'Autoyarmarok@gmail.com' -d 'autoyarmarok.com' --agree-tos --non-interactive
   celery_bot:
     build: ./app/bot
     container_name: worker-bot
