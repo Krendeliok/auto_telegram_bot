@@ -1,0 +1,54 @@
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.inputs.row {
+    flex-direction: row;
+    gap: 80px;
+}
+
+.input__group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input__group input {
+    padding: 10px 16px;
+    color: #8E8E8E;
+    background-color: #F4F5F3;
+}
+
+.form__checkboxes {
+    display: flex;
+    gap: 80px;
+    height: 580px;
+}
+
+.form__ranged {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.popup__button {
+    padding: 20px 50px;
+    margin: 0 auto;
+    font-size: 20px;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+
+    gap: 40px;
+    height: 580px;
+    overflow: auto;
+}
+
+.saveAndChosen {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

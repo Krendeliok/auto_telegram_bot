@@ -1,5 +1,6 @@
 import React from 'react';
 import Good from './Good';
+import styles from "./Content.module.css";
 
 function ContentGoods() {
     const cards = [
@@ -10,7 +11,7 @@ function ContentGoods() {
     ]
 
     return ( 
-        <div className="content__goods">
+        <div className={styles.content__goods}>
             {cards.map(good_data => 
                 <Good good_data={good_data} key={good_data.number} />
             )}

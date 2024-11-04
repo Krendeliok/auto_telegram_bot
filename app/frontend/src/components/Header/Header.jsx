@@ -10,6 +10,8 @@ import TikTokLink from '../Links/TikTokLink';
 
 import PercentSVG from "../../assets/percent.svg"
 
+import styles from './Header.module.css';
+
 
 function Header() {
 
@@ -17,8 +19,8 @@ function Header() {
     const menuRef = useRef();
 
     const openMenu = () => {
-        burgerRef.current.classList.toggle("active");
-        menuRef.current.classList.toggle("active");
+        burgerRef.current.classList.toggle(styles.active);
+        menuRef.current.classList.toggle(styles.active);
         document.querySelector("body").classList.toggle("lock");
     };
 
@@ -26,23 +28,23 @@ function Header() {
     const current = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
     return (
-        <header className="header">
+        <header className={styles.header}>
             <div className="container">
-                <div className="promotion">
-                    <div className="promotion__text"> <img src={PercentSVG} alt="" /> Розмісти безкоштовно автомобіль на майданчику! Поспішай! Акція діє до 01.{ ("0" + (current.getMonth() + 1)).slice(-2) }</div>
+                <div className={styles.promotion}>
+                    <div className={styles.promotion__text}> <img src={PercentSVG} alt="" /> Розмісти безкоштовно автомобіль на майданчику! Поспішай! Акція діє до 01.{ ("0" + (current.getMonth() + 1)).slice(-2) }</div>
                 </div>
-                <div className="header__body">
+                <div className={styles.header__body}>
                     <LogoLink/>
-                    <div className="header__burger" ref={burgerRef} onClick={openMenu}><span></span></div>
-                    <nav className="header__menu" ref={menuRef}>
+                    <div className={styles.header__burger} ref={burgerRef} onClick={openMenu}><span></span></div>
+                    <nav className={styles.header__menu} ref={menuRef}>
                         <Menu />
-                        <div className="menu__phone">+38 (097) 62 00 777</div>
-                        <div className="menu__social">
-                            <InstagramLink className="social__link" />
-                            <TelegramLink className="social__link" />
-                            <ViberLink className="social__link" />
-                            <FacebookLink className="social__link" />
-                            <TikTokLink className="social__link" />
+                        <div className={styles.menu__phone}>+38 (097) 62 00 777</div>
+                        <div className={styles.menu__social}>
+                            <InstagramLink className={styles.social__link} />
+                            <TelegramLink className={styles.social__link} />
+                            <ViberLink className={styles.social__link} />
+                            <FacebookLink className={styles.social__link} />
+                            <TikTokLink className={styles.social__link} />
                         </div>
                     </nav>
                 </div>

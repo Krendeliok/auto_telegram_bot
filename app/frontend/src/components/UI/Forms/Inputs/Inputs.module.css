@@ -1,0 +1,122 @@
+.checkboxes__checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 160%;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    position: relative;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #F4F5F3;
+    background-color: inherit;
+    outline: none;
+    cursor: pointer;
+}
+input[type="checkbox"].checked::before {
+    content: "\2714";
+    position: absolute;
+    top: -3px;
+    left: 0;
+    color: #01B851;
+}
+
+.checkboxes__group {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.checkboxes__group>label {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.checkboxes__group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 536px;
+    overflow: auto;
+}
+
+.slider {
+    position: relative;
+    width: 280px;
+}
+
+.slider__track,
+.slider__range {
+    position: absolute;
+    height: 4px;
+}
+
+.slider__track {
+    background-color: #F4F5F3;
+    width: 100%;
+    z-index: 1;
+}
+
+.slider__range {
+    background-color: #FFFF05;
+    z-index: 2;
+}
+
+
+.thumb,
+.thumb::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.thumb {
+    pointer-events: none;
+    position: absolute;
+    height: 0;
+    width: 280px;
+    outline: none;
+}
+
+.thumbLeft {
+    composes: thumb;
+    z-index: 3;
+}
+
+.thumbRight {
+    composes: thumb;
+    z-index: 4;
+}
+
+.thumb::-webkit-slider-thumb {
+    background-color: #FFFF05;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+    margin-top: 4px;
+    pointer-events: all;
+    position: relative;
+}
+
+.thumb::-moz-range-thumb {
+    background-color: #FFFF05;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 12px;
+    width: 12px;
+    margin-top: 4px;
+    pointer-events: all;
+    position: relative;
+}

@@ -1,0 +1,72 @@
+.primary__button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #141414;
+    cursor: pointer;
+    background-color: #FFFF05;
+    height: 64px;
+    width: 357px;
+    border: none;
+    border-radius: 0 15px 15px 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+    transition: all .3s ease;
+}
+
+.primary__button:hover {
+    background-color: rgba(138, 138, 4, 1);
+}
+
+.primary__button .ellips {
+    position: absolute;
+    height: 100%;
+    width: 18px;
+    top: 0;
+    right: 0;
+    overflow: hidden;
+}
+
+.primary__button .ellips:nth-child(1) {
+    right: 0;
+}
+
+.primary__button .ellips:nth-child(2) {
+    right: 14px;
+}
+
+.primary__button .ellips::after {
+    content: "";
+    position: absolute;
+    top: -23px;
+    right: -5px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 6px solid #141414;
+}
+
+.primary__button .ellips:nth-child(2)::after {
+    right: 0;
+}
+
+.secondary__button {
+    border: 1px solid #FFFF05;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: fit-content;
+
+    color: #fff;
+    background-color: inherit;
+    cursor: pointer;
+    gap: 10px;
+    transition: all .3s ease;
+}
+
+.secondary__button:hover {
+    background-color: rgba(138, 138, 4, 0.50);
+}

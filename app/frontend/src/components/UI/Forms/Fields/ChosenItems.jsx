@@ -1,6 +1,7 @@
 import React from 'react';
+import styles from './Fields.module.css';
 
-function ChoosenItems({ items }) {
+function ChosenItems({ items }) {
     let countChecked = 0;
     items?.map((obj) => {
         countChecked += obj.checkboxList?.filter((val) => val.checked).length
@@ -10,13 +11,13 @@ function ChoosenItems({ items }) {
 
     if (countChecked > 0) {
         return ( 
-            <div className="choosen__items">
+            <div className={styles.chosen__items}>
                 <span>Обрано:</span>
                 {items?.map((obj) => 
                     obj.checkboxList?.filter((val) => val.checked).map((el) => 
-                        <div className="choosen__items-item" key={el.name}>
+                        <div className={styles.chosen__itemsItem} key={el.name}>
                             <span>{el.name}</span>
-                            <span className='remove__item' onClick={() => { obj.onClick(el.id) }} >x</span>
+                            <span className={styles.remove__item} onClick={() => { obj.onClick(el.id) }} >x</span>
                         </div>
                     )
                 )}
@@ -28,4 +29,4 @@ function ChoosenItems({ items }) {
     
 }
 
-export default ChoosenItems;
+export default ChosenItems;

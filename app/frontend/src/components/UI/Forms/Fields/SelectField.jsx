@@ -4,6 +4,8 @@ import ArrowSVG from "../../../../assets/arrow.svg"
 import SelectedFieldOption from './SelectedFieldOption';
 import SortSVG from "../../../../assets/sort.svg";
 
+import styles from './Fields.module.css';
+
 function SelectField({ selected, options, placeholder, onChange, onClose }) {
     const [isOpen, setIsOpen] = useState(false);
     const rootRef = useRef(null);
@@ -11,7 +13,12 @@ function SelectField({ selected, options, placeholder, onChange, onClose }) {
     const arrowRef = useRef(null);
 
     useEffect(() => {
-        arrowRef.current.classList.toggle("active");
+        if (isOpen) {
+            arrowRef.current.classList.add("active");
+        }
+        else {
+            arrowRef.current.classList.remove("active");
+        }
     }, [isOpen])
 
     useEffect(() => {
@@ -57,9 +64,9 @@ function SelectField({ selected, options, placeholder, onChange, onClose }) {
     };
 
     return (  
-        <div ref={rootRef} data-is-active={isOpen} className='select__root'>
+        <div ref={rootRef} data-is-active={isOpen} className={styles.select__root}>
             <div
-                className="select__placeholder"
+                className={styles.select__placeholder}
                 data-selected={!!selected?.value}
                 onClick={handlePlaceHolderClick}
                 role='button'
@@ -67,10 +74,10 @@ function SelectField({ selected, options, placeholder, onChange, onClose }) {
                 ref={placeholderRef}
             >
                 {selected?.title || placeholder}
-                <div className="select__arrow active" ref={arrowRef}><img src={ArrowSVG} alt="" /></div>
+                <div className={styles.select__arrow} ref={arrowRef}><img src={ArrowSVG} alt="" /></div>
             </div>
             <div
-                className="select__placeholder__icon"
+                className={styles.select__placeholder__icon}
                 data-selected={!!selected?.value}
                 onClick={handlePlaceHolderClick}
                 role='button'
@@ -82,7 +89,7 @@ function SelectField({ selected, options, placeholder, onChange, onClose }) {
             
             {isOpen && (
                 <ul className="select__options">
-                    <div className='select__delimiter'></div>
+                    <div className={styles.select__delimiter}></div>
                     {options.map((option) => (
                         <SelectedFieldOption
                             key={option.value}

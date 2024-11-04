@@ -5,6 +5,9 @@ import 'react-phone-number-input/style.css'
 import {useFetching} from "../../../hooks/useFetching";
 import FeedbackService from '../../../API/FeedbackService';
 
+import styles from './Forms.module.css';
+import SecondaryButton from "../SecondaryButton";
+
 function AboutCarForm({ advertisement_id, setVisiblePopup }) {
     const [formData, setFormData] = useState({ name: "", phone: "" });
     const [fetchFeedback] = useFetching(async () => {
@@ -19,8 +22,8 @@ function AboutCarForm({ advertisement_id, setVisiblePopup }) {
 
     return (  
         <form>
-            <div className="inputs">
-                <div className="input__group">
+            <div className={styles.inputs}>
+                <div className={styles.input__group}>
                     <label htmlFor="name">Ім’я</label>
                     <input
                         id="name"
@@ -31,7 +34,7 @@ function AboutCarForm({ advertisement_id, setVisiblePopup }) {
                         onChange={e => setFormData({ ...formData, name: e.target.value })}
                     />
                 </div>
-                <div className="input__group">
+                <div className={styles.input__group}>
                     <label htmlFor="phone">Телефон</label>
                     <PhoneInput
                         id="phone"
@@ -45,7 +48,7 @@ function AboutCarForm({ advertisement_id, setVisiblePopup }) {
                     />
                 </div>
             </div>
-            <button type="submit" className="popup__button secondary__button" onClick={sendNeedFeedback}>Надіслати</button>
+            <SecondaryButton type="submit" additionalClasses={[styles.popup__button]} onClick={sendNeedFeedback}>Надіслати</SecondaryButton>
         </form>
     );
 }

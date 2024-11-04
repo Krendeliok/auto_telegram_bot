@@ -1,0 +1,252 @@
+.content__card {
+    display: flex;
+    gap: 40px;
+    min-height: 414px;
+}
+
+@media (max-width: 359.99px) {
+    .content__card {
+        flex-direction: column;
+    }
+}
+
+.card__data {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.data__title {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.data__info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.info__item {
+    display: flex;
+    gap: 12px;
+    font-size: 18px;
+    align-items: center;
+}
+
+.item__icon img{
+    width: 40px;
+    height: 40px;
+}
+
+.data__detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 20px;
+}
+
+.detail__price {
+    color: #FFFF05;
+    font-size: 60px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+}
+
+.card__album {
+    position: relative;
+    overflow: hidden;
+    max-width: 708px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.card__album .fogging {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(1, 1, 1, 0);
+    transition: .3s all ease;
+    z-index: 10;
+}
+
+.card__album:hover .fogging {
+    background-color: rgba(1, 1, 1, .3);
+}
+
+.album__images {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    width: calc(100% - 10px);
+    padding: 4px 5px;
+    margin-bottom: -104px;
+    transition: .3s all ease;
+    margin-top: auto;
+    position: unset;
+}
+
+.allcards__fogging {
+    position: absolute;
+    bottom: -104px;
+    left: 0;
+    width: 100%;
+    height: 104px;
+    background-color: rgba(16, 16, 16, 0.80);
+    transition: .3s bottom ease;
+    z-index: 10;
+}
+
+.card__album:hover .allcards__fogging {
+    bottom: 0;
+}
+
+.carousel {
+    display: none;
+}
+
+.carousel__arrow {
+    padding: 43px 25px;
+    position: absolute;
+    left: 20px;
+    color: #FFFF05;
+    z-index: 20;
+}
+.carousel__arrow.right {
+    transform: rotate(180deg);
+    right: 20px;
+    left: auto;
+}
+
+.carousel__arrow::before, .carousel__arrow::after {
+    border-right: 2px solid;
+    content: '';
+    display: block;
+    height: 50px;
+    position: absolute;
+    transform: rotate(45deg);
+    top: 0;
+    left: 20px;
+    width: 0;
+}
+
+.carousel__arrow::after {
+    transform: rotate(135deg);
+    top: 35px;
+}
+
+.breadcrumbs {
+    position: absolute;
+    bottom: 12px;
+    display: flex;
+    gap: 4px;
+    z-index: 20;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.breadcrumbs div {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #808080;
+}
+.breadcrumbs .active {
+    background-color: #BEBEBE;
+    width: 8px;
+    height: 8px;
+}
+
+.album__image {
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.album__image img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.album__image:nth-child(1) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.album__image:nth-child(1) img {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(50, 50, 50, 1);
+}
+
+.album__image:nth-child(n+2){
+    cursor: pointer;
+    z-index: 15;
+}
+
+.card__album:hover  .album__image:nth-child(n+2) {
+    position: relative;
+    margin-bottom: 0;
+}
+
+.card__album:hover {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.30) 100%),
+        lightgray 50% / cover no-repeat;
+}
+
+@media (max-width: 1269.99px) {
+    .album__image:nth-child(n+2){
+        display: none;
+    }
+    .album__image:nth-child(1) {
+        position: relative;
+    }
+    .album__images {
+        width: unset;
+        padding: 0;
+        margin-bottom: 0;
+    }
+    .allcards__fogging {
+        display: none;
+    }
+    .fogging {
+        display: none;
+    }
+    .carousel {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .content__card {
+        flex-direction: column;
+    }
+}
+@media (max-width:767.99px) {
+    .card__album {
+        min-width: 320px;
+    }
+}
+
+.card__album:hover .album__images {
+    margin-bottom: 0;
+}

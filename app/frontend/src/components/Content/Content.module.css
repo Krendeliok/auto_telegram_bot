@@ -1,0 +1,273 @@
+.content__body {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 235px;
+}
+
+@media (max-width: 1269.99px) {
+    .content {
+        flex-direction: column;
+    }
+}
+
+.content__info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 80px;
+    width: 702px;
+}
+
+@media (max-width: 1269.99px) {
+    .content {
+        align-items: center;
+        gap: 40px;
+    }
+}
+
+.content__data {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 22px;
+}
+
+.info__body {
+    width: 100%;
+}
+
+.info__image {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+}
+
+.info__image img {
+    z-index: 1;
+}
+
+.info__title {
+    width: 100%;
+}
+
+.title__head {
+    font-size: 100px;
+    line-height: 120%;
+    letter-spacing: 5px;
+    text-align: center;
+}
+
+.title__subtitle {
+    position: relative;
+    color: #FFFF05;
+    font-size: 18px;
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width:767.99px) {
+    .main {
+        padding: 0 20px 20px;
+    }
+
+    .title__head {
+        font-size: 68px;
+        letter-spacing: 2.2px;
+        font-weight: 500;
+    }
+
+    .title__subtitle {
+        font-size: 14px;
+        line-height: 120%;
+    }
+
+    .info__body {
+        font-size: 14px;
+    }
+
+    .content__info {
+        gap: 20px;
+        width: auto;
+    }
+
+    .content {
+        width: auto;
+        margin-top: 30px;
+        gap: 15px;
+    }
+
+}
+
+@media (max-width: 681.99px) {
+    .info__image img {
+        width: 460px;
+    }
+}
+
+@media (max-width: 499.99px) {
+    .title__head {
+        font-size: 40px;
+    }
+
+    .title__subtitle {
+        font-size: 12px;
+    }
+}
+
+.title__subtitle::before,
+.title__subtitle::after {
+    content: "";
+    height: 2px;
+    flex: 1 1 0;
+    background-color: #FFFF05;
+}
+
+.info__imageBlur {
+    width: 566px;
+    height: 204px;
+    position: absolute;
+    left: auto;
+    right: auto;
+    border-radius: 566px;
+    background: #FFFF05;
+    filter: blur(150px);
+}
+
+@media (max-width: 681.99px) {
+    .info__imageBlur{
+        width: 310px;
+        height: 154px;
+    }
+}
+
+.content__goods {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 770px;
+    gap: 36px;
+    margin-top: 100px;
+}
+
+@media (max-width: 1691.99px) {
+    .content__goods {
+        flex-direction: column;
+        align-items: flex-end;
+        width: 366px;
+        padding-top: 22px;
+    }
+
+    .content__data {
+        gap: 40px;
+    }
+}
+
+@media (max-width: 1269.99px) {
+    .content__goods {
+        display: none;
+    }
+
+    .info__body {
+        width: 100%;
+        text-align: center;
+    }
+
+    .content__body {
+        flex-direction: column;
+        align-items: center;
+        gap: 50px;
+    }
+
+    .content__data {
+        align-items: center;
+    }
+}
+
+.goods__good {
+    display: flex;
+    width: 286px;
+    padding: 48px 40px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    background: linear-gradient(270deg, rgba(255, 255, 5, 0.20) 0%, rgba(20, 20, 20, 0.20) 100%);
+    box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.30);
+    transition: all .3s ease 0s;
+}
+
+.goods__good:hover {
+    transform: scale(1.29, 1.37) translateY(-70px);
+    background: linear-gradient(270deg, rgba(255, 255, 5, 0.70) -2.37%, rgba(20, 20, 20, 0.70) 100%);
+}
+
+@media (max-width: 1269.99px) {
+    .goods__good {
+        width: 392px;
+        padding: 60px 40px;
+    }
+}
+
+.good__title {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.good__text {
+    font-size: 14px;
+}
+
+@media (max-width: 1269.99px) {
+    .good__text {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 499.99px) {
+    .good__text {
+        font-size: 14px;
+    }
+
+    .goods__good {
+        width: 286px;
+        padding: 48px 40px;
+    }
+
+    .content__goods {
+        align-items: center;
+        width: auto;
+    }
+
+    .header__contacts {
+        gap: 10px;
+        font-size: 14px;
+    }
+}
+
+.title__number {
+    font-size: 32px;
+    position: relative;
+}
+
+.title__number::before {
+    position: absolute;
+    content: "";
+    height: 2px;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: #FFFF05;
+}
+
+.title__text {
+    font-size: 24px;
+}

@@ -1,6 +1,8 @@
 import React from 'react';
 import ConcernItem from './ConcernItem';
 
+import styles from './Concern.module.css';
+
 function Concern() {
     const items = [
         {
@@ -26,12 +28,12 @@ function Concern() {
     ]
 
     return (
-        <div className="concern">
+        <div className={styles.concern}>
             <div className="container">
-                <div className="concern__title block-title">До нас варто заїхати, якщо Вас цікавить:</div>
-                <div className="concern__content">
+                <div className={[styles.concern__title, "block-title"].join(" ")}>До нас варто заїхати, якщо Вас цікавить:</div>
+                <div className={styles.concern__content}>
                     {items.map(item => 
-                        <ConcernItem item_data={item} key={item.id}/> 
+                        <ConcernItem item_data={item} key={item.id}/>
                     )}
                 </div>
             </div>

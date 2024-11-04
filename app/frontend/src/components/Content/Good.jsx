@@ -1,13 +1,14 @@
 import React from 'react';
+import styles from './Content.module.css';
 
 function Good({good_data}) {
     return ( 
-        <div className="goods__good">
-            <div className="good__title">
-                <div className="title__number">{good_data.number}</div>
-                <div className="title__text">{good_data.title}</div>
+        <div className={styles.goods__good}>
+            <div className={styles.good__title}>
+                <div className={styles.title__number}>{good_data.number}</div>
+                <div className={styles.title__text}>{good_data.title}</div>
             </div>
-            <div className="good__text">{good_data.body}</div>
+            <div className={styles.good__text}>{good_data.body}</div>
         </div>
      );
 }

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
+import styles from './Inputs.module.css';
 
 function DualRangeInput({ minData, maxData, isFloat = false }) {
     const range = useRef(null);
@@ -25,18 +26,18 @@ function DualRangeInput({ minData, maxData, isFloat = false }) {
                 type="range"
                 {...minData}
                 step={step}
-                className="thumb thumb--left"
+                className={styles.thumbLeft}
                 style={{ zIndex: minData.value > minData.max - 100 && "5" }}
             />
             <input
                 type="range"
                 {...maxData}
                 step={step}
-                className="thumb thumb--right"
+                className={styles.thumbRight}
             />
-            <div className="slider">
-                <div className="slider__track" />
-                <div ref={range} className="slider__range" />
+            <div className={styles.slider}>
+                <div className={styles.slider__track} />
+                <div ref={range} className={styles.slider__range} />
             </div>
         </div>
     );

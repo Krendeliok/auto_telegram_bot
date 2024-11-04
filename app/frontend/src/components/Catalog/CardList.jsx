@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Card from './Card/Card';
 
 import AboutCarPopup from '../Popup/AboutCarPopup';
+import styles from "./Catalog.module.css";
 
 function CardList({ lockBody, cards, cardsLoading }) {
     const [popupData, setPopupData] = useState({
@@ -14,7 +15,7 @@ function CardList({ lockBody, cards, cardsLoading }) {
     }
 
     return (
-        <div className="content__cards">
+        <div className={styles.content__cards}>
             {cards.length > 0 && !cardsLoading
                 ? <>
                     <AboutCarPopup {...popupData} setVisible={(v) => setAboutCarModalVisible(v, popupData.advertisement_id)} />

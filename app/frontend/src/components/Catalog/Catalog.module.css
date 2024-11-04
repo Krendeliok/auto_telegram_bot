@@ -1,0 +1,81 @@
+.catalog__body {
+    margin-top: 140px;
+}
+
+.catalog__header {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 1261.99px) {
+    .catalog__title {
+        font-size: 46px;
+    }
+}
+
+.content__cards {
+    margin-top: 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    min-width: 100%;
+}
+.content__cards h1 {
+    text-align: center;
+}
+
+.content__cards hr {
+    background-color: rgba(255, 255, 255, 0.30);
+}
+
+.catalog__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 80px;
+}
+
+@media (max-width: 359.99px) {
+    .catalog__title {
+        font-size: 28px;
+    }
+}
+
+.moreCars__button {
+    padding: 20px 56px;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+    width: fit-content;
+    display: flex;
+    gap: 10px;
+}
+
+.moreCars__button span {
+    color: #FFFF05;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.catalog__buttons {
+    display: flex;
+    gap: 80px;
+    align-items: center;
+}
+
+.hide__last {
+    text-decoration: underline;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.hide__all {
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 18px;
+}

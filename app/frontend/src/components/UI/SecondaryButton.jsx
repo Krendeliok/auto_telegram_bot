@@ -1,8 +1,9 @@
 import React from 'react';
+import styles from './Button.module.css';
 
 function SecondaryButton({ children, additionalClasses, ...props }) {
     return ( 
-        <button className={ ["secondary__button", ...additionalClasses].join(' ') } {...props}>{children}</button>
+        <button className={ [styles.secondary__button, ...additionalClasses].join(' ') } {...props}>{children}</button>
     );
 }
 

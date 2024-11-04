@@ -1,12 +1,13 @@
 import React from 'react';
 
 import CloseSVG from "../../assets/close.svg"
+import styles from "./Popup.module.css";
 
 function BasePopup({ children, visible, setVisible}) {
-    const rootClasses = ["popup__wrapper"];
+    const rootClasses = [styles.popup__wrapper];
 
     if (visible) {
-        rootClasses.push("active");
+        rootClasses.push(styles.active);
     }
 
     const closePopup = () => {
@@ -16,11 +17,11 @@ function BasePopup({ children, visible, setVisible}) {
 
     return ( 
         <div className={rootClasses.join(" ")} onClick={closePopup}>
-            <div className="popup__container" onClick={(e) => e.stopPropagation()}>
-                <div className="popup__body">
+            <div className={styles.popup__container} onClick={(e) => e.stopPropagation()}>
+                <div className={styles.popup__body}>
                     { children }
                 </div>
-                <div className="popup__close" onClick={closePopup}><img src={CloseSVG} alt="" /></div>
+                <div className={styles.popup__close} onClick={closePopup}><img src={CloseSVG} alt="" /></div>
             </div>
         </div>
     );

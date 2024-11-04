@@ -14,6 +14,8 @@ import ClockSVG from "../../assets/time.svg"
 import PhoneSVG from "../../assets/phone.svg"
 import MailSVG from "../../assets/mail.svg"
 
+import styles from './Contacts.module.css';
+
 function Contacts() {
     const contacts = [
         {
@@ -43,21 +45,21 @@ function Contacts() {
     ]
 
     return (
-        <div className="contacts" id="contacts">
+        <div id="contacts">
             <div className="container">
-                <div className="contacts__body">
-                    <div className="contacts__data">
-                        <div className="contacts__title block-title">Де нас знайти?</div>
-                        <div className="contacts__text">
+                <div className={styles.contacts__body}>
+                    <div className={styles.contacts__data}>
+                        <div className={[styles.contacts__title, "block-title"].join(" ")}>Де нас знайти?</div>
+                        <div className={styles.contacts__text}>
                             {contacts.map(contact =>
                                 <Contact contact_data={contact} key={contact.id} />
                             )}
-                            <div className="text__media">
-                                <div className="media__item"><InstagramLink /></div>
-                                <div className="media__item"><TelegramLink /></div>
-                                <div className="media__item"><ViberLink /></div>
-                                <div className="media__item"><FacebookLink /></div>
-                                <div className="media__item"><TikTokLink /></div>
+                            <div className={styles.text__media}>
+                                <div className={styles.media__item}><InstagramLink /></div>
+                                <div className={styles.media__item}><TelegramLink /></div>
+                                <div className={styles.media__item}><ViberLink /></div>
+                                <div className={styles.media__item}><FacebookLink /></div>
+                                <div className={styles.media__item}><TikTokLink /></div>
                             </div>
                         </div>
                     </div>

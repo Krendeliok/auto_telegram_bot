@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import styles from "./Card.module.css";
 
 function CardAlbum({ images }) {
 
@@ -23,32 +24,32 @@ function CardAlbum({ images }) {
 
 
     return (
-        <div className="card__album">
+        <div className={styles.card__album}>
             {
-                <div className="album__images">
-                    <div className="album__image">
+                <div className={styles.album__images}>
+                    <div className={styles.album__image}>
                         <img src={images[0]?.source} alt="" ref={mainImageRef}/>
                     </div>
                     {images.length > 1
                         ? images.slice(1).map(image =>
-                            <div className="album__image" key={image.id}>
+                            <div className={styles.album__image} key={image.id}>
                                 <img src={image.source} alt="" onClick={setAsMain}/>
                             </div>
                         )
                         : ""
                     }
-                    <div className="allcards__fogging"></div>
-                    <div className="carousel">
-                        <div className="carousel__arrow" onClick={onLeftArrowClick}></div>
-                        <div className="carousel__arrow right" onClick={onRightArrowClick}></div>
-                        <div className="breadcrumbs">
+                    <div className={styles.allcards__fogging}></div>
+                    <div className={styles.carousel}>
+                        <div className={styles.carousel__arrow} onClick={onLeftArrowClick}></div>
+                        <div className={[styles.carousel__arrow, styles.right].join(" ")} onClick={onRightArrowClick}></div>
+                        <div className={styles.breadcrumbs}>
                             {images.map((image, index) => <div key={image.id}
-                                                          className={index === currentImage ? "active" : ""}></div>)}
+                                                          className={index === currentImage ? styles.active : ""}></div>)}
                         </div>
                     </div>
                 </div>
             }
-            <div className="fogging"></div>
+            <div className={styles.fogging}></div>
         </div>
     );
 }

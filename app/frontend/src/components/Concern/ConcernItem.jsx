@@ -1,10 +1,11 @@
 import React from 'react';
+import styles from "./Concern.module.css";
 
 function ConcernItem({item_data}) {
     return ( 
-        <div className="concern__item">
-            <div className="concern__item-title">{ item_data.title }</div>
-            <div className="concern__item-text">{ item_data.body }</div>
+        <div className={styles.concern__item}>
+            <div className={styles.concern__itemTitle}>{ item_data.title }</div>
+            <div className={styles.concern__itemText}>{ item_data.body }</div>
         </div>
     );
 }

@@ -1,0 +1,44 @@
+.catalog__filter {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.filter__order {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.filter__button {
+    padding: 12px 36px;
+    font-size: 18px;
+    background: rgba(16, 16, 16, 0.60);
+}
+
+.filter__button img {
+    width: 21px;
+    height: 21px;
+}
+
+.catalog__filter:focus-visible,
+.filter__order:focus-visible,
+.order__select:focus-visible {
+    outline: none;
+}
+
+@media (max-width: 1261.99px) {
+    .catalog__filter {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 1023.99px) {
+    .filter__button {
+        position: fixed;
+        top: 50%;
+        left: -52px;
+        transform: rotate(-90deg);
+        z-index: 70;
+    }
+}

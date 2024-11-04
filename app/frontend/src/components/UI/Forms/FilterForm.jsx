@@ -10,9 +10,12 @@ import CheckBoxGroup from './Inputs/CheckBoxGroup'
 
 import useFormCheckboxGroup from "../../../hooks/useFormCheckboxGroup";
 import useFormRangedField from '../../../hooks/useFormRangedField';
-import ChoosenItems from './Fields/ChoosenItems';
+import ChosenItems from './Fields/ChosenItems';
 import FilterObject from '../../Catalog/Filter/FilterObject';
 import AdvertisementService from '../../../API/AdvertisementService';
+
+import styles from './Forms.module.css';
+import SecondaryButton from "../SecondaryButton";
 
 
 const addCheckedFieldToObject = (obj, defaultChecked = false) => {
@@ -78,26 +81,26 @@ function FilterForm({ sendFilter }) {
 
     return (
         <form onSubmit={onSubmit}>
-            <div className="inputs row">
-                <div className="form__checkboxes">
-                    <div className="column">
+            <div className={[styles.inputs, styles.row].join(" ")}>
+                <div className={styles.form__checkboxes}>
+                    <div className={styles.column}>
                         <CheckBoxGroup label={"Марка"} groupName={"producers"} {...producers} />
                     </div>
-                    <div className="column">
+                    <div className={styles.column}>
                         <CheckBoxGroup label={"Паливо"} groupName={"fuels"} {...fuels} />
                         <CheckBoxGroup label={"Коробка передач"} groupName={"gearboxes"} {...gearboxes} />
                     </div>
                 </div>
-                <div className="form__ranged">
+                <div className={styles.form__ranged}>
                     <RangedField name={'price'} labelText={"Ціна"} measurement={"$"} {...price} />
                     <RangedField name={'year'} labelText={"Рік випуску"} measurement={"рік"} {...year} />
                     <RangedField name={'range'} labelText={"Пробіг"} measurement={"т. км"} {...range} />
                     <RangedField name={'engine_volume'} labelText={"Об'єм двигуна/Потужність"} measurement={"л/кВт"} {...engine_volume} isFloat={true}/>
                 </div>
             </div>
-            <div className="save-and-choosen">
-                <button type="submit" className="popup__button secondary__button">Зберегти</button>
-                <ChoosenItems items={[producers, fuels, gearboxes]} />
+            <div className={styles.saveAndChosen}>
+                <SecondaryButton type="submit" additionalClasses={[styles.popup__button]}>Зберегти</SecondaryButton>
+                <ChosenItems items={[producers, fuels, gearboxes]} />
             </div>
             
         </form>

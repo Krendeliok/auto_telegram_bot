@@ -2,29 +2,30 @@ import React from 'react';
 
 import PrimaryButton from '../UI/PrimaryButton';
 import ContentGoods from './ContentGoods';
+import styles from "./Content.module.css";
 
 function Content() {
     return (
-        <div className="content">
+        <div>
             <div className="container">
-                <div className="content__body">
-                    <div className="content__info">
-                        <div className="info__title">
-                            <div className="title__head">АвтоЯрмарок</div>
-                            <div className="title__subtitle">ПРОДАЖ ТА ПІДБІР АВТО ШВИДКО ТА ВИГІДНО</div>
+                <div className={styles.content__body}>
+                    <div className={styles.content__info}>
+                        <div className={styles.info__title}>
+                            <div className={styles.title__head}>АвтоЯрмарок</div>
+                            <div className={styles.title__subtitle}>ПРОДАЖ ТА ПІДБІР АВТО ШВИДКО ТА ВИГІДНО</div>
                         </div>
-                        <div className="info__body block-subtitle">
+                        <div className={[styles.info__body, "block-subtitle"].join(" ")}>
                             Ми - твій шлях до автомобільних мрій! Зустріньмося на нашому автомайданчику, де реалізуються автопобажання та здійснюються угоди з посмішкою!
                         </div>
-                        <div className="info__image">
+                        <div className={styles.info__image}>
                             <img src={require('../../assets/avto.svg').default} alt="" />
-                            <div className="info__image-blur"></div>
+                            <div className={styles.info__imageBlur}></div>
                         </div>
                     </div>
-                    <div className="content__data">
+                    <div className={styles.content__data}>
                         <ContentGoods/>
                         <a href="#catalog">
-                            <PrimaryButton additionalClasses={["cars__button"]}> Автомобілі у наявності </PrimaryButton>
+                            <PrimaryButton> Автомобілі у наявності </PrimaryButton>
                         </a>
                     </div>
                 </div>

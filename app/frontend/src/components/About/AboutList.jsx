@@ -1,6 +1,7 @@
 import React from 'react';
 
 import DoneSVG from "../../assets/done.svg"
+import styles from "./About.module.css";
 
 function AboutList() {
     const items = [
@@ -20,7 +21,7 @@ function AboutList() {
     ]
 
     return ( 
-        <div className="content-subtitle__list">
+        <div className={styles.contentSubtitle__list}>
             <ul>
                 {items.map((item, index) =>  
                     <li key={index}>

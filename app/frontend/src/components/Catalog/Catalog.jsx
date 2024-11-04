@@ -2,11 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import SecondaryButton from '../UI/SecondaryButton';
 import CardList from './CardList';
-import CatalogFilter from './CatalogFilter';
+import Filter from './Filter/Filter';
 
 import { useFetching } from '../../hooks/useFetching';
 import AdvertisementService from '../../API/AdvertisementService';
 import FilterObject from './Filter/FilterObject';
+import styles from "./Catalog.module.css";
 
 const limit = 3;
     
@@ -47,21 +48,21 @@ function Catalog({ lockBody }) {
     }, [filter.fields])
 
     return (
-        <div className="catalog" id="catalog">
+        <div id="catalog">
             <div className="container">
-                <div className="catalog__body">
-                    <div className="catalog__header">
-                        <div className="catalog__title block-title">Авто в наявності</div>
-                        <CatalogFilter countChecked={countChecked} setFilter={setFilter} setSort={setSort} sort={sort} />
+                <div className={styles.catalog__body}>
+                    <div className={styles.catalog__header}>
+                        <div className={[styles.catalog__title, "block-title"].join(" ")}>Авто в наявності</div>
+                        <Filter countChecked={countChecked} setFilter={setFilter} setSort={setSort} sort={sort} />
                     </div>
-                    <div className="catalog__content">
+                    <div className={styles.catalog__content}>
                         <CardList lockBody={lockBody} cards={cards} cardsLoading={cardsLoading} />
-                        <div className="catalog__buttons">
-                            <SecondaryButton onClick={handleMoreCars} additionalClasses={["more-cars__button"]}>Більше авто<span>{'>>'}</span></SecondaryButton>
+                        <div className={styles.catalog__buttons}>
+                            <SecondaryButton onClick={handleMoreCars} additionalClasses={[styles.moreCars__button]}>Більше авто<span>{'>>'}</span></SecondaryButton>
                             {page >= 2 &&
                                 <>
-                                    <div className='hide__last' onClick={() => setPage((prev) => prev - 1)}>Приховати</div>
-                                    <div className="hide__all" onClick={() => setPage(1)}>Приховати усі авто</div>
+                                    <div className={styles.hide__last} onClick={() => setPage((prev) => prev - 1)}>Приховати</div>
+                                    <div className={styles.hide__all} onClick={() => setPage(1)}>Приховати усі авто</div>
                                 </>
                             }
                         </div>

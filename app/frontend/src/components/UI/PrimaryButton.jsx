@@ -1,11 +1,12 @@
 import React from 'react';
+import styles from './Button.module.css';
 
-function PrimaryButton({ children, additionalClasses, ...props }) {
+function PrimaryButton({ children, additionalClasses = [], ...props }) {
     return ( 
-        <div className={["primary__button", ...additionalClasses].join(' ')} {...props}>
+        <div className={[styles.primary__button, ...additionalClasses].join(' ')} {...props}>
             { children }
-            <div className="ellips"></div>
-            <div className="ellips"></div>
+            <div className={styles.ellips}></div>
+            <div className={styles.ellips}></div>
         </div>
      );
 }
