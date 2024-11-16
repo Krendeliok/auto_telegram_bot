@@ -35,9 +35,9 @@ class AdvertisementKindEnum(enum.Enum):
 
 
 dates_by_kind = {
-    AdvertisementKindEnum.admin.value: {"days": 10},
+    AdvertisementKindEnum.admin.value: {"days": 15},
     AdvertisementKindEnum.vip.value: {"days": 7},
-    AdvertisementKindEnum.basic.value: {"days": 10},
+    AdvertisementKindEnum.basic.value: {"days": 15},
     AdvertisementKindEnum.additional.value: {"days": 14},
 }
 
