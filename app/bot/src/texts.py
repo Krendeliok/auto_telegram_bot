@@ -17,7 +17,7 @@ ADV_TEXT = """
 🫰Придбати в <a href="https://t.me/AutoYarmarokUa">кредит / лізінг</a>
 платіж від {credit_price} тис.грн/міс
 
-🧲 <a href="https://t.me/AutoYarmarokUkraina">АвтоЯрмарок</a>
+🧲 <a href="https://t.me/autoyarmarok_com">АвтоЯрмарок</a>
 📩 <a href="https://t.me/AutoYarmarokUaSend_bot">Розмістити оголошення</a>
 """
 
