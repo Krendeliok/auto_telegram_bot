@@ -16,6 +16,7 @@ import AdvertisementService from '../../../API/AdvertisementService';
 
 import styles from './Forms.module.css';
 import SecondaryButton from "../SecondaryButton";
+import FilterItem from "./Fields/FilterItem";
 
 
 const addCheckedFieldToObject = (obj, defaultChecked = false) => {
@@ -84,18 +85,32 @@ function FilterForm({ sendFilter }) {
             <div className={[styles.inputs, styles.row].join(" ")}>
                 <div className={styles.form__checkboxes}>
                     <div className={styles.column}>
-                        <CheckBoxGroup label={"Марка"} groupName={"producers"} {...producers} />
+                        <FilterItem title={"Марка"}>
+                            <CheckBoxGroup groupName={"producers"} {...producers} />
+                        </FilterItem>
                     </div>
                     <div className={styles.column}>
-                        <CheckBoxGroup label={"Паливо"} groupName={"fuels"} {...fuels} />
-                        <CheckBoxGroup label={"Коробка передач"} groupName={"gearboxes"} {...gearboxes} />
-                    </div>
+                        <FilterItem title={"Паливо"}>
+                            <CheckBoxGroup groupName={"fuels"} {...fuels} />
+                        </FilterItem>
+                        <FilterItem title={"Коробка передач"}>
+                            <CheckBoxGroup groupName={"gearboxes"} {...gearboxes} />
+                        </FilterItem>
+                        </div>
                 </div>
                 <div className={styles.form__ranged}>
-                    <RangedField name={'price'} labelText={"Ціна"} measurement={"$"} {...price} />
-                    <RangedField name={'year'} labelText={"Рік випуску"} measurement={"рік"} {...year} />
-                    <RangedField name={'range'} labelText={"Пробіг"} measurement={"т. км"} {...range} />
-                    <RangedField name={'engine_volume'} labelText={"Об'єм двигуна/Потужність"} measurement={"л/кВт"} {...engine_volume} isFloat={true}/>
+                    <FilterItem title={"Ціна"}>
+                        <RangedField name={'price'} measurement={"$"} {...price} />
+                    </FilterItem>
+                    <FilterItem title={"Рік випуску"}>
+                        <RangedField name={'year'} measurement={"рік"} {...year} />
+                    </FilterItem>
+                    <FilterItem title={"Пробіг"}>
+                        <RangedField name={'range'} measurement={"т. км"} {...range} />
+                    </FilterItem>
+                    <FilterItem title={"Об'єм двигуна/Потужність"}>
+                        <RangedField name={'engine_volume'} measurement={"л/кВт"} {...engine_volume} isFloat={true}/>
+                    </FilterItem>
                 </div>
             </div>
             <div className={styles.saveAndChosen}>

@@ -1,0 +1,25 @@
+.header__title {
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.filterItem {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.item__container {
+    display: flex;
+    overflow: auto;
+    height: 580px;
+}

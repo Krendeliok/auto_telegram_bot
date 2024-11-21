@@ -2,11 +2,10 @@ import React from 'react';
 import DualRangeInput from '../Inputs/DualRangeInput';
 import styles from './Fields.module.css';
 
-function RangedField({ name, labelText, measurement, minData, maxData, isFloat }) {
+function RangedField({ name, measurement, minData, maxData, isFloat }) {
     const step = isFloat ? 0.1 : 1;
     return (  
         <div className={styles.ranged__field}>
-            <div className={styles.ranged__fieldLabel}>{labelText}</div>
             <div className={styles.ranged__fieldValues}>
                 <input
                     type="number"

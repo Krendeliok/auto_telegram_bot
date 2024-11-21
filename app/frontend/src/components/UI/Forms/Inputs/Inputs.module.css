@@ -35,13 +35,6 @@ input[type="checkbox"].checked::before {
     gap: 16px;
 }
 
-.checkboxes__group>label {
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
 .checkboxes__group-items {
     display: flex;
     flex-direction: column;

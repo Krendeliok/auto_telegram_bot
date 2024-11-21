@@ -21,7 +21,7 @@ function DualRangeInput({ minData, maxData, isFloat = false }) {
     }, [minData.value, maxData.value, getPercent]);
 
     return (
-        <div className="dual-range">
+        <div>
             <input
                 type="range"
                 {...minData}

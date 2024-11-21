@@ -63,7 +63,7 @@ function Contacts() {
                             </div>
                         </div>
                     </div>
-                    <div className="contacts__map"><img src={mapImage} alt="map" /></div>
+                    <div className={styles.contacts__map}><img src={mapImage} alt="map" /></div>
                 </div>
             </div>
         </div>

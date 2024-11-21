@@ -30,12 +30,7 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
 }
 
-.ranged__fieldLabel {
-    font-size: 24px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
+
 
 .ranged__fieldValues {
     position: relative;
@@ -62,6 +57,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .chosen__items {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 16px;
