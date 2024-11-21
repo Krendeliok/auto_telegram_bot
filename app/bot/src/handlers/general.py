@@ -65,6 +65,12 @@ from asyncio import sleep
 
 from worker.tasks import prolong_advertisement, delete_advertisement
 
+from config import CHANNEL_NAME
+
+
+async def test_send_to_chanel(message: types.Message):
+    await message.bot.send_message(CHANNEL_NAME, "Сповіщення")
+
 
 async def update_images(message: types.Message):
     images = get_all_images()
@@ -442,6 +448,7 @@ async def filter_range(message: types.Message, state: FSMContext, *args):
 
 
 def register_handlers_general(dp: Dispatcher):
+    dp.register_message_handler(test_send_to_chanel, commands=['test_send_to_chanel'], state="*")
     dp.register_message_handler(update_images, commands=['update_images'], state="*")
     dp.register_message_handler(start_command, commands=['start'], state="*")
     dp.register_message_handler(get_contact, content_types=types.ContentType.CONTACT, state=FSMMenu.contact)
