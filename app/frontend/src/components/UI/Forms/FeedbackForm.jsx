@@ -40,7 +40,6 @@ function FeedbackForm({ setVisiblePopup }) {
                         country="UA"
                         international={true}
                         withCountryCallingCode={true}
-                        defaultCountry="UA"
                         value={formData.phone}
                         required
                         onChange={v => setFormData({ ...formData, phone: v })}

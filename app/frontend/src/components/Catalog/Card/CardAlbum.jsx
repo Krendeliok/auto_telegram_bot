@@ -13,13 +13,13 @@ function CardAlbum({ images }) {
 
     return (  
         <div className="card__album">
-            {
+            {images && images.length > 0 && (
                 <div className="album__main-image">
                     <img src={images[0]?.source} alt="" ref={mainImageRef}/>
                 </div>
-            }
+            )}
             <div className="fogging"></div>
-            {images.length > 1
+            {images && images.length > 1
                 ? <div className="album__all-images">
                     {images.slice(1).map(image => 
                         <div className="album__image" key={image.id}>
