@@ -20,10 +20,10 @@ function CardList({ lockBody, cards, cardsLoading }) {
                     <AboutCarPopup {...popupData} setVisible={(v) => setAboutCarModalVisible(v, popupData.advertisement_id)} />
                     {
                         cards.map((card_data, index) =>
-                            <>
-                                <Card card_data={card_data} key={card_data.id} openPopup={setAboutCarModalVisible} />
+                            <React.Fragment key={card_data.id}>
+                                <Card card_data={card_data} openPopup={setAboutCarModalVisible} />
                                 {index !== cards.length - 1 ? <hr /> : ""}
-                            </>
+                            </React.Fragment>
                         )
                     }
                 </>

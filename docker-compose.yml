@@ -39,7 +39,7 @@ services:
       context: ./app/frontend
       dockerfile: Dockerfile.prod
     container_name: frontend-prod
-    command: bash -c "npm run build && npm run start"
+    command: bash -c "npm run build && npx serve -s build -l 3000"
     depends_on:
       - web
     labels:

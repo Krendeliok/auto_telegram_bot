@@ -39,7 +39,6 @@ function AboutCarForm({ advertisement_id, setVisiblePopup }) {
                         country="UA"
                         international={true}
                         withCountryCallingCode={true}
-                        defaultCountry="UA"
                         value={formData.phone}
                         onChange={v => setFormData({ ...formData, phone: v })}
                     />
