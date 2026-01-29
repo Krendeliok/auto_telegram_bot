@@ -1,8 +1,22 @@
+x-bot: &bot
+    build: ./app/bot
+    restart: always
+    depends_on:
+      - web
+      - db
+    volumes:
+      - ./app/bot:/bot
+    env_file:
+      - .env
+    environment:
+      - BASE_API_URL=http://web:5000/api/v1/
+
+
 services:
   web:
     build: 
       context: ./app/website
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: server-dev-c
     restart: always
     depends_on:
@@ -27,46 +41,15 @@ services:
     environment:
       - NODE_ENV=development
   bot:
-    build: ./app/bot
-    restart: always
-    depends_on:
-      - web
-      - db
-    volumes:
-      - ./app/bot:/bot
-    env_file:
-      - .env
-    environment:
-      - BASE_API_URL=http://web:5000/api/v1/
+    <<: *bot
+    container_name: bot-dev
   celery_bot:
-    build: ./app/bot
+    <<: *bot
     container_name: worker-bot
-    depends_on:
-      - web
-      - db
-      - redis
-    volumes:
-      - ./app/bot:/bot
-    env_file:
-      - .env
-    environment:
-      - BASE_API_URL=http://web:5000/api/v1/
     command: celery -A worker.celery_app:app worker --loglevel=info
-    restart: always
   celery_beat:
-    build: ./app/bot
+    <<: *bot
     container_name: beat-bot
-    depends_on:
-      - web
-      - db
-      - redis
-    volumes:
-      - ./app/bot:/bot
-    env_file:
-      - .env
-    environment:
-      - BASE_API_URL=http://web:5000/api/v1/
     command: celery -A worker.celery_app:app beat --loglevel=info
-    restart: always
 volumes:
   node_modules:

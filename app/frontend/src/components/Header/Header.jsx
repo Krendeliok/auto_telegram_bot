@@ -23,13 +23,12 @@ function Header() {
     };
 
     const now = new Date();
-    const current = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
     return (
         <header className="header">
             <div className="container">
                 <div className="promotion">
-                    <div className="promotion__text"> <img src={PercentSVG} alt="" /> Розмісти безкоштовно автомобіль на майданчику! Поспішай! Акція діє до 01.{ current.getMonth() + 1 }.</div>
+                    <div className="promotion__text"> <img src={PercentSVG} alt="" /> Розмісти безкоштовно автомобіль на майданчику! Поспішай! Акція діє до 01.{ ('0' + (now.getMonth() + 2)).slice(-2) }.</div>
                 </div>
                 <div className="header__body">
                     <LogoLink/>
