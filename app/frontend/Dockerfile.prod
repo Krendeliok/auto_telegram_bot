@@ -1,22 +1,12 @@
-FROM node:alpine AS build
+FROM node:24
 
 WORKDIR /frontend
 
-COPY package.json .
+ENV PATH /frontend/node_modules/.bin:$PATH
 
-RUN npm install npm@latest -g
-RUN npm i
+COPY package.json package-lock.json ./
+RUN npm install
 
-COPY  . .
+COPY . ./
 
-RUN npm run build
-
-
-FROM nginx:alpine
-
-COPY --from=build /frontend/build /usr/share/nginx/html
-COPY ./nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
