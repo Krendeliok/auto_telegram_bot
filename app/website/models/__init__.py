@@ -1,6 +1,6 @@
 from sqlalchemy.orm import configure_mappers
 
-from models.base import Base
+from website.models.base import Base
 
 from .advertisement import Advertisement, AdvertisementStateEnum, AdvertisementKindEnum
 from .additional_advertisements import AditionalAdvertisements

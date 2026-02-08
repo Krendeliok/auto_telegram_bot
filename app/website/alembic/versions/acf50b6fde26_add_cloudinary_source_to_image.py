@@ -16,7 +16,7 @@ import cloudinary
 import requests
 import json
 
-from models.image import Image
+from website.models.image import Image
 
 from app.config import config, init_config
 

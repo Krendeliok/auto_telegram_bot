@@ -14,5 +14,9 @@ app.conf.beat_schedule = {
         'task': 'worker.tasks.prolongation_advertisement_question',
         'schedule': crontab(minute='0', hour='9'),
     },
+    'new_feedbacks': {
+        'task': 'worker.tasks.new_feedbacks',
+        'schedule': crontab(minute='*/10'),
+    }
 }
 # app.autodiscover_tasks()

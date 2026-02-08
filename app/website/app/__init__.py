@@ -9,10 +9,10 @@ from flask_restful import Api
 
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-from models import Base
+from website.models import Base
 
-from app.routes import route
-from app.config import config, init_config
+from website.app.routes import route
+from website.app.config import config, init_config
 
 def create_flask_app():
     app = Flask(__name__)

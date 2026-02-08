@@ -5,7 +5,7 @@ from flask import (
 )
 from flask_restful import Resource
 
-from models import (
+from website.models import (
     Advertisement,
     AditionalAdvertisements,
     AdvertisementStateEnum,
@@ -29,9 +29,12 @@ def list_from_args(args: dict, list_name: str):
 
 def range_from_args(args: dict, range_name: str, is_float: bool = False):
     convert_type = float if is_float else int
+    min_value = args.get(f"{range_name}_min", 0)
+    max_value = args.get(f"{range_name}_max", None)
+
     return {
-        "cleft": convert_type(args.get(f"{range_name}_min", 0)), 
-        "cright": convert_type(args.get(f"{range_name}_max", 0))
+        "cleft": convert_type(min_value),
+        "cright": convert_type(max_value) if max_value else None
     }
 
 def parse_sort(sort):
@@ -45,13 +48,13 @@ def parse_sort(sort):
     return asc(Advertisement.id)
 
 class AdvertisementsApi(Resource):
-    def get(self, id=None):
+    def get(self, pk=None):
         advs = (
             g.db
             .query(Advertisement)
         )
-        if id:
-            advs = advs.filter(Advertisement.id == id)
+        if pk:
+            advs = advs.filter(Advertisement.id == pk)
         advs = advs.all()
         result = [
             {
@@ -154,8 +157,8 @@ class PriceApi(Resource):
         return Response(json.dumps(res[0], default=str), mimetype="application/json")
     
 class AdminAdvertisements(Resource):
-    def get(self):
-        limit = int(request.args.get("_limit", 0))
+    def get(self, pk=None):
+        limit = int(request.args.get("_limit", 3))
         page = int(request.args.get("_page", 1))
         producers = list_from_args(request.args, "_producers")
         fuels = list_from_args(request.args, "_fuels")
@@ -192,12 +195,18 @@ class AdminAdvertisements(Resource):
         advs = advs.filter(
             expression.or_(Client.is_admin, Client.is_owner),
             Advertisement.status == AdvertisementStateEnum.approved,
-            Advertisement.price.between(**price),
-            Advertisement.year.between(**year),
-            Advertisement.range.between(**range_),
-            Advertisement.engine_volume.between(**engine_volume),
             *filters
         )
+
+        if pk:
+            advs = advs.filter(Advertisement.id == pk)
+        else:
+            advs = advs.filter(
+                Advertisement.price.between(**price),
+                Advertisement.year.between(**year),
+                Advertisement.range.between(**range_),
+                Advertisement.engine_volume.between(**engine_volume),
+            )
 
         advs = advs.order_by(sort)
 

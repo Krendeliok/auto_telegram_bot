@@ -8,7 +8,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.sql import expression
 from sqlalchemy.orm import relationship
-from models import Base, Advertisement
+from website.models import Base, Advertisement
 
 from datetime import date
 

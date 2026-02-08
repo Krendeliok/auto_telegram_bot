@@ -27,7 +27,7 @@ const sortOptions = [
         }
     ]
 
-function CatalogFilter({ countChecked, setFilter, sort, setSort }) {
+function CatalogFilter({ countChecked, setFilter, sort, setSort, handleResetAdvertisementFilter, advertisementId }) {
     const count = countChecked();
     const selectedSort = sortOptions.find((item) => item.value === sort);
     const [filterVisible, setFilterVisible] = useState(false);
@@ -47,6 +47,14 @@ function CatalogFilter({ countChecked, setFilter, sort, setSort }) {
     return (
         <div className="catalog__filter">
             <FilterPopup visible={filterVisible} setVisible={setFilterVisible} countChecked={countChecked} updateFilter={updateFilter} />
+            {advertisementId != null && (
+                <SecondaryButton
+                    onClick={handleResetAdvertisementFilter}
+                    additionalClasses={["filter__button"]}
+                >
+                    Скинути
+                </SecondaryButton>
+            )}
             <div className="filter__order" >
                 <div className="order__select">
                     <SelectField

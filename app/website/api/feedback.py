@@ -5,7 +5,7 @@ from flask import (
 )
 from flask_restful import Resource
 
-from models import (
+from website.models import (
     Feedback
 )
 

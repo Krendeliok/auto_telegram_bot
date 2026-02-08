@@ -1,11 +1,11 @@
 from .celery_app import app
 from telegram import bot
 
-from models import Advertisement, AdvertisementStateEnum
+from models import Advertisement, AdvertisementStateEnum, Client
 from aiogram.types import InputMediaPhoto, MediaGroup
 from session import session
-from src.keyboards import prolongation_keyboard
-from datetime import date
+from src.keyboards import prolongation_keyboard, show_advertisement
+from datetime import date, timedelta
 
 import warnings
 
@@ -13,9 +13,15 @@ import asyncio
 
 from config import CHANNEL_NAME
 
+from src.Api.Request import Request
+
+from src.queries.feedback import set_verified_feedback
+
 # from ..models import AdvertisementKindEnum
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+prolongate_after = {"days": 30}
 
 
 def create_media_group(adv):
@@ -35,7 +41,7 @@ def prolongation_advertisement_question():
             .filter(
                 # Advertisement.kind == AdvertisementKindEnum.admin,
                 Advertisement.status == AdvertisementStateEnum.approved,
-                Advertisement.next_published_date <= date.today()
+                Advertisement.last_published_date <= date.today() - timedelta(**prolongate_after)
             )
             .all()
         )
@@ -79,3 +85,27 @@ def delete_advertisement(adv_id):
     adv = session.query(Advertisement).get(adv_id)
     adv.status = AdvertisementStateEnum.deleted
     session.commit()
+
+@app.task(ignore_result=True)
+def new_feedbacks():
+    owner = session.query(Client).filter_by(is_owner=True).first()
+    if not owner:
+        return
+    params = {
+        "verified": "false"
+    }
+    response = asyncio.run(Request.get("feedbacks", params=params))
+    feedbacks = list(response)
+    for feedback in feedbacks:
+        if all((feedback["name"], feedback["phone"])):
+            keyboard = None
+            if feedback.get("advertisement_id"):
+                keyboard = show_advertisement(feedback["advertisement_id"])
+            asyncio.run(
+                bot.send_message(
+                    owner.telegram_id,
+                    f"{feedback['name']} {feedback['phone']}",
+                    reply_markup=keyboard
+                )
+            )
+            asyncio.run(set_verified_feedback(feedback["id"]))

@@ -10,7 +10,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 import enum
-from models import Base
+from website.models import Base
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
@@ -33,10 +33,10 @@ class AdvertisementKindEnum(enum.Enum):
 
 
 dates_by_kind = {
-    AdvertisementKindEnum.admin.value: {"days": 10},
-    AdvertisementKindEnum.vip.value: {"days": 7},
-    AdvertisementKindEnum.basic.value: {"days": 10},
-    AdvertisementKindEnum.additional.value: {"days": 14},
+    AdvertisementKindEnum.admin.value: {"days": 30},
+    AdvertisementKindEnum.vip.value: {"days": 30},
+    AdvertisementKindEnum.basic.value: {"days": 30},
+    AdvertisementKindEnum.additional.value: {"days": 30},
 }
 
 

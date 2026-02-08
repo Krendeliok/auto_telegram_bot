@@ -4,14 +4,14 @@ import LogoLink from '../Links/LogoLink';
 import Menu from './Menu';
 import InstagramLink from '../Links/InstagramLink';
 import TelegramLink from '../Links/TelegramLink';
-import ViberLink from '../Links/ViberLink';
+import YoutubeLink from '../Links/YoutubeLink';
 import FacebookLink from '../Links/FacebookLink';
 import TikTokLink from '../Links/TikTokLink';
 
 import PercentSVG from "../../assets/percent.svg"
 
 
-function Header() {
+function Header({ ref }) {
 
     const burgerRef = useRef();
     const menuRef = useRef();
@@ -25,7 +25,7 @@ function Header() {
     const now = new Date();
 
     return (
-        <header className="header">
+        <header className="header" ref={ref}>
             <div className="container">
                 <div className="promotion">
                     <div className="promotion__text"> <img src={PercentSVG} alt="" /> Розмісти безкоштовно автомобіль на майданчику! Поспішай! Акція діє до 01.{ ('0' + (now.getMonth() + 2)).slice(-2) }.</div>
@@ -39,7 +39,7 @@ function Header() {
                         <div className="menu__social">
                             <InstagramLink className="social__link" />
                             <TelegramLink className="social__link" />
-                            <ViberLink className="social__link" />
+                            <YoutubeLink className="social__link" />
                             <FacebookLink className="social__link" />
                             <TikTokLink className="social__link" />
                         </div>

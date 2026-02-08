@@ -12,6 +12,11 @@ export default class AdvertisementService {
         return response
     }
 
+    static async getById(id) {
+        const response = await axios.get(`/api/v1/advertisements/only_admin/${id}`);
+        return response;
+    }
+
     static async getMaxPrice() {
         const response = await axios.get("/api/v1/advertisements/get_max_price");
         return response;

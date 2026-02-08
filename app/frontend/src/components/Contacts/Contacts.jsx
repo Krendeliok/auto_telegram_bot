@@ -2,7 +2,7 @@ import React from 'react';
 
 import InstagramLink from '../Links/InstagramLink';
 import TelegramLink from '../Links/TelegramLink';
-import ViberLink from '../Links/ViberLink';
+import YoutubeLink from '../Links/YoutubeLink';
 import TikTokLink from '../Links/TikTokLink';
 import FacebookLink from '../Links/FacebookLink';
 
@@ -31,14 +31,8 @@ function Contacts() {
         {
             id: 3,
             title: "Телефони",
-            body: "+38 (097) 62 00 777 <br/>+38(050) 62 00 777",
+            body: "+38 (097) 62 00 777",
             image: PhoneSVG
-        },
-        {
-            id: 4,
-            title: "Пошта",
-            body: "autoyarmarok@gmail.com",
-            image: MailSVG
         },
     ]
 
@@ -55,7 +49,7 @@ function Contacts() {
                             <div className="text__media">
                                 <div className="media__item"><InstagramLink /></div>
                                 <div className="media__item"><TelegramLink /></div>
-                                <div className="media__item"><ViberLink /></div>
+                                <div className="media__item"><YoutubeLink /></div>
                                 <div className="media__item"><FacebookLink /></div>
                                 <div className="media__item"><TikTokLink /></div>
                             </div>

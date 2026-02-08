@@ -1,4 +1,4 @@
-from models import Base
+from website.models import Base
 from sqlalchemy import Column, ForeignKey, Integer
 
 

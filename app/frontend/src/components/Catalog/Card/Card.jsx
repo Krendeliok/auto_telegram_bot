@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import PrimaryButton from '../../UI/PrimaryButton';
+import SecondaryButton from '../../UI/SecondaryButton';
 import CardAlbum from './CardAlbum';
 
 import CalendarSVG from "../../../assets/calendar.svg"
 import OilSVG from "../../../assets/oil.svg"
 import TransmissionSVG from "../../../assets/transmission.svg"
 import RoadSVG from "../../../assets/road.svg"
+import CopySVG from "../../../assets/copy.svg"
 
 function Card({ card_data, openPopup }) {
+    const [copied, setCopied] = useState(false);
+
+    const copyAdvertisementUrl = async () => {
+        const url = new URL(window.location.href);
+        url.searchParams.set('advertisement_id', card_data.id);
+        try {
+            await navigator.clipboard.writeText(url.toString());
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Copy failed:', err);
+            }
+        };
+
     return (
         <div className="content__card">
             <CardAlbum images={ card_data.images } />
@@ -37,6 +53,13 @@ function Card({ card_data, openPopup }) {
                 <div className="data__detail">
                     <div className="detail__price">{card_data.price} $</div>
                     <div className="detail__more-info">
+                        <SecondaryButton
+                            additionalClasses={["card__copy-link"]}
+                            onClick={copyAdvertisementUrl}
+                        >
+                            <img src={CopySVG} alt="" />
+                            {copied ? 'Скопійовано' : 'Копіювати посилання'}
+                        </SecondaryButton>
                         <PrimaryButton additionalClasses={["more-info__button"]} onClick={() => openPopup(true, card_data.id)}>Дізнатися деталі</PrimaryButton>
                     </div>
                 </div>

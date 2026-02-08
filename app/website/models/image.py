@@ -4,7 +4,7 @@ from sqlalchemy import (
     Integer,
     ForeignKey,
 )
-from models import Base
+from website.models import Base
 
 
 class Image(Base):
