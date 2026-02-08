@@ -1,4 +1,4 @@
-from website.models import Base
+from models import Base
 from sqlalchemy import Column, Float, ForeignKey, Integer, Boolean
 from sqlalchemy.sql import expression
 from sqlalchemy.orm import relationship

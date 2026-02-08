@@ -6,7 +6,7 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.sql import expression
-from website.models import Base
+from models import Base
 
 class Feedback(Base):
     __tablename__ = 'feedback'

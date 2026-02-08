@@ -10,7 +10,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 import enum
-from website.models import Base
+from models import Base
 from datetime import date
 from dateutil.relativedelta import relativedelta
 

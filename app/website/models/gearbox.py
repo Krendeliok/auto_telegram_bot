@@ -4,7 +4,7 @@ from sqlalchemy import (
     Integer,
 )
 from sqlalchemy.orm import relationship
-from website.models import Base
+from models import Base
 
 
 class Gearbox(Base):

@@ -1,8 +1,8 @@
-from website.api.advertisements import AdvertisementsApi, PriceApi, AdminAdvertisements
-from website.api.engines import EngineApi
-from website.api.gearboxes import GearboxApi
-from website.api.producers import ProducersApi
-from website.api.feedback import FeedbackApi
+from api.advertisements import AdvertisementsApi, PriceApi, AdminAdvertisements
+from api.engines import EngineApi
+from api.gearboxes import GearboxApi
+from api.producers import ProducersApi
+from api.feedback import FeedbackApi
 
 def route(api):
     api.add_resource(PriceApi, "/api/v1/advertisements/get_max_price")

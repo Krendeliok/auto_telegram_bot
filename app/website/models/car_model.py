@@ -5,7 +5,7 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
-from website.models import Base
+from models import Base
 
 
 class CarModel(Base):

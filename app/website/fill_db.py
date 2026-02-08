@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from config import DATABASE_URI
-from website.models import (
+from models import (
     Base,
     Producer,
     CarModel,

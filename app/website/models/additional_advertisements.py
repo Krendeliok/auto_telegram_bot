@@ -10,7 +10,7 @@ from sqlalchemy.sql import expression
 from sqlalchemy.orm import relationship
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from website.models import Base
+from models import Base
 
 
 expires_at = {
