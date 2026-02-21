@@ -1,7 +1,9 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from config import DATABASE_URI
+from app.config import config, init_config
 from models import (
     Base,
     Producer,
@@ -70,7 +72,10 @@ def get_all_regions(session):
 
 
 def create_db():
-    engine = create_engine(DATABASE_URI)
+    path = os.environ.get('CONFIG_PATH') if os.environ.get(
+        'CONFIG_PATH') else "./settings.ini"
+    init_config(path)
+    engine = create_engine(config["SQLALCHEMY"]["SQLALCHEMY_DATABASE_URI"])
 
     session = Session(engine)
     session.query(CarModel).delete()
