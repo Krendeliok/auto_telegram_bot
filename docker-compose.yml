@@ -32,7 +32,7 @@ services:
     depends_on:
       - db
     ports:
-      - "5000:5000"
+      - "5000"
     command: gunicorn main:"create_flask_app()" -b 0.0.0.0:5000 --reload
   frontend:
     build: 
@@ -51,7 +51,7 @@ services:
       - 'traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=https'
       - 'traefik.http.routers.frontend.middlewares=sslheader'
     ports:
-      - "3000:3000"
+      - "3000"
     environment:
       - NODE_ENV=production
   bot:
@@ -67,7 +67,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "5432"
   redis:
     image: redis:5.0.1
     container_name: redis
@@ -76,7 +76,7 @@ services:
       - REDIS_USER=${REDIS_USER}
       - REDIS_USER_PASSWORD=${REDIS_USER_PASSWORD}
     ports:
-      - "6379:6379"
+      - "6379"
     volumes:
       - redis_data:/data
       - ./redis.conf:/usr/local/etc/redis/redis.conf

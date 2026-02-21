@@ -15,7 +15,6 @@ const limit = 3;
 
 function Catalog({ lockBody }) {
     const [searchParams, setSearchParams] = useSearchParams();
-    const catalogRef = useRef(null);
 
     const advertisementIdParam = searchParams.get("advertisement_id");
     const advertisementId = advertisementIdParam ? Number(advertisementIdParam) : null;
@@ -52,8 +51,8 @@ function Catalog({ lockBody }) {
     }, [page, filter.fields, sort, advertisementId])
 
     useEffect(() => {
-        if (advertisementId != null && catalogRef.current) {
-            scrollToSection(catalogRef.current, 'smooth');
+        if (advertisementId != null) {
+            scrollToSection('catalog', 'smooth');
         }
     }, [advertisementId])
 
@@ -76,7 +75,7 @@ function Catalog({ lockBody }) {
     }, [filter.fields])
 
     return (
-        <div className="catalog" id="catalog" ref={catalogRef}>
+        <div className="catalog" id="catalog">
             <div className="container">
                 <div className="catalog__body">
                     <div className="catalog__header">
