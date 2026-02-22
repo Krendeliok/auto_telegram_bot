@@ -68,6 +68,57 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432"
+  db_backup:
+    image: postgres:12
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      PGHOST: db
+      PGPORT: "5432"
+      PGDATABASE: ${POSTGRES_DB}
+      PGUSER: ${POSTGRES_USER}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+
+      BACKUP_DIR: /backups
+      SCHEDULE: "0 3 * * *"
+      RETENTION_DAYS: "14"
+      DUMP_FORMAT: "custom"
+    volumes:
+      - /home/${USER}/backups:/backups
+    entrypoint: [ "/bin/bash", "-lc" ]
+    command: >
+      apt-get update -qq &&
+      apt-get install -y -qq cron &&
+      cat >/usr/local/bin/backup.sh <<'SH'
+      #!/usr/bin/env bash
+      set -euo pipefail
+      
+      ts="$(date +'%Y-%m-%d_%H-%M-%S')"
+      dir="${BACKUP_DIR:-/backups}"
+      retention="${RETENTION_DAYS:-14}"
+      format="${DUMP_FORMAT:-custom}"
+      
+      mkdir -p "$dir"
+      
+      if [[ "$format" == "plain" ]]; then
+        file="$dir/${PGDATABASE}_${ts}.sql.gz"
+        pg_dump --no-owner --no-privileges | gzip -c > "$file"
+      else
+        file="$dir/${PGDATABASE}_${ts}.dump"
+        pg_dump --format=custom --no-owner --no-privileges --file "$file"
+      fi
+      
+      find "$dir" -type f -mtime +"$retention" -print -delete || true
+      echo "[backup] wrote $file"
+      SH
+      chmod +x /usr/local/bin/backup.sh &&
+      echo "${SCHEDULE:-0 3 * * *} /usr/local/bin/backup.sh >>/var/log/cron.log 2>&1" > /etc/cron.d/pg_backup &&
+      chmod 0644 /etc/cron.d/pg_backup &&
+      crontab /etc/cron.d/pg_backup &&
+      touch /var/log/cron.log &&
+      cron &&
+      tail -f /var/log/cron.log
   redis:
     image: redis:5.0.1
     container_name: redis
