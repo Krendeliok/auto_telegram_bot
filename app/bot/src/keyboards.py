@@ -70,6 +70,7 @@ def add_user_filter():
         def inner(keyboard, telegram_id=None, *args, **kwargs):
             object_filter = None
             if telegram_id is not None:
+                _tid = str(telegram_id)
                 object_filter = (
                     session
                     .query(
@@ -81,7 +82,7 @@ def add_user_filter():
                         Filter.all_drive_units
                     )
                     .join(Client)
-                    .filter(Client.telegram_id == telegram_id)
+                    .filter(Client.telegram_id == _tid)
                     .first()
                 )
             func(keyboard=keyboard, object_filter=object_filter, telegram_id=telegram_id, *args, **kwargs)
@@ -97,13 +98,14 @@ def add_producer_filter():
         def inner(keyboard, telegram_id=None, producer_name=None, *args, **kwargs):
             object_filter = None
             if all((telegram_id, producer_name)):
+                _tid = str(telegram_id)
                 object_filter = (
                     session
                     .query(ProducerFilter.id, ProducerFilter.all_models)
                     .join(Producer)
                     .join(Filter)
                     .join(Client)
-                    .filter(and_(Client.telegram_id == telegram_id, Producer.name == producer_name))
+                    .filter(and_(Client.telegram_id == _tid, Producer.name == producer_name))
                     .first()
                 )
             func(keyboard=keyboard, object_filter=object_filter, telegram_id=telegram_id, producer_name=producer_name,

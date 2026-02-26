@@ -16,7 +16,12 @@ from .exists import exists_basic_adv, exists_vip_adv_space, exists_free_addition
 from session import session
 
 
+def _norm_telegram_id(telegram_id):
+    return str(telegram_id) if telegram_id is not None else telegram_id
+
+
 def is_admin(telegram_id) -> bool:
+    telegram_id = _norm_telegram_id(telegram_id)
     is_admin = (
         session.query(Client.is_admin)
         .filter(
@@ -28,6 +33,7 @@ def is_admin(telegram_id) -> bool:
 
 
 def is_owner(telegram_id) -> bool:
+    telegram_id = _norm_telegram_id(telegram_id)
     is_owner = (
         session.query(Client.is_owner)
         .filter(
@@ -39,6 +45,7 @@ def is_owner(telegram_id) -> bool:
 
 
 def is_vip(telegram_id) -> bool:
+    telegram_id = _norm_telegram_id(telegram_id)
     is_vip = (
         session.query(Client.is_vip)
         .filter(
@@ -50,6 +57,7 @@ def is_vip(telegram_id) -> bool:
 
 
 def set_admin(telegram_id):
+    telegram_id = _norm_telegram_id(telegram_id)
     (
         session.query(Client)
         .filter(Client.telegram_id == telegram_id)
@@ -59,6 +67,7 @@ def set_admin(telegram_id):
 
 
 def remove_admin(telegram_id):
+    telegram_id = _norm_telegram_id(telegram_id)
     (
         session.query(Client)
         .filter(Client.telegram_id == telegram_id)
@@ -73,11 +82,13 @@ def get_client_by_username(username) -> Client:
 
 
 def get_client_by_telegram_id(telegram_id) -> Client:
+    telegram_id = _norm_telegram_id(telegram_id)
     client = session.query(Client).filter_by(telegram_id=telegram_id).first()
     return client
 
 
 def client_advertisements(telegram_id) -> list[Advertisement]:
+    telegram_id = _norm_telegram_id(telegram_id)
     advs = (
         session
         .query(Advertisement.id, Advertisement.year, CarModel.name, Producer.name)
@@ -91,6 +102,7 @@ def client_advertisements(telegram_id) -> list[Advertisement]:
 
 
 def get_user_phone(telegram_id) -> str:
+    telegram_id = _norm_telegram_id(telegram_id)
     phone, *_ = (
         session
         .query(Client.phone_number)
@@ -101,6 +113,7 @@ def get_user_phone(telegram_id) -> str:
 
 
 def can_create_and_kind_adv(telegram_id) -> tuple[bool, AdvertisementKindEnum | None]:
+    telegram_id = _norm_telegram_id(telegram_id)
     client: Client = session.query(Client).filter_by(telegram_id=telegram_id).first()
 
     if any((client.is_admin, client.is_owner)):
@@ -119,6 +132,7 @@ def can_create_and_kind_adv(telegram_id) -> tuple[bool, AdvertisementKindEnum | 
 
 
 def set_vip(telegram_id, **duration):
+    telegram_id = _norm_telegram_id(telegram_id)
     client: Client = get_client_by_telegram_id(telegram_id)
     if not client.is_vip:
         client.is_vip = true()

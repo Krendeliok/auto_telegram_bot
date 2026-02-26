@@ -34,6 +34,7 @@ def get_or_create(model, delete_if_exists=False, **kwargs):
 
 
 def get_user_filter(telegram_id) -> Filter:
+    telegram_id = str(telegram_id) if telegram_id is not None else telegram_id
     client = session.query(Client).where(Client.telegram_id == telegram_id).first()
     return get_or_create(Filter, user_id=client.id)[1]
 

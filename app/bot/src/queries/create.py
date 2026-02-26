@@ -45,7 +45,7 @@ def create_client(data: types.Message):
     last_name = data.from_user.last_name if data.from_user.last_name else ""
     username = data.from_user.username if data.from_user.username else f"{data.from_user.first_name} {last_name}"
     client = Client(
-        telegram_id=data.from_user.id,
+        telegram_id=str(data.from_user.id),
         username=username,
         phone_number=data.contact.phone_number,
         first_name=data.from_user.first_name,

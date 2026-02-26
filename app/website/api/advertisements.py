@@ -88,7 +88,7 @@ class AdvertisementsApi(Resource):
     def post(self):
         try:
             data = request.json
-            user = g.db.query(Client).filter_by(telegram_id=data["user_id"]).first()
+            user = g.db.query(Client).filter_by(telegram_id=str(data["user_id"])).first()
 
             data["phone_number"] = data.get("phone", user.phone_number)
             data["phone_number"] = data["phone_number"] if str(data["phone_number"]).startswith("+") else f"+{data['phone_number']}"

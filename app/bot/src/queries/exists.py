@@ -54,12 +54,14 @@ def exists_city(sity_name: str) -> tuple:
     return bool(model), model
 
 
-def exists_client(telegram_id: int) -> tuple:
+def exists_client(telegram_id) -> tuple:
+    telegram_id = str(telegram_id) if telegram_id is not None else telegram_id
     model = session.query(Client).where(Client.telegram_id == telegram_id).first()
     return bool(model), model
 
 
-def exists_adv(adv_id: int, telegram_id: int):
+def exists_adv(adv_id: int, telegram_id):
+    telegram_id = str(telegram_id) if telegram_id is not None else telegram_id
     adv = (
         session
         .query(Advertisement)
